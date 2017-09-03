@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1 Workhours
+  p Look at those hours stack up!
+
+  form(name=registerHours)
+    div
+      label Start date
+      input(name=startDate)
+      label Start time
+      input(name=startTime)
+    div
+      label End date
+      input(name=endDate)
+      label End time
+      input(name=endTime)
+
