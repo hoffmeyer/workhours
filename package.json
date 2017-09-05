@@ -15,5 +15,8 @@
     "pug": "~2.0.0-beta11",
     "ramda": "^0.24.1",
     "serve-favicon": "~2.4.2"
+  },
+  "devDependencies": {
+    "prettier": "^1.6.1"
   }
 }

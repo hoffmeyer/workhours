@@ -7,10 +7,10 @@ let today = moment().format('YYYY-MM-DD');
 let now = moment().format('HH:mm');
 
 let time = {
-  startDate: today
-, startTime: now
-, endDate: today
-, endTime: now 
+  startDate: today,
+  startTime: now,
+  endDate: today,
+  endTime: now,
 };
 
 /* GET home page. */
