@@ -4,7 +4,7 @@ block content
   h1 Workhours
   p Look at those hours stack up!
 
-  form(name=registerHours)
+  form(name=registerHours, method='POST', action='/register')
     div
       label Start date
       input(name='startDate', type='date', value='2007-08-04')
@@ -15,3 +15,5 @@ block content
       input(name='endDate', type='date', value=endDate)
       label End time
       input(name='endTime', type='time', value=endTime)
+    div
+      button submit

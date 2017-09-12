@@ -36,11 +36,16 @@ var _users = require('./routes/users');
 
 var _users2 = _interopRequireDefault(_users);
 
+var _register = require('./routes/register');
+
+var _register2 = _interopRequireDefault(_register);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)();
 
 // view engine setup
+
 app.set('views', _path2.default.join(__dirname, '../views'));
 app.set('view engine', 'pug');
 
@@ -54,6 +59,7 @@ app.use(_express2.default.static(_path2.default.join(__dirname, 'public')));
 
 app.use('/', _index2.default);
 app.use('/users', _users2.default);
+app.use('/register', _register2.default);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

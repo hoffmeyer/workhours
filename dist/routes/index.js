@@ -27,7 +27,6 @@ var time = {
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  console.log(time);
   res.render('index', time);
 });
 
