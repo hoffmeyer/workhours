@@ -17,7 +17,8 @@
     "pg-promise": "^6.5.2",
     "pug": "~2.0.0-beta11",
     "ramda": "^0.24.1",
-    "serve-favicon": "~2.4.2"
+    "serve-favicon": "~2.4.2",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

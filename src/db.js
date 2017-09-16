@@ -1,12 +1,14 @@
 // @flow
-import pgp from 'pg-promise';
+import pgp from "pg-promise";
 
-const username = 'workhours'
-const password = 'workhours';
-const host = 'localhost';
-const port = 'port';
-const database = 'database';
+const options = {};
 
-export default pgp('postgres://' + username + ':' + password + '@' + host + ':' + port + '/' + database);
+const connection = {
+  host: "localhost",
+  port: 5432,
+  database: "postgres",
+  user: "postgres",
+  password: "workhours"
+};
 
-
+export default pgp(options)(connection);

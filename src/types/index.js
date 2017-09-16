@@ -1,8 +1,9 @@
 // @flow
 
 export type Work = {
-  startDate: Date,
-  startTime: String,
-  endDate: Date,
-  endTime: String
+  startDate: string,
+  startTime: string,
+  hours: number,
+  minutes: number,
+  lunch: number
 };

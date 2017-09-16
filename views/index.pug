@@ -7,13 +7,16 @@ block content
   form(name=registerHours, method='POST', action='/register')
     div
       label Start date
-      input(name='startDate', type='date', value='2007-08-04')
+      input(name='startDate', type='date', value=startDate)
       label Start time
       input(name='startTime', type='time', value=startTime)
     div
-      label End date
-      input(name='endDate', type='date', value=endDate)
-      label End time
-      input(name='endTime', type='time', value=endTime)
+      label Hours
+      input(name='hours', type='number', value=hours)
+      label Minutes
+      input(name='minutes', type='number', value=minutes)
+    div
+      label Lunch
+      input(name='lunch', type='number', value=lunch)
     div
       button submit

@@ -1,22 +1,28 @@
 // @flow
-import {Router} from 'express';
-import moment from 'moment';
+import { Router } from "express";
+import moment from "moment";
 let router = Router();
 
-const date = new Date();
-const today = moment().format('YYYY-MM-DD');
-const now = moment().format('HH:mm');
+router.get("/", function(req, res, next) {
+  const date = new Date();
+  const today = moment().format("YYYY-MM-DD");
+  const now = moment().format("HH:mm");
 
-const time = {
-  startDate: today,
-  startTime: now,
-  endDate: today,
-  endTime: now,
-};
+  const time: {
+    startDate: string,
+    startTime: string,
+    hours: number,
+    minutes: number,
+    lunch: number
+  } = {
+    startDate: today,
+    startTime: now,
+    hours: 0,
+    minutes: 0,
+    lunch: 30
+  };
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', time);
+  res.render("index", time);
 });
 
 export default router;
