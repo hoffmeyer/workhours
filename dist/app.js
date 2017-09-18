@@ -82,6 +82,6 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-_db2.default.none("CREATE TABLE IF NOT EXISTS hours (id uuid PRIMARY KEY NOT NULL, startDate timestamp, endDate timestamp);");
+_db2.default.none("CREATE TABLE IF NOT EXISTS hours (id uuid PRIMARY KEY NOT NULL, startDate timestamp NOT NULL, endDate timestamp);");
 
 exports.default = app;
