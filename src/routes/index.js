@@ -3,26 +3,44 @@ import { Router } from "express";
 import moment from "moment";
 import type { Work } from "../types";
 import db from "../db.js";
+import util from "util";
 let router = Router();
 
-const getWorkHoursAt = (date: Date): Work => {
+const getWorkHoursAt = (date: Date): Promise<Work> => {
   const fromDb = getWorkhoursFromDb(date);
-  if (fromDb != null) {
-    return fromDb;
-  } else {
-    return getNewWorkHours(date);
-  }
+  return fromDb.then(data => {
+    console.log("fromDb data: " + util.inspect(data));
+    if (data != null) {
+      return data;
+    } else {
+      return getNewWorkHours(date);
+    }
+  });
 };
 
-const getWorkhoursFromDb = (date: Date): ?Work => {
-  db
+const getWorkhoursFromDb = (date: Date): Promise<Work> => {
+  return db
     .oneOrNone(
-      "SELECT * FROM hours where startDate = " +
-        date.toString() +
-        "ORDER BY startDate DESC LIMIT 1"
+      "SELECT * FROM hours where start::date = '" +
+        moment(date).format("YYYY-MM-DD") +
+        "' ORDER BY start DESC LIMIT 1"
     )
-    .then(data => {})
-    .catch(error => {});
+    .then(data => {
+      console.log("got one: " + util.inspect(data));
+      if (data != null && data.duration === null) {
+        const date = moment(data.start);
+        console.log("moment date: " + util.inspect(date));
+        return {
+          startDate: date.format("YYYY-MM-DD"),
+          startTime: date.format("HH:mm"),
+          hours: 0
+        };
+      }
+      return null;
+    })
+    .catch(error => {
+      console.log("Error accurred getWorkhoursFromDb: " + error);
+    });
 };
 
 const getNewWorkHours = (date: Date): Work => {
@@ -32,15 +50,16 @@ const getNewWorkHours = (date: Date): Work => {
   const work: Work = {
     startDate: day,
     startTime: time,
-    hours: 0,
-    minutes: 0,
-    lunch: 30
+    hours: 0
   };
   return work;
 };
 
 router.get("/", function(req, res, next) {
-  res.render("index", getWorkHoursAt(new Date()));
+  getWorkHoursAt(new Date()).then(data => {
+    console.log("workhoursAt: " + util.inspect(data));
+    res.render("index", data);
+  });
 });
 
 export default router;

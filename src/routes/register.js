@@ -14,10 +14,10 @@ router.post("/", function(req, res, next) {
   const work: Work = req.body;
 
   db
-    .none("INSERT INTO hours(id, startDate, endDate) VALUES($1, $2, $3)", [
+    .none("INSERT INTO hours(id, start, hours) VALUES($1, $2, $3)", [
       uuidV4(),
       new Date(work.startDate + " " + work.startTime),
-      work.startDate
+      work.hours
     ])
     .then(() => {
       console.log("Insert successfull");

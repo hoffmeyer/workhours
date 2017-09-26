@@ -6,17 +6,12 @@ block content
 
   form(name=registerHours, method='POST', action='/register')
     div
-      label Start date
-      input(name='startDate', type='date', value=startDate)
-      label Start time
-      input(name='startTime', type='time', value=startTime)
+      label(for='startDate') Start date
+      input(name='startDate', id='startDate', type='date', value=startDate)
+      label(for='startTime') Start time
+      input(name='startTime', id='startTime', type='time', value=startTime)
     div
-      label Hours
-      input(name='hours', type='number', value=hours)
-      label Minutes
-      input(name='minutes', type='number', value=minutes)
-    div
-      label Lunch
-      input(name='lunch', type='number', value=lunch)
+      label(for='hours') Hours
+      input(name='hours', id='hours', type='number', value=hours)
     div
       button submit

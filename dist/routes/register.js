@@ -26,7 +26,7 @@ var combineDateAndTime = function combineDateAndTime(date, time) {
 router.post("/", function (req, res, next) {
   var work = req.body;
 
-  _db2.default.none("INSERT INTO hours(id, startDate, endDate) VALUES($1, $2, $3)", [(0, _v2.default)(), new Date(work.startDate + " " + work.startTime), work.startDate]).then(function () {
+  _db2.default.none("INSERT INTO hours(id, start, hours) VALUES($1, $2, $3)", [(0, _v2.default)(), new Date(work.startDate + " " + work.startTime), work.hours]).then(function () {
     console.log("Insert successfull");
     res.redirect("/?sucess=true");
   }).catch(function (error) {
