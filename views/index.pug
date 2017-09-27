@@ -2,16 +2,22 @@ extends layout
 
 block content
   h1 Workhours
-  p Look at those hours stack up!
+
+  if(isWorking)
+    p Finish registration
+  else
+    p New registration
+
 
   form(name=registerHours, method='POST', action='/register')
     div
+      input(type="hidden" value=work.id)
       label(for='startDate') Start date
-      input(name='startDate', id='startDate', type='date', value=startDate)
+      input(name='startDate', id='startDate', type='date', value=work.startDate)
       label(for='startTime') Start time
-      input(name='startTime', id='startTime', type='time', value=startTime)
+      input(name='startTime', id='startTime', type='time', value=work.startTime)
     div
       label(for='hours') Hours
-      input(name='hours', id='hours', type='number', value=hours)
+      input(name='hours', id='hours', type='number', value=work.hours)
     div
       button submit
