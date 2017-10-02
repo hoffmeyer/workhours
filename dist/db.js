@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _pgPromise = require("pg-promise");
+var _pgPromise = require('pg-promise');
 
 var _pgPromise2 = _interopRequireDefault(_pgPromise);
 
@@ -14,11 +14,11 @@ var options = {};
 
 
 var connection = {
-  host: "localhost",
+  host: 'localhost',
   port: 5432,
-  database: "postgres",
-  user: "postgres",
-  password: "workhours"
+  database: 'postgres',
+  user: 'postgres',
+  password: 'postgres'
 };
 
 exports.default = (0, _pgPromise2.default)(options)(connection);

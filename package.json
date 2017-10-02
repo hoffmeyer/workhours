@@ -12,6 +12,7 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "express": "~4.15.2",
+    "flow-bin": "^0.56.0",
     "moment": "^2.18.1",
     "morgan": "~1.8.1",
     "pg-promise": "^6.5.2",

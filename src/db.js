@@ -1,14 +1,14 @@
 // @flow
-import pgp from "pg-promise";
+import pgp from 'pg-promise';
 
 const options = {};
 
 const connection = {
-  host: "localhost",
+  host: 'localhost',
   port: 5432,
-  database: "postgres",
-  user: "postgres",
-  password: "workhours"
+  database: 'postgres',
+  user: 'postgres',
+  password: 'postgres',
 };
 
 export default pgp(options)(connection);

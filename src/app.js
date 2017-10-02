@@ -47,8 +47,12 @@ app.use(function(err: Error, req, res, next) {
   res.render('error');
 });
 
-db.none(
-  'CREATE TABLE IF NOT EXISTS hours (id uuid PRIMARY KEY NOT NULL, start timestamp NOT NULL, duration integer );',
-);
+db
+  .none(
+    'CREATE TABLE IF NOT EXISTS hours (id uuid PRIMARY KEY NOT NULL, start timestamp NOT NULL, duration integer );',
+  )
+  .catch(e => {
+    console.error('' + e);
+  });
 
 export default app;
