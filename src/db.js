@@ -10,5 +10,15 @@ const connection = {
   user: 'postgres',
   password: 'postgres',
 };
+const db = pgp(options)(connection);
 
-export default pgp(options)(connection);
+const getHour = (date: string) =>
+  db.oneOrNone(
+    "SELECT * FROM hours where start::date = '" +
+      date +
+      "' ORDER BY start DESC LIMIT 1",
+  );
+
+export {getHour};
+
+export default db;

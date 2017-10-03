@@ -1,12 +1,10 @@
 // @flow
 
-import util from 'util';
-
 import {Router} from 'express';
 import moment from 'moment';
 
-import type {Work} from '../types';
-import db from '../db';
+import type {Hour, InputWork, Work} from '../types';
+import {getHour} from '../db';
 
 let router = Router();
 
@@ -15,39 +13,25 @@ type updateWork = {
   isWorking: boolean,
 };
 
-const getWorkHoursAt = (date: Date): Promise<updateWork> => {
-  const fromDb = getWorkhoursFromDb(date);
-  return fromDb.then(data => {
-    const work = data != null ? data : getNewWorkHours(date);
+const hourToMaybeWork = (hour: Hour): ?Work => {
+  if (hour != null && hour.duration === 0) {
+    const date = moment(hour.start);
     return {
-      work: work,
-      isWorking: work.id != null,
+      id: hour.id,
+      startDate: date.format('YYYY-MM-DD'),
+      startTime: date.format('HH:mm'),
+      hours: 0,
     };
-  });
+  }
+  return null;
 };
 
-const getWorkhoursFromDb = (date: Date): Promise<Work> => {
-  return db
-    .oneOrNone(
-      "SELECT * FROM hours where start::date = '" +
-        moment(date).format('YYYY-MM-DD') +
-        "' ORDER BY start DESC LIMIT 1",
-    )
-    .then(data => {
-      if (data != null && data.duration === 0) {
-        const date = moment(data.start);
-        return {
-          id: data.id,
-          startDate: date.format('YYYY-MM-DD'),
-          startTime: date.format('HH:mm'),
-          hours: 0,
-        };
-      }
-      return null;
-    })
-    .catch(error => {
-      console.log('Error accurred getWorkhoursFromDb: ' + error);
-    });
+const maybeWorkToInputWork = (maybeWork: ?Work): InputWork => {
+  const work = maybeWork != null ? maybeWork : getNewWorkHours(new Date());
+  return {
+    work: work,
+    isWorking: work.id != null,
+  };
 };
 
 const getNewWorkHours = (date: Date): Work => {
@@ -63,10 +47,11 @@ const getNewWorkHours = (date: Date): Work => {
   return work;
 };
 
-router.get('/', function(req, res, next) {
-  getWorkHoursAt(new Date()).then(data => {
-    res.render('index', data);
-  });
+router.get('/', (req, res, next) => {
+  getHour(moment(new Date()).format('YYYY-MM-DD'))
+    .then(hourToMaybeWork)
+    .then(maybeWorkToInputWork)
+    .then(data => res.render('index', data));
 });
 
 export default router;
