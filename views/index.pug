@@ -11,7 +11,7 @@ block content
 
   form(name=registerHours, method='POST', action='/register')
     div
-      input(type="hidden" value=work.id)
+      input(name='id', type="hidden", value=work.id)
       label(for='startDate') Start date
       input(name='startDate', id='startDate', type='date', value=work.startDate)
       label(for='startTime') Start time

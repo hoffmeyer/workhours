@@ -25,7 +25,6 @@ var router = (0, _express.Router)();
 var getWorkHoursAt = function getWorkHoursAt(date) {
   var fromDb = getWorkhoursFromDb(date);
   return fromDb.then(function (data) {
-    console.log('fromDb data: ' + _util2.default.inspect(data));
     var work = data != null ? data : getNewWorkHours(date);
     return {
       work: work,
@@ -36,10 +35,8 @@ var getWorkHoursAt = function getWorkHoursAt(date) {
 
 var getWorkhoursFromDb = function getWorkhoursFromDb(date) {
   return _db2.default.oneOrNone("SELECT * FROM hours where start::date = '" + (0, _moment2.default)(date).format('YYYY-MM-DD') + "' ORDER BY start DESC LIMIT 1").then(function (data) {
-    console.log('got one: ' + _util2.default.inspect(data));
     if (data != null && data.duration === 0) {
       var _date = (0, _moment2.default)(data.start);
-      console.log('moment date: ' + _util2.default.inspect(_date));
       return {
         id: data.id,
         startDate: _date.format('YYYY-MM-DD'),
@@ -68,7 +65,6 @@ var getNewWorkHours = function getNewWorkHours(date) {
 
 router.get('/', function (req, res, next) {
   getWorkHoursAt(new Date()).then(function (data) {
-    console.log('workhoursAt: ' + _util2.default.inspect(data));
     res.render('index', data);
   });
 });

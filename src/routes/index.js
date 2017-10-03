@@ -5,15 +5,19 @@ import util from 'util';
 import {Router} from 'express';
 import moment from 'moment';
 
-import type {Work, updateWork} from '../types';
+import type {Work} from '../types';
 import db from '../db';
 
 let router = Router();
 
+type updateWork = {
+  work: Work,
+  isWorking: boolean,
+};
+
 const getWorkHoursAt = (date: Date): Promise<updateWork> => {
   const fromDb = getWorkhoursFromDb(date);
   return fromDb.then(data => {
-    console.log('fromDb data: ' + util.inspect(data));
     const work = data != null ? data : getNewWorkHours(date);
     return {
       work: work,
@@ -30,10 +34,8 @@ const getWorkhoursFromDb = (date: Date): Promise<Work> => {
         "' ORDER BY start DESC LIMIT 1",
     )
     .then(data => {
-      console.log('got one: ' + util.inspect(data));
       if (data != null && data.duration === 0) {
         const date = moment(data.start);
-        console.log('moment date: ' + util.inspect(date));
         return {
           id: data.id,
           startDate: date.format('YYYY-MM-DD'),
@@ -63,7 +65,6 @@ const getNewWorkHours = (date: Date): Work => {
 
 router.get('/', function(req, res, next) {
   getWorkHoursAt(new Date()).then(data => {
-    console.log('workhoursAt: ' + util.inspect(data));
     res.render('index', data);
   });
 });
