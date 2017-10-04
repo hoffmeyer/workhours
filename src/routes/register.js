@@ -17,8 +17,8 @@ const insertNew = (res, work: Work) => {
   db
     .none('INSERT INTO hours(id, start, duration) VALUES($1, $2, $3);', [
       uuidV4(),
-      new Date(work.startDate + ' ' + work.startTime),
-      work.hours,
+      work.start,
+      work.duration,
     ])
     .then(() => {
       console.log('Insert successfull');
@@ -34,8 +34,8 @@ const updateExisting = (res, work: Work) => {
   db
     .none('UPDATE hours SET start=$2, duration=$3 WHERE id=$1;', [
       work.id,
-      new Date(work.startDate + ' ' + work.startTime),
-      work.hours,
+      work.start,
+      work.duration,
     ])
     .then(() => {
       console.log('Update successfull');

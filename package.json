@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "build": "babel src -d dist",
     "dev":
-      "concurrently \"npm run build -- --watch\" \"nodemon dist/server.js\""
+      "concurrently \"npm run build -- --watch\" \"nodemon --ignore /src/** dist/server.js\""
   },
   "dependencies": {
     "babel-preset-env": "^1.6.0",

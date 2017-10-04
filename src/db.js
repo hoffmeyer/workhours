@@ -1,6 +1,8 @@
 // @flow
 import pgp from 'pg-promise';
 
+import type {Work} from './types';
+
 const options = {};
 
 const connection = {
@@ -8,13 +10,13 @@ const connection = {
   port: 5432,
   database: 'postgres',
   user: 'postgres',
-  password: 'postgres',
+  password: 'workhours',
 };
 const db = pgp(options)(connection);
 
-const getHour = (date: string) =>
+const getHour = (date: string): Promise<?Work> =>
   db.oneOrNone(
-    "SELECT * FROM hours where start::date = '" +
+    "SELECT * FROM work where start::date = '" +
       date +
       "' ORDER BY start DESC LIMIT 1",
   );
