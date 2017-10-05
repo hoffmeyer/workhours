@@ -1,5 +1,6 @@
 // @flow
 import pgp from 'pg-promise';
+import R from 'ramda';
 
 import type {Work} from './types';
 
