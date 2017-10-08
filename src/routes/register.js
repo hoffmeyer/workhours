@@ -3,7 +3,7 @@ import util from 'util';
 
 import {Router} from 'express';
 
-import type {Work} from '../types';
+import {type UiWork, type Work, uiWorkToWork} from '../types';
 import {insertWork, updateWork} from '../db';
 
 const router = Router();
@@ -25,13 +25,13 @@ const updateExisting = (res, work: Work) => {
 };
 
 router.post('/', function(req, res, next) {
-  const work: Work = req.body;
-  console.log('saving to database: ' + util.inspect(work));
+  const uiWork: UiWork = req.body;
+  console.log('saving to database: ' + util.inspect(uiWork));
 
-  if (work.id === null || work.id === '') {
-    insertNew(res, work);
+  if (uiWork.id === null || uiWork.id === '') {
+    insertNew(res, uiWorkToWork(uiWork));
   } else {
-    updateExisting(res, work);
+    updateExisting(res, uiWorkToWork(uiWork));
   }
 });
 

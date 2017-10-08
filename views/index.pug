@@ -3,7 +3,7 @@ extends layout
 block content
   h1 Workhours
 
-  if(isWorking)
+  if(id != null )
     p Finish registration
   else
     p New registration
@@ -11,13 +11,13 @@ block content
 
   form(name=registerHours, method='POST', action='/register')
     div
-      input(name='id', type="hidden", value=work.id)
+      input(name='id', type="hidden", value=id)
       label(for='startDate') Start date
-      input(name='startDate', id='startDate', type='date', value=work.startDate)
+      input(name='startDate', id='startDate', type='date', value=startDate)
       label(for='startTime') Start time
-      input(name='startTime', id='startTime', type='time', value=work.startTime)
+      input(name='startTime', id='startTime', type='time', value=startTime)
     div
       label(for='hours') Hours
-      input(name='hours', id='hours', type='number', value=work.hours)
+      input(name='hours', id='hours', type='number', value=hours)
     div
       button submit
