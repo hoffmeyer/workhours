@@ -48,7 +48,7 @@ app.use(function(err: Error, req, res, next) {
 
 db
   .none(
-    'CREATE TABLE IF NOT EXISTS hours (id uuid PRIMARY KEY NOT NULL, start timestamp NOT NULL, duration integer );',
+    'CREATE TABLE IF NOT EXISTS work (id uuid PRIMARY KEY NOT NULL, start timestamp NOT NULL, duration integer );',
   )
   .catch(e => {
     console.error('' + e);
