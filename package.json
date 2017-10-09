@@ -5,22 +5,21 @@
   "scripts": {
     "start": "node ./bin/www",
     "build": "babel src -d dist",
-    "dev":
-      "concurrently \"npm run build -- --watch\" \"nodemon --ignore /src/** dist/server.js\""
+    "dev": "concurrently \"npm run build -- --watch\" \"nodemon --ignore /src/** dist/server.js\""
   },
   "dependencies": {
     "babel-preset-env": "^1.6.0",
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
-    "debug": "~2.6.3",
-    "express": "~4.15.2",
+    "debug": "^2.6.9",
+    "express": "^4.15.5",
     "flow-bin": "^0.56.0",
     "moment": "^2.18.1",
     "morgan": "~1.8.1",
-    "pg-promise": "^6.5.2",
-    "pug": "~2.0.0-beta11",
+    "pg-promise": "^6.10.3",
+    "pug": "^2.0.0-rc.4",
     "ramda": "^0.24.1",
-    "serve-favicon": "~2.4.2",
+    "serve-favicon": "^2.4.5",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
@@ -28,7 +27,7 @@
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-latest-minimal": "^1.1.2",
     "concurrently": "^3.5.0",
-    "nodemon": "^1.12.0",
-    "prettier": "^1.6.1"
+    "nodemon": "^1.12.1",
+    "prettier": "^1.7.4"
   }
 }
