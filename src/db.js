@@ -3,6 +3,7 @@ import util from 'util';
 
 import pgp from 'pg-promise';
 import uuidV4 from 'uuid/v4';
+import {Maybe} from 'folktale';
 
 import type {Work} from './types';
 
@@ -13,7 +14,7 @@ const connection = {
   port: 5432,
   database: 'postgres',
   user: 'postgres',
-  password: 'workhours',
+  password: 'postgres',
 };
 
 const db = pgp(options)(connection);
@@ -27,7 +28,11 @@ const getWork = (date: string): Promise<?Work> => {
     )
     .then(one => {
       console.log('getWork returned: ' + util.inspect(one));
-      return one;
+      if (one !== null) {
+        return Maybe(one);
+      } else {
+        return Maybe.Nothing();
+      }
     })
     .catch(error => {
       console.log('getWork from db failed: ' + error);
