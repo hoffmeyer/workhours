@@ -14,7 +14,7 @@ export type UiWork = {
   id: ?string,
   startDate: string,
   startTime: string,
-  hours: number,
+  duration: number,
 };
 
 const workToUiWork = (work: Work): UiWork => {
@@ -23,7 +23,7 @@ const workToUiWork = (work: Work): UiWork => {
     id: work.id,
     startDate: date.format('YYYY-MM-DD'),
     startTime: date.format('HH:mm'),
-    hours: work.duration,
+    duration: work.duration,
   };
 };
 
@@ -31,7 +31,7 @@ const uiWorkToWork = (uiWork: UiWork): Work => {
   return {
     id: uiWork.id,
     start: new Date(uiWork.startDate + ' ' + uiWork.startTime),
-    duration: uiWork.hours,
+    duration: uiWork.duration,
   };
 };
 

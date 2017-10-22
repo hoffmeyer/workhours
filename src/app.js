@@ -7,8 +7,10 @@ import logger from 'morgan';
 
 import db from './db.js';
 import index from './routes/index';
+import list from './routes/list';
 import register from './routes/register';
-import users from './routes/users';
+import work from './routes/work';
+import deleteWork from './routes/delete';
 
 const app = express();
 
@@ -25,13 +27,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/users', users);
 app.use('/register', register);
+app.use('/work', work);
+app.use('/list', list);
+app.use('/delete', deleteWork);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   const err = new Error('Not Found');
-  //err.status = 404;
+  err.status = 404;
   next(err);
 });
 
@@ -48,7 +52,7 @@ app.use(function(err: Error, req, res, next) {
 
 db
   .none(
-    'CREATE TABLE IF NOT EXISTS work (id uuid PRIMARY KEY NOT NULL, start timestamp NOT NULL, duration integer );',
+    'CREATE TABLE IF NOT EXISTS work (id uuid PRIMARY KEY NOT NULL, start timestamp NOT NULL, duration real );',
   )
   .catch(e => {
     console.error('' + e);

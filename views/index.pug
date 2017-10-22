@@ -1,23 +1,18 @@
 extends layout
 
 block content
-  h1 Workhours
-
-  if(id != null )
-    p Finish registration
-  else
-    p New registration
-
-
   form(name=registerHours, method='POST', action='/register')
-    div
       input(name='id', type="hidden", value=id)
-      label(for='startDate') Start date
-      input(name='startDate', id='startDate', type='date', value=startDate)
-      label(for='startTime') Start time
-      input(name='startTime', id='startTime', type='time', value=startTime)
-    div
-      label(for='hours') Hours
-      input(name='hours', id='hours', type='number', value=hours)
-    div
-      button submit
+      input(name='startDate', type='hidden', value=startDate)
+      input(name='startTime', type='hidden', value=startTime)
+      input(name='duration', type='hidden', value=duration)
+
+      if(id != null )
+        h2 You have worked #{duration} hours
+        button#startStop Stop working
+      else
+        h2 You are not currently working
+        button#startStop Start working
+
+
+

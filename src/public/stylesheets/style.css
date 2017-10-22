@@ -1,0 +1,70 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00b7ff;
+}
+
+#head {
+  text-align: center;
+  border-bottom: 1px solid black;
+  text-transform: uppercase;
+}
+
+#content {
+  padding: 1em;
+  text-align: center;
+}
+
+#nav {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid black;
+}
+
+#nav ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  justify-content: space-around;
+  height: 100%;
+  text-transform: uppercase;
+}
+
+#nav ul li {
+  flex: 1 1 100%;
+  text-align: center;
+}
+
+#nav a {
+  display: block;
+  background-color: yellow;
+  color: blue;
+  padding: 1.2em 0;
+  text-decoration: none;
+  font-size: 1.2em;
+}
+
+#nav a:hover {
+  background-color: blue;
+  color: white;
+}
+
+#startStop {
+  font-size: 2em;
+  padding: 0.5em 1em;
+}
+
+#workList {
+  margin: 0 auto;
+}

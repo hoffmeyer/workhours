@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  table#workList
+    tr
+      th Id
+      th Start
+      th Duration
+      th 
+    each work in works
+      tr
+        td= work.id
+        td= work.start
+        td= work.duration
+        td
+          a(href='/work/' + work.id) E
+        td
+          a(href='/delete/' + work.id) X

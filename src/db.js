@@ -3,7 +3,6 @@ import util from 'util';
 
 import pgp from 'pg-promise';
 import uuidV4 from 'uuid/v4';
-import {Maybe} from 'folktale';
 
 import type {Work} from './types';
 
@@ -14,12 +13,12 @@ const connection = {
   port: 5432,
   database: 'postgres',
   user: 'postgres',
-  password: 'postgres',
+  password: 'workhours',
 };
 
 const db = pgp(options)(connection);
 
-const getWork = (date: string): Promise<?Work> => {
+const getWorkFromDate = (date: string): Promise<?Work> => {
   return db
     .oneOrNone(
       "SELECT * FROM work where start::date = '" +
@@ -27,15 +26,26 @@ const getWork = (date: string): Promise<?Work> => {
         "' ORDER BY start DESC LIMIT 1",
     )
     .then(one => {
-      console.log('getWork returned: ' + util.inspect(one));
-      if (one !== null) {
-        return Maybe(one);
-      } else {
-        return Maybe.Nothing();
-      }
+      console.log('getWorkFromDate returned: ' + util.inspect(one));
+      return one;
     })
     .catch(error => {
-      console.log('getWork from db failed: ' + error);
+      console.log('getWorkFromDate from db failed: ' + error);
+      console.log(error.message);
+    });
+};
+
+const getWorkFromId = (id: string): Promise<?Work> => {
+  return db
+    .oneOrNone(
+      "SELECT * FROM work where id = '" + id + "' ORDER BY start DESC LIMIT 1",
+    )
+    .then(one => {
+      console.log('getWorkFromId returned: ' + util.inspect(one));
+      return one;
+    })
+    .catch(error => {
+      console.log('getWorkFromId from db failed: ' + error);
       console.log(error.message);
     });
 };
@@ -52,6 +62,18 @@ const insertWork = (work: Work): Promise<void> => {
     })
     .catch(error => {
       console.log('insertWork db failed: ' + error);
+      console.log(error.message);
+    });
+};
+
+const deleteWork = (id: string): Promise<void> => {
+  return db
+    .none('DELETE from work where id = $1;', [id])
+    .then(() => {
+      console.log('deleted work with id: ' + id);
+    })
+    .catch(error => {
+      console.log('Deleting work with id ' + id + ' failed: ' + error);
       console.log(error.message);
     });
 };
@@ -77,6 +99,25 @@ const updateWork = (work: Work): Promise<void> => {
     });
 };
 
-export {getWork, insertWork, updateWork};
+const getAllWork = (): Promise<Array<Work>> => {
+  return db
+    .any('SELECT * FROM work')
+    .then(any => {
+      console.log('query all work successfull, ' + any.length + ' items');
+      return any;
+    })
+    .catch(error => {
+      console.log(error.message);
+    });
+};
+
+export {
+  getWorkFromDate,
+  getWorkFromId,
+  getAllWork,
+  insertWork,
+  deleteWork,
+  updateWork,
+};
 
 export default db;

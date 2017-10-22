@@ -4,4 +4,15 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    block content
+    div#head
+      h1 Workhours
+    div#content
+      block content
+    div#nav
+      ul
+        li
+          a(href='/') Home
+        li
+          a(href='/work') New
+        li
+          a(href='/list') List

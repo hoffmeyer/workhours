@@ -26,7 +26,6 @@ const updateExisting = (res, work: Work) => {
 
 router.post('/', function(req, res, next) {
   const uiWork: UiWork = req.body;
-  console.log('saving to database: ' + util.inspect(uiWork));
 
   if (uiWork.id === null || uiWork.id === '') {
     insertNew(res, uiWorkToWork(uiWork));

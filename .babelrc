@@ -6,7 +6,10 @@
       }
     }]
   ],
-  "plugins": ["transform-flow-strip-types"],
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-flow-strip-types" // Should not be needed with node 8.6 or newer, but it is
+  ],
   "ignore": [
     "dist/**/*.js"
   ]
