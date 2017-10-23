@@ -3,6 +3,7 @@ import util from 'util';
 
 import pgp from 'pg-promise';
 import uuidV4 from 'uuid/v4';
+import winston from 'winston';
 
 import type {Work} from './types';
 
@@ -26,12 +27,12 @@ const getWorkFromDate = (date: string): Promise<?Work> => {
         "' ORDER BY start DESC LIMIT 1",
     )
     .then(one => {
-      console.log('getWorkFromDate returned: ' + util.inspect(one));
+      winston.log('info', 'getWorkFromDate returned: ' + util.inspect(one));
       return one;
     })
     .catch(error => {
-      console.log('getWorkFromDate from db failed: ' + error);
-      console.log(error.message);
+      winston.log('error', 'getWorkFromDate from db failed: ' + error);
+      winston.log('error', error.message);
     });
 };
 
@@ -41,12 +42,12 @@ const getWorkFromId = (id: string): Promise<?Work> => {
       "SELECT * FROM work where id = '" + id + "' ORDER BY start DESC LIMIT 1",
     )
     .then(one => {
-      console.log('getWorkFromId returned: ' + util.inspect(one));
+      winston.log('info', 'getWorkFromId returned: ' + util.inspect(one));
       return one;
     })
     .catch(error => {
-      console.log('getWorkFromId from db failed: ' + error);
-      console.log(error.message);
+      winston.log('error', 'getWorkFromId from db failed: ' + error);
+      winston.log('error', error.message);
     });
 };
 
@@ -58,11 +59,11 @@ const insertWork = (work: Work): Promise<void> => {
       work.duration,
     ])
     .then(() => {
-      console.log('Insert successfull');
+      winston.log('info', 'Insert successfull');
     })
     .catch(error => {
-      console.log('insertWork db failed: ' + error);
-      console.log(error.message);
+      winston.log('error', 'insertWork db failed: ' + error);
+      winston.log('error', error.message);
     });
 };
 
@@ -70,11 +71,11 @@ const deleteWork = (id: string): Promise<void> => {
   return db
     .none('DELETE from work where id = $1;', [id])
     .then(() => {
-      console.log('deleted work with id: ' + id);
+      winston.log('info', 'deleted work with id: ' + id);
     })
     .catch(error => {
-      console.log('Deleting work with id ' + id + ' failed: ' + error);
-      console.log(error.message);
+      winston.log('error', 'Deleting work with id ' + id + ' failed: ' + error);
+      winston.log('error', error.message);
     });
 };
 
@@ -86,16 +87,17 @@ const updateWork = (work: Work): Promise<void> => {
       work.duration,
     ])
     .then(() => {
-      console.log('updateWork successfull');
+      winston.log('info', 'updateWork successfull');
     })
     .catch(error => {
-      console.log(
+      winston.log(
+        'error',
         'Updating work with id ' +
           (work.id != null ? work.id : 'null') +
           ' failed: ' +
           error,
       );
-      console.log(error.message);
+      winston.log('error', error.message);
     });
 };
 
@@ -103,11 +105,14 @@ const getAllWork = (): Promise<Array<Work>> => {
   return db
     .any('SELECT * FROM work')
     .then(any => {
-      console.log('query all work successfull, ' + any.length + ' items');
+      winston.log(
+        'info',
+        'query all work successfull, ' + any.length + ' items',
+      );
       return any;
     })
     .catch(error => {
-      console.log(error.message);
+      winston.log('error', error.message);
     });
 };
 

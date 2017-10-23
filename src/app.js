@@ -4,15 +4,18 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import logger from 'morgan';
+import winston from 'winston';
 
 import db from './db.js';
+import deleteWork from './routes/delete';
 import index from './routes/index';
 import list from './routes/list';
 import register from './routes/register';
 import work from './routes/work';
-import deleteWork from './routes/delete';
 
 const app = express();
+
+winston.level = process.env.LOG_LEVEL || 'info';
 
 // view engine setup
 app.set('views', path.join(__dirname, '../views'));
