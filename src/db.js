@@ -13,7 +13,7 @@ const connection = {
   port: 5432,
   database: 'postgres',
   user: 'postgres',
-  password: 'workhours',
+  password: 'postgres',
 };
 
 const db = pgp(options)(connection);
