@@ -3,13 +3,11 @@ extends layout
 block content
   table#workList
     tr
-      th Id
       th Start
       th Duration
       th 
     each work in works
       tr
-        td= work.id
         td= work.start
         td= work.duration
         td

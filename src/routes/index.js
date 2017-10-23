@@ -23,10 +23,14 @@ const inProgressOrNew: (?Work) => Work = work => {
 };
 
 const updateDuration: Work => Work = work => {
-  const duration = moment.duration(moment(new Date()).diff(work.start));
-  const hours = duration.asHours();
-  const roundedHours = Math.round(hours * 4) / 4;
-  return {...work, duration: roundedHours};
+  if (work.id == null) {
+    return work;
+  } else {
+    const duration = moment.duration(moment(new Date()).diff(work.start));
+    const hours = duration.asHours();
+    const roundedHours = Math.round(hours * 4) / 4;
+    return {...work, duration: roundedHours};
+  }
 };
 
 router.get('/', (req, res, next) => {

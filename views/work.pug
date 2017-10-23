@@ -2,9 +2,9 @@ extends layout
 
 block content
   if(startDate != null )
-    h2 Update work
+    h2 Update registration
   else
-    h2 New work
+    h2 New registration
 
 
   form(name=registerHours, method='POST', action='/register')
@@ -18,4 +18,7 @@ block content
       label(for='duration') Hours
       input(name='duration', id='duration', type='number', value=duration)
     div
-      button submit
+      if(startDate != null)
+        button Update
+      else
+        button Add
