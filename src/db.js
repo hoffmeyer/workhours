@@ -10,11 +10,11 @@ import type {Work} from './types';
 const options = {};
 
 const connection = {
-  host: 'localhost',
-  port: 5432,
-  database: 'postgres',
-  user: 'postgres',
-  password: 'postgres',
+  host: process.env.DATABASE_HOST || 'localhost',
+  port: process.env.DATABASE_PORT || 5432,
+  database: process.env.DATBASE_NAME || 'postgres',
+  user: process.env.DATABASE_USERNAME || 'postgres',
+  password: process.env.DATABASE_PASSWORD || 'postgres',
 };
 
 const db = pgp(options)(connection);
