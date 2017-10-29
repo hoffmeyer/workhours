@@ -17,7 +17,21 @@ const connection = {
   password: process.env.DATABASE_PASSWORD || 'postgres',
 };
 
+winston.log(
+  'info',
+  'Initializing database: ' +
+    connection.host +
+    ':' +
+    connection.port +
+    ' db: ' +
+    connection.database +
+    ' user: ' +
+    connection.user,
+);
+
 const db = pgp(options)(connection);
+
+winston.log('info', 'Database initialized');
 
 const getWorkFromDate = (date: string): Promise<?Work> => {
   return db

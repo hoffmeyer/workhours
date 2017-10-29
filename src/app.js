@@ -13,9 +13,11 @@ import list from './routes/list';
 import register from './routes/register';
 import work from './routes/work';
 
-const app = express();
-
+winston.remove(winston.transports.Console);
+winston.add(winston.transports.Console, {timestamp: true});
 winston.level = process.env.LOG_LEVEL || 'info';
+
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, '../views'));
