@@ -9,14 +9,13 @@ import {getWorkFromDate} from '../db';
 
 let router = Router();
 
-const defaultWork: Work = {
-  id: null,
-  start: new Date(),
-  duration: 0,
-};
-
 const inProgressOrNew: (?Work) => Work = work => {
   if (work == null || work.duration != 0) {
+    const defaultWork: Work = {
+      id: null,
+      start: new Date(),
+      duration: 0,
+    };
     return defaultWork;
   }
   return work;
