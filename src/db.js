@@ -117,7 +117,7 @@ const updateWork = (work: Work): Promise<void> => {
 
 const getAllWork = (): Promise<Array<Work>> => {
   return db
-    .any('SELECT * FROM work')
+    .any('SELECT * FROM work ORDER BY start DESC')
     .then(any => {
       winston.log(
         'info',
