@@ -16,7 +16,7 @@ block content
       input(name='startTime', id='startTime', type='time', value=startTime)
     div
       label(for='duration') Hours
-      input(name='duration', id='duration', type='number', value=duration)
+      input(name='duration', id='duration', type='number', step='0.25', value=duration)
     div
       if(startDate != null)
         button Update
