@@ -12,7 +12,7 @@ block content
       each work in week
         - sum = sum + work.duration;
         tr
-          td.left= work.start
+          td.left= work.description
           td.right= work.duration
           td
             a(href='/work/' + work.id) E
