@@ -6,11 +6,46 @@ body {
 }
 
 body {
-  font: 18px 'Lucida Grande', Helvetica, Arial, sans-serif;
+  font: 28px 'Lucida Grande', Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00b7ff;
+}
+
+h1,
+h2,
+h3 {
+  text-align: center;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.2em 0.4em;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
+
+.borderTop {
+  border-top: 1px solid black;
+}
+
+.borderBottom {
+  border-bottom: 1px solid black;
 }
 
 header {
@@ -21,11 +56,11 @@ header {
 
 section {
   padding: 1em;
-  text-align: center;
+  margin-bottom: 4em;
 }
 
 nav {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
   border-top: 1px solid black;
@@ -50,10 +85,11 @@ nav a {
   display: block;
   background-color: lightgray;
   color: black;
-  padding: 1.2em 0;
   text-decoration: none;
   font-size: 1.6em;
   border: 1px solid black;
+  height: 100%;
+  line-height: 2.5em;
 }
 
 nav a:hover {
@@ -62,8 +98,10 @@ nav a:hover {
 }
 
 #startStop {
+  display: block;
   font-size: 2em;
   padding: 0.5em 1em;
+  margin: 0 auto;
   box-shadow: 2px 2px 5px black;
   background-color: lightgray;
 }

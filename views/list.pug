@@ -1,16 +1,25 @@
 extends layout
 
 block content
-  table#workList
-    tr
-      th Start
-      th Duration
-      th 
-    each work in works
-      tr
-        td= work.start
-        td= work.duration
+  each week, key in weeks
+    h2 Week #{key}
+    table#workList
+      tr.borderBottom
+        th.left Start
+        th.right Duration
+        th 
+      - var sum = 0;
+      each work in week
+        - sum = sum + work.duration;
+        tr
+          td.left= work.start
+          td.right= work.duration
+          td
+            a(href='/work/' + work.id) E
+          td
+            a(href='/delete/' + work.id) X
+      tr.borderTop.bold
+        td Week total
+          td.right= sum
         td
-          a(href='/work/' + work.id) E
         td
-          a(href='/delete/' + work.id) X

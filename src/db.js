@@ -130,10 +130,27 @@ const getAllWork = (): Promise<Array<Work>> => {
     });
 };
 
+const getWorkFromDateToNow = (date: string): Promise<Array<Work>> => {
+  console.log('date: ' + date);
+  return db
+    .any("SELECT * FROM work WHERE start::date >= '" + date + "'")
+    .then(any => {
+      winston.log(
+        'info',
+        'query work week successfull, ' + any.length + ' items',
+      );
+      return any;
+    })
+    .catch(error => {
+      winston.log('error', error.message);
+    });
+};
+
 export {
   getWorkFromDate,
   getWorkFromId,
   getAllWork,
+  getWorkFromDateToNow,
   insertWork,
   deleteWork,
   updateWork,
