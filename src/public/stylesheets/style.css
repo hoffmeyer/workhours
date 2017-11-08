@@ -6,7 +6,8 @@ body {
 }
 
 body {
-  font: 28px 'Lucida Grande', Helvetica, Arial, sans-serif;
+  font-size: 3vmin;
+  font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
 }
 
 a {
