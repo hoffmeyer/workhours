@@ -12,8 +12,10 @@ export type Work = {
 
 export type UiWork = {
   id: ?string,
+  start: Date,
   startDate: string,
   startTime: string,
+  formattedStart: string,
   duration: number,
 };
 
@@ -21,8 +23,10 @@ const workToUiWork = (work: Work): UiWork => {
   const date = moment(work.start);
   return {
     id: work.id,
+    start: work.start,
     startDate: date.format('YYYY-MM-DD'),
     startTime: date.format('HH:mm'),
+    formattedStart: moment(work.start).format('dddd DD/MM/YY, hh:mm'),
     duration: work.duration,
   };
 };
