@@ -12,7 +12,9 @@ import {getWorkFromDateToNow} from '../db';
 
 let router = Router();
 
-const workToWeek = (work: UiWork): string => moment(work.start).isoWeek();
+// added space to week otherwise the week number is converted to number and used for array index, making it
+// impossible to reorder the array
+const workToWeek = (work: UiWork): string => moment(work.start).isoWeek() + ' ';
 const startOfWeek: string = moment()
   .startOf('isoweek')
   .subtract(21, 'days')
@@ -21,7 +23,15 @@ const startOfWeek: string = moment()
 
 router.get('/', (req, res, next) => {
   getWorkFromDateToNow(startOfWeek)
-    .then(R.pipe(R.map(workToUiWork), R.groupBy(workToWeek)))
+    .then(
+      R.pipe(
+        R.map(workToUiWork),
+        R.groupBy(workToWeek),
+        R.toPairs,
+        R.reverse,
+        R.fromPairs,
+      ),
+    )
     .then(uiWorksByWeek => res.render('list', {weeks: uiWorksByWeek}))
     .catch(e => 'Failed to fetch getWorkFromDateToNow for list: ' + e);
 });

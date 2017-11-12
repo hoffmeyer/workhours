@@ -133,7 +133,9 @@ const getAllWork = (): Promise<Array<Work>> => {
 const getWorkFromDateToNow = (date: string): Promise<Array<Work>> => {
   console.log('date: ' + date);
   return db
-    .any("SELECT * FROM work WHERE start::date >= '" + date + "'")
+    .any(
+      "SELECT * FROM work WHERE start::date >= '" + date + "' ORDER BY start",
+    )
     .then(any => {
       winston.log(
         'info',
