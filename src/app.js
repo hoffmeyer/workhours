@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 
 import bodyParser from 'body-parser';
@@ -55,12 +56,9 @@ app.use(function(err: Error, req, res, next) {
   res.render('error');
 });
 
-db
-  .none(
-    'CREATE TABLE IF NOT EXISTS work (id uuid PRIMARY KEY NOT NULL, start timestamp NOT NULL, duration real );',
-  )
-  .catch(e => {
-    console.error('' + e);
-  });
+const sql = fs.readFileSync(path.join(__dirname, '..', 'database.sql'), 'utf8');
+db.none(sql).catch(e => {
+  console.error('' + e);
+});
 
 export default app;

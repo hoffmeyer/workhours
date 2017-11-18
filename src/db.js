@@ -67,11 +67,10 @@ const getWorkFromId = (id: string): Promise<?Work> => {
 
 const insertWork = (work: Work): Promise<void> => {
   return db
-    .none('INSERT INTO work(id, start, duration) VALUES($1, $2, $3);', [
-      uuidV4(),
-      work.start,
-      work.duration,
-    ])
+    .none(
+      'INSERT INTO work(id, start, duration, lunch) VALUES($1, $2, $3, $4);',
+      [uuidV4(), work.start, work.duration, work.lunch],
+    )
     .then(() => {
       winston.log('info', 'Insert successfull');
     })
@@ -95,10 +94,11 @@ const deleteWork = (id: string): Promise<void> => {
 
 const updateWork = (work: Work): Promise<void> => {
   return db
-    .none('UPDATE work SET start=$2, duration=$3 WHERE id=$1;', [
+    .none('UPDATE work SET start=$2, duration=$3, lunch=$4 WHERE id=$1;', [
       work.id,
       work.start,
       work.duration,
+      work.lunch,
     ])
     .then(() => {
       winston.log('info', 'updateWork successfull');
