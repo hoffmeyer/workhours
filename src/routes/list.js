@@ -1,14 +1,12 @@
 // @flow
 
-import util from 'util';
-import R from 'ramda';
-
 import {Router} from 'express';
+import R from 'ramda';
 import moment from 'moment';
 
-import {type Work, type UiWork, workToUiWork} from '../types';
-
+import {type UiWork, workToUiWork} from '../types';
 import {getWorkFromDateToNow} from '../db';
+import {isLoggedIn} from '../util/auth';
 
 let router = Router();
 
@@ -21,8 +19,8 @@ const startOfWeek: string = moment()
   .utcOffset('+01:00')
   .toString();
 
-router.get('/', (req, res, next) => {
-  getWorkFromDateToNow(startOfWeek)
+router.get('/', isLoggedIn, (req, res) => {
+  getWorkFromDateToNow(startOfWeek, req.user.id)
     .then(
       R.pipe(
         R.map(workToUiWork),

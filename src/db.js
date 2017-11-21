@@ -5,7 +5,7 @@ import pgp from 'pg-promise';
 import uuidV4 from 'uuid/v4';
 import winston from 'winston';
 
-import type {Work} from './types';
+import type {Work, User} from './types';
 
 const options = {};
 
@@ -115,9 +115,9 @@ const updateWork = (work: Work): Promise<void> => {
     });
 };
 
-const getAllWork = (): Promise<Array<Work>> => {
+const getAllWork = (userId: string): Promise<Array<Work>> => {
   return db
-    .any('SELECT * FROM work ORDER BY start DESC')
+    .any("SELECT * FROM work WHERE userId='" + userId + "' ORDER BY start DESC")
     .then(any => {
       winston.log(
         'info',
@@ -130,11 +130,17 @@ const getAllWork = (): Promise<Array<Work>> => {
     });
 };
 
-const getWorkFromDateToNow = (date: string): Promise<Array<Work>> => {
-  console.log('date: ' + date);
+const getWorkFromDateToNow = (
+  date: string,
+  userId: string,
+): Promise<Array<Work>> => {
   return db
     .any(
-      "SELECT * FROM work WHERE start::date >= '" + date + "' ORDER BY start",
+      "SELECT * FROM work WHERE start::date >= '" +
+        date +
+        "' AND userId='" +
+        userId +
+        "' ORDER BY start",
     )
     .then(any => {
       winston.log(
@@ -142,6 +148,36 @@ const getWorkFromDateToNow = (date: string): Promise<Array<Work>> => {
         'query work week successfull, ' + any.length + ' items',
       );
       return any;
+    })
+    .catch(error => {
+      winston.log('error', error.message);
+    });
+};
+
+const userById = (id: string): Promise<User> => {
+  return db
+    .one("SELECT * FROM users WHERE id = '" + id + "'")
+    .then(user => {
+      winston.log(
+        'info',
+        'found user by id: ' + user.id + ' name: ' + user.username,
+      );
+      return user;
+    })
+    .catch(error => {
+      winston.log('error', error.message);
+    });
+};
+
+const userByUsername = (username: string): Promise<User> => {
+  return db
+    .one("SELECT * FROM users WHERE username = '" + username + "'")
+    .then(user => {
+      winston.log(
+        'info',
+        'found user by usernamme: ' + username + ' name: ' + user.id,
+      );
+      return user;
     })
     .catch(error => {
       winston.log('error', error.message);
@@ -156,6 +192,8 @@ export {
   insertWork,
   deleteWork,
   updateWork,
+  userById,
+  userByUsername,
 };
 
 export default db;

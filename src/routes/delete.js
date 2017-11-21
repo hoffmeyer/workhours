@@ -2,10 +2,11 @@
 import {Router} from 'express';
 
 import {deleteWork} from '../db';
+import {isLoggedIn} from '../util/auth';
 
 const router = Router();
 
-router.get('/:id', function(req, res, next) {
+router.get('/:id', isLoggedIn, function(req, res, next) {
   const workId: ?string = req.params.id;
 
   if (workId != null) {

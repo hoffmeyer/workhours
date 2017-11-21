@@ -1,10 +1,9 @@
 // @flow
-import util from 'util';
-
 import {Router} from 'express';
 
 import {type UiWork, type Work, uiWorkToWork} from '../types';
 import {insertWork, updateWork} from '../db';
+import {isLoggedIn} from '../util/auth';
 
 const router = Router();
 
@@ -24,7 +23,7 @@ const updateExisting = (res, work: Work) => {
   });
 };
 
-router.post('/', function(req, res, next) {
+router.post('/', isLoggedIn, function(req, res, next) {
   const uiWork: UiWork = req.body;
 
   if (uiWork.id === null || uiWork.id === '') {

@@ -4,6 +4,13 @@ import util from 'util';
 
 import moment from 'moment';
 
+export type User = {
+  id: string,
+  username: string,
+  name: string,
+  password: string,
+};
+
 export type Work = {
   id: ?string,
   start: Date,

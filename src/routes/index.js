@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import {type Work, workToUiWork} from '../types';
 import {getWorkFromDate} from '../db';
+import {isLoggedIn} from '../util/auth';
 
 let router = Router();
 
@@ -35,7 +36,7 @@ const updateDurationAndLunch: Work => Work = work => {
   }
 };
 
-router.get('/', (req, res, next) => {
+router.get('/', isLoggedIn, (req, res, next) => {
   const date: string = moment(new Date()).format('YYYY-MM-DD');
   getWorkFromDate(date)
     .then(R.pipe(inProgressOrNew, updateDurationAndLunch, workToUiWork))
