@@ -68,8 +68,8 @@ const getWorkFromId = (id: string): Promise<?Work> => {
 const insertWork = (work: Work): Promise<void> => {
   return db
     .none(
-      'INSERT INTO work(id, start, duration, lunch) VALUES($1, $2, $3, $4);',
-      [uuidV4(), work.start, work.duration, work.lunch],
+      'INSERT INTO work(id, start, duration, lunch, userid) VALUES($1, $2, $3, $4, $5);',
+      [uuidV4(), work.start, work.duration, work.lunch, work.userid],
     )
     .then(() => {
       winston.log('info', 'Insert successfull');
@@ -94,12 +94,10 @@ const deleteWork = (id: string): Promise<void> => {
 
 const updateWork = (work: Work): Promise<void> => {
   return db
-    .none('UPDATE work SET start=$2, duration=$3, lunch=$4 WHERE id=$1;', [
-      work.id,
-      work.start,
-      work.duration,
-      work.lunch,
-    ])
+    .none(
+      'UPDATE work SET start=$2, duration=$3, lunch=$4, userid=$5 WHERE id=$1;',
+      [work.id, work.start, work.duration, work.lunch, work.userid],
+    )
     .then(() => {
       winston.log('info', 'updateWork successfull');
     })
@@ -115,9 +113,9 @@ const updateWork = (work: Work): Promise<void> => {
     });
 };
 
-const getAllWork = (userId: string): Promise<Array<Work>> => {
+const getAllWork = (userid: string): Promise<Array<Work>> => {
   return db
-    .any("SELECT * FROM work WHERE userId='" + userId + "' ORDER BY start DESC")
+    .any("SELECT * FROM work WHERE userid='" + userid + "' ORDER BY start DESC")
     .then(any => {
       winston.log(
         'info',
@@ -132,14 +130,14 @@ const getAllWork = (userId: string): Promise<Array<Work>> => {
 
 const getWorkFromDateToNow = (
   date: string,
-  userId: string,
+  userid: string,
 ): Promise<Array<Work>> => {
   return db
     .any(
       "SELECT * FROM work WHERE start::date >= '" +
         date +
-        "' AND userId='" +
-        userId +
+        "' AND userid='" +
+        userid +
         "' ORDER BY start",
     )
     .then(any => {

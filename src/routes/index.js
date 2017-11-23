@@ -17,10 +17,18 @@ const inProgressOrNew: (?Work) => Work = work => {
       start: new Date(),
       duration: 0,
       lunch: 0,
+      userid: '',
     };
     return defaultWork;
   }
   return work;
+};
+
+const setUser = (work: Work, userid: string) => {
+  return {
+    ...work,
+    userid: userid,
+  };
 };
 
 const updateDurationAndLunch: Work => Work = work => {
@@ -40,7 +48,7 @@ router.get('/', isLoggedIn, (req, res, next) => {
   const date: string = moment(new Date()).format('YYYY-MM-DD');
   getWorkFromDate(date)
     .then(R.pipe(inProgressOrNew, updateDurationAndLunch, workToUiWork))
-    .then(data => res.render('index', data))
+    .then(data => res.render('index', setUser(data, req.user.id)))
     .catch(e => 'Failed to fetch new Hour: ' + e);
 });
 

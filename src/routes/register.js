@@ -27,7 +27,7 @@ router.post('/', isLoggedIn, function(req, res, next) {
   const uiWork: UiWork = req.body;
 
   if (uiWork.id === null || uiWork.id === '') {
-    insertNew(res, uiWorkToWork(uiWork));
+    insertNew(res, uiWorkToWork({...uiWork, userid: req.user.id}));
   } else {
     updateExisting(res, uiWorkToWork(uiWork));
   }

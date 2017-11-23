@@ -10,6 +10,7 @@ block content
   form(name=registerHours, method='POST', action='/register')
     div
       input(name='id', type="hidden", value=id)
+      input(name='userid', type="hidden", value=userid)
       label(for='startDate') Start date
       input(name='startDate', id='startDate', type='date', value=startDate)
       label(for='startTime') Start time

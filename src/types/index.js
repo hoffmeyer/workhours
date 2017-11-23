@@ -16,6 +16,7 @@ export type Work = {
   start: Date,
   duration: number,
   lunch: number,
+  userid: string,
 };
 
 export type UiWork = {
@@ -26,6 +27,7 @@ export type UiWork = {
   formattedStart: string,
   duration: number,
   lunch: number,
+  userid: string,
 };
 
 const workToUiWork = (work: Work): UiWork => {
@@ -38,6 +40,7 @@ const workToUiWork = (work: Work): UiWork => {
     formattedStart: moment(work.start).format('dddd DD/MM/YY, HH:mm'),
     duration: work.duration,
     lunch: work.lunch,
+    userid: work.userid,
   };
 };
 
@@ -47,6 +50,7 @@ const uiWorkToWork = (uiWork: UiWork): Work => {
     start: new Date(uiWork.startDate + ' ' + uiWork.startTime),
     duration: uiWork.duration,
     lunch: uiWork.lunch,
+    userid: uiWork.userid,
   };
 };
 
