@@ -143,7 +143,7 @@ const getWorkFromDateToNow = (
     .then(any => {
       winston.log(
         'info',
-        'query work week successfull, ' + any.length + ' items',
+        'query getWorkFromDateToNow successfull, ' + any.length + ' items',
       );
       return any;
     })

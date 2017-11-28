@@ -1,13 +1,13 @@
 extends layout
 
 block content
+  p Balance: #{balance}
   each week, key in weeks
     h2 Week #{key}
     table#workList
       tr.borderBottom
         th.left Start
-        th.right Duration
-        th.right Lunch
+        th.right Hours
         th 
       - var sumDuration = 0;
       - var sumLunch = 0;
@@ -16,21 +16,13 @@ block content
         - sumLunch = sumLunch + work.lunch;
         tr
           td.left= work.formattedStart
-          td.right= work.duration
-          td.right= work.lunch
+          td.right= work.duration - work.lunch
           td
             a(href='/work/' + work.id) E
           td
             a(href='/delete/' + work.id) X
       tr.borderTop
-        td Sum
-        td.right= sumDuration
-        td.right= sumLunch
-        td 
-        td
-      tr.borderTop.bold
-        td Week total
-        td.right= (sumDuration - sumLunch)
-        td
+        td.bold Sum
+        td.right.bold= sumDuration - sumLunch
         td 
         td

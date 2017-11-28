@@ -9,6 +9,7 @@ export type User = {
   username: string,
   name: string,
   password: string,
+  workHoursPerWeek: number,
 };
 
 export type Work = {

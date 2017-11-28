@@ -19,8 +19,8 @@ IF EXISTS (SELECT 1 FROM dbVersion WHERE version=1) THEN
   CREATE TABLE users (id uuid PRIMARY KEY NOT NULL, name text, username text, password text, workHoursPerWeek real );
   INSERT INTO users(id, username, password, name, workhoursPerWeek) VALUES(uuid_generate_v4(), 'flemming', 'JhFoefi82', 'Flemming', 37);
   INSERT INTO users(id, username, password, name, workhoursPerWeek) VALUES(uuid_generate_v4(), 'heidi', '1treehill', 'Heidi', 32);
-  ALTER TABLE work ADD userId uuid;
-  UPDATE work SET userId=subquery.id FROM (SELECT * FROM users WHERE username='flemming') AS subquery;
+  ALTER TABLE work ADD userid uuid;
+  UPDATE work SET userid=subquery.id FROM (SELECT * FROM users WHERE username='flemming') AS subquery;
   DELETE FROM dbVersion;
   INSERT INTO dbVersion(version) VALUES(2);
 
