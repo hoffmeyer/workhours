@@ -15,7 +15,6 @@ END IF;
 
 IF EXISTS (SELECT 1 FROM dbVersion WHERE version=1) THEN
 
-  CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
   CREATE TABLE users (id uuid PRIMARY KEY NOT NULL, name text, username text, password text, workHoursPerWeek real );
   INSERT INTO users(id, username, password, name, workhoursPerWeek) VALUES(uuid_generate_v4(), 'flemming', 'JhFoefi82', 'Flemming', 37);
   INSERT INTO users(id, username, password, name, workhoursPerWeek) VALUES(uuid_generate_v4(), 'heidi', '1treehill', 'Heidi', 32);
