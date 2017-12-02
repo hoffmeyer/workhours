@@ -33,11 +33,13 @@ const db = pgp(options)(connection);
 
 winston.log('info', 'Database initialized');
 
-const getWorkFromDate = (date: string): Promise<?Work> => {
+const getWorkFromDate = (date: string, userId: string): Promise<?Work> => {
   return db
     .oneOrNone(
       "SELECT * FROM work where start::date = '" +
         date +
+        "' AND userid = '" +
+        userId +
         "' ORDER BY start DESC LIMIT 1",
     )
     .then(one => {

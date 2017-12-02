@@ -46,7 +46,7 @@ const updateDurationAndLunch: Work => Work = work => {
 
 router.get('/', isLoggedIn, (req, res, next) => {
   const date: string = moment(new Date()).format('YYYY-MM-DD');
-  getWorkFromDate(date)
+  getWorkFromDate(date, req.user.id)
     .then(R.pipe(inProgressOrNew, updateDurationAndLunch, workToUiWork))
     .then(data => res.render('index', setUser(data, req.user.id)))
     .catch(e => 'Failed to fetch new Hour: ' + e);
