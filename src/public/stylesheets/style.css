@@ -5,9 +5,16 @@ body {
   box-sizing: border-box;
 }
 
-body {
+body,
+input,
+button {
   font-size: 3vmin;
   font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
+}
+
+input {
+  width: 100%;
+  margin: 0 0 1em 0;
 }
 
 a {
@@ -114,4 +121,13 @@ nav a:hover {
 
 #workList {
   margin: 0 auto;
+}
+
+/* Register update work */
+#registerHours {
+  max-width: 500px;
+  margin: 0 auto;
+}
+#registerHours button {
+  width: 100%;
 }

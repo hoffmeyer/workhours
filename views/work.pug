@@ -7,18 +7,17 @@ block content
     h2 New registration
 
 
-  form(name=registerHours, method='POST', action='/register')
+  form(id="registerHours", name=registerHours, method='POST', action='/register')
     div
       input(name='id', type="hidden", value=id)
       input(name='userid', type="hidden", value=userid)
       label(for='startDate') Start date
-      input(name='startDate', id='startDate', type='date', value=startDate)
+      input(name='startDate', id='startDate', type='date', value=startDate, placeholder="Start date")
       label(for='startTime') Start time
       input(name='startTime', id='startTime', type='time', value=startTime)
     div
       label(for='duration') Hours
       input(name='duration', id='duration', type='number', step='0.25', value=duration)
-    div
       label(for='lunch') Lunch
       input(name='lunch', id='lunch', type='number', step='0.25', value=lunch)
     div
