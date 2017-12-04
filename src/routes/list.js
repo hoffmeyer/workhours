@@ -59,12 +59,10 @@ const startAndEndToWorkDays = (startEnd: Array<Date>): number => {
     return 0;
   }
   const start = startEnd[1];
+  start.setHours(0, 0, 0, 0);
   const end = startEnd[0];
+  end.setHours(0, 0, 0, 0);
   return getDateList(start, end, 0);
-};
-
-const test = value => {
-  return value;
 };
 
 router.get('/', isLoggedIn, (req, res) => {
@@ -84,7 +82,6 @@ router.get('/', isLoggedIn, (req, res) => {
           const workToNormalHours = R.pipe(
             trimEnd,
             toStartAndEndDate,
-            test,
             startAndEndToWorkDays,
           );
 
