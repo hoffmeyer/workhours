@@ -5,7 +5,7 @@ import R from 'ramda';
 import moment from 'moment';
 
 import {type Work, workToUiWork} from '../types';
-import {getWorkFromDate} from '../db';
+import mWork from '../models/work';
 import {isLoggedIn} from '../util/auth';
 
 let router = Router();
@@ -46,7 +46,8 @@ const updateDurationAndLunch: Work => Work = work => {
 
 router.get('/', isLoggedIn, (req, res, next) => {
   const date: string = moment(new Date()).format('YYYY-MM-DD');
-  getWorkFromDate(date, req.user.id)
+  mWork
+    .fromDate(date, req.user.id)
     .then(R.pipe(inProgressOrNew, updateDurationAndLunch, workToUiWork))
     .then(data => res.render('index', setUser(data, req.user.id)))
     .catch(e => 'Failed to fetch new Hour: ' + e);

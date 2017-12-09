@@ -2,7 +2,7 @@
 
 import {Router} from 'express';
 
-import {getWorkFromId} from '../db';
+import work from '../models/work';
 import {isLoggedIn} from '../util/auth';
 import {workToUiWork} from '../types';
 
@@ -14,7 +14,7 @@ router.get('/', isLoggedIn, (req, res, next) => {
 
 router.get('/:id', isLoggedIn, (req, res, next) => {
   const id: string = req.params.id;
-  getWorkFromId(id).then(work => {
+  work.fromId(id).then(work => {
     if (work != null) {
       res.render('work', workToUiWork(work));
     } else {

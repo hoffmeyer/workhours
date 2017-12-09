@@ -7,7 +7,7 @@ import R from 'ramda';
 import moment from 'moment';
 
 import {type UiWork, type Work, workToUiWork} from '../types';
-import {getWorkFromDateToNow, getAllWork} from '../db';
+import mWork from '../models/work';
 import {isLoggedIn} from '../util/auth';
 
 let router = Router();
@@ -66,7 +66,8 @@ const startAndEndToWorkDays = (startEnd: Array<Date>): number => {
 };
 
 router.get('/', isLoggedIn, (req, res) => {
-  getWorkFromDateToNow(startOfWeek, req.user.id)
+  mWork
+    .fromDateToNow(startOfWeek, req.user.id)
     .then(
       R.pipe(
         R.map(workToUiWork),
@@ -77,7 +78,8 @@ router.get('/', isLoggedIn, (req, res) => {
       ),
     )
     .then(uiWorksByWeek => {
-      getAllWork(req.user.id)
+      mWork
+        .all(req.user.id)
         .then(work => {
           const workToNormalHours = R.pipe(
             trimEnd,
