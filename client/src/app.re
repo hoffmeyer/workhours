@@ -12,11 +12,29 @@ type page =
 
 type state = {currentPage: page };
 
+let pathToAction = (path) => {
+  switch (path){
+    | ["work"] => ShowWork
+    | _ => ShowHome 
+  }
+};
+
+let actionToPage = (action) => {
+  switch (action){
+  | ShowHome => Home
+  | ShowWork => Work
+  }
+};
+
 let component = ReasonReact.reducerComponent("App");
 
 let make = (~text, _children) => {
   ...component,
-  initialState: () => {currentPage: Home },
+  initialState: () => {
+    {
+      currentPage: actionToPage(pathToAction(ReasonReact.Router.dangerouslyGetInitialUrl().path))
+    }
+  },
   reducer: (action, _state) => {
     switch (action) {
     | ShowHome => ReasonReact.Update({currentPage: Home})
@@ -28,10 +46,7 @@ let make = (~text, _children) => {
       () =>
         ReasonReact.Router.watchUrl(
           url => {
-            switch (url.path){
-            | ["work"] => self.send(ShowWork)
-            | _ => self.send(ShowHome) 
-            }
+            self.send(pathToAction(url.path))
           }
         ),
       ReasonReact.Router.unwatchUrl
