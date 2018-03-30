@@ -19,14 +19,13 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pg-promise": "^6.10.3",
-    "pug": "^2.0.0-rc.4",
+    "pug": "^2.0.0",
     "ramda": "^0.24.1",
     "serve-favicon": "^2.4.5",
-    "uuid": "^3.1.0",
+    "uuid": "^3.2.1",
     "winston": "^2.4.0"
   },
   "devDependencies": {
-    "@types/moment": "^2.13.0",
     "@types/node": "^10.12.9",
     "@types/ramda": "^0.25.42",
     "babel-cli": "^6.26.0",

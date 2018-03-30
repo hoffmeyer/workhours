@@ -5,6 +5,7 @@
   ],
   "bs-dependencies": [
     "reason-react",
+    "reason-reroute",
     "bs-jest"
   ],
   "reason": {
