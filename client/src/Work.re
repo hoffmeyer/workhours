@@ -32,7 +32,7 @@ let make = (_children) => {
             (
               self =>
                 Js.Promise.(
-                  Fetch.fetch("http://localhost:5000/api/test")
+                  Fetch.fetch("api/test")
                   |> then_(Fetch.Response.json)
                   |> then_(json =>
                        json
@@ -61,11 +61,7 @@ let make = (_children) => {
         | Loading => <div> (ReasonReact.stringToElement("Loading...")) </div>
         | Loaded(dogs) =>
           <div>
-            <h1> (ReasonReact.stringToElement("Dogs")) </h1>
-            <p> (ReasonReact.stringToElement("Source: ")) </p>
-            <a href="https://dog.ceo">
-              (ReasonReact.stringToElement("https://dog.ceo"))
-            </a>
+            <h1>(ReasonReact.stringToElement("Work"))</h1>
             <ul>
               (
                 Array.map(dogs, dog =>
