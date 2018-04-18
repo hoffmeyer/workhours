@@ -5,8 +5,9 @@
   ],
   "bs-dependencies": [
     "reason-react",
-    "reason-reroute",
-    "bs-jest"
+    "bs-jest",
+    "bs-fetch",
+    "@glennsl/bs-json"
   ],
   "reason": {
     "react-jsx": 2

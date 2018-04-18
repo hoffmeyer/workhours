@@ -1,7 +1,5 @@
 [%bs.raw {|require('./app.css')|}];
 
-[@bs.module] external logo : string = "./logo.svg";
-
 module RouterConfig = {
   type route =
     | Work
@@ -24,17 +22,16 @@ let component = ReasonReact.statelessComponent("App");
 
 let make = (~text, _children) => {
   ...component,
-  render: (self) =>
+  render: (_self) =>
     <div className="App">
       <div className="App-header">
-        <img src=logo className="App-logo" alt="logo" />
-        <h2> (ReasonReact.stringToElement(text)) </h2>
+        <h2> (ReasonReact.stringToElement("Workhours")) </h2>
       </div>
       <Router.Container>
       ...(
            (~currentRoute) =>
              <div>
-               <ul>
+               <ul className="navigation">
                  <li>
                  <Router.Link route=Home>
                    (ReasonReact.stringToElement("Home"))

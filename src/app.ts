@@ -20,6 +20,8 @@ import mUser from "./models/user";
 import register from "./routes/register";
 import work from "./routes/work";
 
+import apiTest from "./routes/api/test";
+
 remove(transports.Console);
 add(transports.Console, { timestamp: true });
 //level = process.env.LOG_LEVEL || "info";
@@ -91,6 +93,8 @@ app.use("/work", work);
 app.use("/list", list);
 app.use("/delete", deleteWork);
 app.use("/login", login);
+
+app.use("/api/test", apiTest);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
