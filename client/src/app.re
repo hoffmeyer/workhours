@@ -20,7 +20,7 @@ module Router = Routing.CreateRouter(RouterConfig);
 
 let component = ReasonReact.statelessComponent("App");
 
-let make = (~text, _children) => {
+let make = (_children) => {
   ...component,
   render: (_self) =>
     <div className="App">
