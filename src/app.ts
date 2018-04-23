@@ -21,6 +21,7 @@ import register from "./routes/register";
 import work from "./routes/work";
 
 import apiTest from "./routes/api/test";
+import apiWork from "./routes/api/work";
 
 remove(transports.Console);
 add(transports.Console, { timestamp: true });
@@ -36,7 +37,9 @@ app.set("view engine", "pug");
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger("dev"));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.set("trust proxy", 1); // trust first proxy
 app.use(
@@ -50,12 +53,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(join(__dirname, "public")));
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   console.log("serializing auth");
   done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser(function (id, done) {
   console.log("deserializing auth");
   mUser
     .byId(id)
@@ -64,7 +67,9 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(
-  new LocalStrategy({ passReqToCallback: true }, function(
+  new LocalStrategy({
+    passReqToCallback: true
+  }, function (
     req,
     username,
     password,
@@ -72,7 +77,7 @@ passport.use(
   ) {
     mUser
       .byUsername(username)
-      .then(function(user) {
+      .then(function (user) {
         if (!user) {
           return done(null, false);
         }
@@ -95,15 +100,16 @@ app.use("/delete", deleteWork);
 app.use("/login", login);
 
 app.use("/api/test", apiTest);
+app.use("/api/work", apiWork);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   const err = new Error("Not Found");
   next(err);
 });
 
 // error handler
-app.use(function(err: Error, req, res, next) {
+app.use(function (err: Error, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
