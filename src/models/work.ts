@@ -9,10 +9,10 @@ export default {
     return db
       .oneOrNone(
         "SELECT * FROM work where start::date = '" +
-          date +
-          "' AND userid = '" +
-          userId +
-          "' ORDER BY start DESC LIMIT 1",
+        date +
+        "' AND userid = '" +
+        userId +
+        "' ORDER BY start DESC LIMIT 1",
       )
       .then(one => {
         log('info', 'getWorkFromDate returned: ' + inspect(one));
@@ -28,8 +28,8 @@ export default {
     return db
       .oneOrNone(
         "SELECT * FROM work where id = '" +
-          id +
-          "' ORDER BY start DESC LIMIT 1",
+        id +
+        "' ORDER BY start DESC LIMIT 1",
       )
       .then(one => {
         log('info', 'getWorkFromId returned: ' + inspect(one));
@@ -41,11 +41,10 @@ export default {
       });
   },
 
-  insert: (work: Work): Promise<void> => {
+  insert: (work: Work): Promise < void > => {
     return db
       .none(
-        'INSERT INTO work(id, start, duration, lunch, userid) VALUES($1, $2, $3, $4, $5);',
-        [uuidV4(), work.start, work.duration, work.lunch, work.userid],
+        'INSERT INTO work(id, start, duration, lunch, userid) VALUES($1, $2, $3, $4, $5);', [uuidV4(), work.start, work.duration, work.lunch, work.userid],
       )
       .then(() => {
         log('info', 'Insert successfull');
@@ -56,7 +55,7 @@ export default {
       });
   },
 
-  delete: (id: string): Promise<void> => {
+  delete: (id: string): Promise < void > => {
     return db
       .none('DELETE from work where id = $1;', [id])
       .then(() => {
@@ -71,11 +70,10 @@ export default {
       });
   },
 
-  update: (work: Work): Promise<void> => {
+  update: (work: Work): Promise < void > => {
     return db
       .none(
-        'UPDATE work SET start=$2, duration=$3, lunch=$4, userid=$5 WHERE id=$1;',
-        [work.id, work.start, work.duration, work.lunch, work.userid],
+        'UPDATE work SET start=$2, duration=$3, lunch=$4, userid=$5 WHERE id=$1;', [work.id, work.start, work.duration, work.lunch, work.userid],
       )
       .then(() => {
         log('info', 'updateWork successfull');
@@ -84,9 +82,9 @@ export default {
         log(
           'error',
           'Updating work with id ' +
-            (work.id != null ? work.id : 'null') +
-            ' failed: ' +
-            error,
+          (work.id != null ? work.id : 'null') +
+          ' failed: ' +
+          error,
         );
         log('error', error.message);
       });
@@ -109,7 +107,24 @@ export default {
       });
   },
 
-  fromDateToNow: (date: string, userid: string): Promise<void | Work[]> => {
+  allApi: (): Promise < void | Work[] > => {
+    return db
+      .any(
+        "SELECT * FROM work ORDER BY start DESC",
+      )
+      .then(any => {
+        log(
+          'info',
+          'query all work successfull, ' + any.length + ' items',
+        );
+        return any;
+      })
+      .catch(error => {
+        log('error', error.message);
+      });
+  },
+
+  fromDateToNow: (date: string, userid: string): Promise < void | Work[] > => {
     return db
       .any(
         "SELECT * FROM work WHERE start::date >= '" +
