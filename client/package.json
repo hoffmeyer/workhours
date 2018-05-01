@@ -4,10 +4,11 @@
   "private": true,
   "proxy": "http://localhost:5000",
   "dependencies": {
+    "bs-date-fns": "^0.1.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "reason-scripts": "0.8.0",
-    "reason-react": "^0.3.4"
+    "reason-react": "^0.3.4",
+    "reason-scripts": "0.8.0"
   },
   "scripts": {
     "start": "react-scripts start",

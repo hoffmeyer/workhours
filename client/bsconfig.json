@@ -7,6 +7,7 @@
     "reason-react",
     "bs-jest",
     "bs-fetch",
+    "bs-date-fns",
     "@glennsl/bs-json"
   ],
   "reason": {

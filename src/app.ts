@@ -20,7 +20,6 @@ import mUser from "./models/user";
 import register from "./routes/register";
 import work from "./routes/work";
 
-import apiTest from "./routes/api/test";
 import apiWork from "./routes/api/work";
 
 remove(transports.Console);
@@ -99,7 +98,6 @@ app.use("/list", list);
 app.use("/delete", deleteWork);
 app.use("/login", login);
 
-app.use("/api/test", apiTest);
 app.use("/api/work", apiWork);
 
 // catch 404 and forward to error handler
