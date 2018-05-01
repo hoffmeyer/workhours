@@ -107,23 +107,6 @@ export default {
       });
   },
 
-  allApi: (): Promise < void | Work[] > => {
-    return db
-      .any(
-        "SELECT * FROM work ORDER BY start DESC",
-      )
-      .then(any => {
-        log(
-          'info',
-          'query all work successfull, ' + any.length + ' items',
-        );
-        return any;
-      })
-      .catch(error => {
-        log('error', error.message);
-      });
-  },
-
   fromDateToNow: (date: string, userid: string): Promise < void | Work[] > => {
     return db
       .any(
