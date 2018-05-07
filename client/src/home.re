@@ -27,20 +27,27 @@ module Decode = {
 let component = ReasonReact.reducerComponent("Work");
 
 let listWork = workList =>
-  <ul>
+  <table>
+    <tr>
+      <th> ("Date" |> str) </th>
+      <th> ("Hours" |> str) </th>
+      <th> ("Break" |> str) </th>
+      <th> ("Total" |> str) </th>
+    </tr>
     (
       Belt.Array.map(workList, work =>
-        <li key=work.id>
-          (
-            ReasonReact.stringToElement(
-              DateFns.format("dddd DD/MM/YY", work.start),
-            )
-          )
-        </li>
+        <tr key=work.id>
+          <td>
+            (work.start |> DateFns.format("dddd DD/MM/YY, HH:mm") |> str)
+          </td>
+          <td> (work.duration |> Js.Float.toString |> str) </td>
+          <td> (work.lunch |> Js.Float.toString |> str) </td>
+          <td> (work.duration -. work.lunch |> Js.Float.toString |> str) </td>
+        </tr>
       )
       |> ReasonReact.arrayToElement
     )
-  </ul>;
+  </table>;
 
 let workListToCurrentWeek = (workList: array(work)) =>
   switch (workList) {
@@ -57,11 +64,7 @@ let workListToCurrentWeek = (workList: array(work)) =>
   };
 
 let workArrayToHours = (workList: array(work)) =>
-  Js.Array.reduce(
-    (sum, work) => sum +. work.duration,
-    0.,
-    workListToCurrentWeek(workList),
-  );
+  Js.Array.reduce((sum, work) => sum +. work.duration, 0., workList);
 
 let make = _children => {
   ...component,
@@ -105,7 +108,15 @@ let make = _children => {
         <h1> ("Work" |> str) </h1>
         (listWork(workList))
         <h2> ("Hours this week" |> str) </h2>
-        <p> (workList |> workArrayToHours |> Js.Float.toString |> str) </p>
+        <p>
+          (
+            workList
+            |> workListToCurrentWeek
+            |> workArrayToHours
+            |> Js.Float.toString
+            |> str
+          )
+        </p>
       </div>
     },
 };
