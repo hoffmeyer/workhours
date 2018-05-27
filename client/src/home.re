@@ -2,13 +2,13 @@ open Types;
 
 type state =
   | Loading
-  | Error
+  | Error(string)
   | Loaded(array(work));
 
 type action =
   | WorkFetch
   | WorkFetched(array(work))
-  | WorkFetchFailed;
+  | WorkFetchFailed(string);
 
 let str = ReasonReact.stringToElement;
 
@@ -78,22 +78,32 @@ let make = _children => {
           self =>
             Js.Promise.(
               Fetch.fetch("api/work/latest")
-              |> then_(Fetch.Response.json)
+              |> then_(res => {
+                   let status = Fetch.Response.status(res);
+                   switch (status) {
+                   | 200 => Fetch.Response.json(res)
+                   | 401 =>
+                     ReasonReact.Router.push("/login");
+                     Js.Exn.raiseError(Fetch.Response.statusText(res));
+                   | _ => Js.Exn.raiseError(Fetch.Response.statusText(res))
+                   };
+                 })
               |> then_(json =>
                    json
                    |> Decode.workList
                    |> (work => self.send(WorkFetched(work)))
                    |> resolve
                  )
-              |> catch(_err =>
-                   Js.Promise.resolve(self.send(WorkFetchFailed))
-                 )
+              |> catch(err => {
+                   Js.log2("Error loading latest work: ", err);
+                   resolve(self.send(WorkFetchFailed("Hi")));
+                 })
               |> ignore
             )
         ),
       )
     | WorkFetched(work) => ReasonReact.Update(Loaded(work))
-    | WorkFetchFailed => ReasonReact.Update(Error)
+    | WorkFetchFailed(msg) => ReasonReact.Update(Error(msg))
     },
   didMount: self => {
     self.send(WorkFetch);
@@ -101,7 +111,7 @@ let make = _children => {
   },
   render: self =>
     switch (self.state) {
-    | Error => <div> ("An error occurred!" |> str) </div>
+    | Error(msg) => <div> ("An error occurred: " ++ msg |> str) </div>
     | Loading => <div> ("Loading..." |> str) </div>
     | Loaded(workList) =>
       <div>
