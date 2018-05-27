@@ -6,4 +6,15 @@ const isLoggedIn = (req, res, next) => {
   res.redirect('/login');
 };
 
-export {isLoggedIn};
+const isLoggedInApi = (req, res, next) => {
+  // if user is authenticated in the session, carry on
+  if (req.isAuthenticated()) return next();
+
+  res.statusCode = 401;
+  res.send('Not authenticated');
+};
+
+export {
+  isLoggedIn,
+  isLoggedInApi
+};

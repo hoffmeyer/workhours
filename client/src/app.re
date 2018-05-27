@@ -2,17 +2,20 @@
 
 module RouterConfig = {
   type route =
+    | Home
     | Work
-    | Home;
+    | Login;
   let routeFromUrl = (url: ReasonReact.Router.url) =>
     switch (url.path) {
     | ["work"] => Work
+    | ["login"] => Login
     | _ => Home
     };
   let routeToUrl = (route: route) =>
     switch (route) {
-    | Work => "/work"
     | Home => "/"
+    | Work => "/work"
+    | Login => "/login"
     };
 };
 
@@ -47,6 +50,7 @@ let make = _children => {
                    switch (currentRoute) {
                    | RouterConfig.Home => <Home />
                    | RouterConfig.Work => <NewWork />
+                   | RouterConfig.Login => <Login />
                    }
                  )
                </div>

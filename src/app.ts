@@ -21,6 +21,7 @@ import register from "./routes/register";
 import work from "./routes/work";
 
 import apiWork from "./routes/api/work";
+import apiLogin from "./routes/api/login";
 
 remove(transports.Console);
 add(transports.Console, { timestamp: true });
@@ -99,6 +100,7 @@ app.use("/delete", deleteWork);
 app.use("/login", login);
 
 app.use("/api/work", apiWork);
+app.use("/api/login", apiLogin);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
