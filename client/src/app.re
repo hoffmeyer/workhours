@@ -28,7 +28,7 @@ let make = _children => {
   render: _self =>
     <div className="App">
       <div className="App-header">
-        <h2> (ReasonReact.stringToElement("Workhours")) </h2>
+        <h2> (ReasonReact.string("Workhours")) </h2>
       </div>
       <Router.Container>
         ...(
@@ -37,12 +37,12 @@ let make = _children => {
                  <ul className="navigation">
                    <li>
                      <Router.Link route=Home>
-                       (ReasonReact.stringToElement("Home"))
+                       (ReasonReact.string("Home"))
                      </Router.Link>
                    </li>
                    <li>
                      <Router.Link route=Work>
-                       (ReasonReact.stringToElement("Work"))
+                       (ReasonReact.string("Work"))
                      </Router.Link>
                    </li>
                  </ul>

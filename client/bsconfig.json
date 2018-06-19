@@ -1,11 +1,9 @@
 {
   "name": "reason-scripts",
-  "sources": [
-    "src"
-  ],
+  "sources": ["src"],
   "bs-dependencies": [
     "reason-react",
-    "bs-jest",
+    "@glennsl/bs-jest",
     "bs-fetch",
     "bs-date-fns",
     "@glennsl/bs-json"
@@ -13,8 +11,11 @@
   "reason": {
     "react-jsx": 2
   },
-  "bsc-flags": [
-    "-bs-super-errors"
-  ],
-  "refmt": 3
+  "bsc-flags": ["-bs-super-errors"],
+  "refmt": 3,
+  "package-specs": {
+    "module": "es6",
+    "in-source": true
+  },
+  "suffix": ".bs.js"
 }

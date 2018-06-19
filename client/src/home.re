@@ -10,7 +10,7 @@ type action =
   | WorkFetched(array(work))
   | WorkFetchFailed(string);
 
-let str = ReasonReact.stringToElement;
+let str = ReasonReact.string;
 
 module Decode = {
   let work = json : work =>
@@ -45,7 +45,7 @@ let listWork = workList =>
           <td> (work.duration -. work.lunch |> Js.Float.toString |> str) </td>
         </tr>
       )
-      |> ReasonReact.arrayToElement
+      |> ReasonReact.array
     )
   </table>;
 
@@ -105,10 +105,7 @@ let make = _children => {
     | WorkFetched(work) => ReasonReact.Update(Loaded(work))
     | WorkFetchFailed(msg) => ReasonReact.Update(Error(msg))
     },
-  didMount: self => {
-    self.send(WorkFetch);
-    ReasonReact.NoUpdate;
-  },
+  didMount: self => self.send(WorkFetch),
   render: self =>
     switch (self.state) {
     | Error(msg) => <div> ("An error occurred: " ++ msg |> str) </div>
