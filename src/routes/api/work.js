@@ -3,7 +3,7 @@
 import {
   Router
 } from 'express';
-import api from '../../models/api';
+import work from '../../models/work';
 import moment from 'moment';
 import {
   isLoggedInApi
@@ -18,12 +18,14 @@ const currentWeekAndThreeWeeksBack: string = moment()
   .toString();
 
 router.get('/', isLoggedInApi, (req, res) => {
-  api.all().then(data => res.json(data));
+  const id: string = req.user.id;
+  work.all(id).then(data => res.json(data));
 });
 
 // get the work registered in the current week plus the last 3 full weeks
 router.get('/latest', isLoggedInApi, (req, res) => {
-  api.fromDateToNow(currentWeekAndThreeWeeksBack).then(data => res.json(data));
+  const id: string = req.user.id;
+  work.fromDateToNow(currentWeekAndThreeWeeksBack, id).then(data => res.json(data));
 });
 
 export default router;

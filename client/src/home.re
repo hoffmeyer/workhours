@@ -28,25 +28,29 @@ let component = ReasonReact.reducerComponent("Work");
 
 let listWork = workList =>
   <table>
-    <tr>
-      <th> ("Date" |> str) </th>
-      <th> ("Hours" |> str) </th>
-      <th> ("Break" |> str) </th>
-      <th> ("Total" |> str) </th>
-    </tr>
-    (
-      Belt.Array.map(workList, work =>
-        <tr key=work.id>
-          <td>
-            (work.start |> DateFns.format("dddd DD/MM/YY, HH:mm") |> str)
-          </td>
-          <td> (work.duration |> Js.Float.toString |> str) </td>
-          <td> (work.lunch |> Js.Float.toString |> str) </td>
-          <td> (work.duration -. work.lunch |> Js.Float.toString |> str) </td>
-        </tr>
+    <tbody>
+      <tr>
+        <th> ("Date" |> str) </th>
+        <th> ("Hours" |> str) </th>
+        <th> ("Break" |> str) </th>
+        <th> ("Total" |> str) </th>
+      </tr>
+      (
+        Belt.Array.map(workList, work =>
+          <tr key=work.id>
+            <td>
+              (work.start |> DateFns.format("dddd DD/MM/YY, HH:mm") |> str)
+            </td>
+            <td> (work.duration |> Js.Float.toString |> str) </td>
+            <td> (work.lunch |> Js.Float.toString |> str) </td>
+            <td>
+              (work.duration -. work.lunch |> Js.Float.toString |> str)
+            </td>
+          </tr>
+        )
+        |> ReasonReact.array
       )
-      |> ReasonReact.array
-    )
+    </tbody>
   </table>;
 
 let workListToCurrentWeek = (workList: array(work)) =>
