@@ -8,6 +8,7 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as passport from "passport";
 import {Strategy as LocalStrategy} from "passport-local";
+import {Strategy as BasicStrategy} from "passport-http";
 import * as session from "express-session";
 import {log, add, remove, transports} from "winston";
 
@@ -91,6 +92,25 @@ passport.use(
       });
   })
 );
+
+passport.use(new BasicStrategy(
+  function (username, password, done) {
+    mUser
+      .byUsername(username)
+      .then(function (user) {
+        if (!user) {
+          return done(null, false);
+        }
+        if (user.password === password) {
+          return done(null, user);
+        }
+        return done(null, false);
+      })
+      .catch(err => {
+        return done(err);
+      });
+  }
+));
 
 app.use("/", index);
 app.use("/register", register);

@@ -49,7 +49,11 @@ let make = _children => {
                 ),
               )
               |> then_(Fetch.Response.text)
-              |> then_(text => print_endline(text) |> resolve)
+              |> then_(text => {
+                   print_endline(text);
+                   ReasonReact.Router.push("/");
+                   resolve();
+                 })
               |> ignore
             )
         ),
