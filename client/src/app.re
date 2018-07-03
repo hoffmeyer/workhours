@@ -3,18 +3,21 @@
 module RouterConfig = {
   type route =
     | Home
-    | Work
+    | Edit
+    | List
     | Login;
   let routeFromUrl = (url: ReasonReact.Router.url) =>
     switch (url.path) {
-    | ["work"] => Work
+    | ["edit"] => Edit
+    | ["list"] => List
     | ["login"] => Login
     | _ => Home
     };
   let routeToUrl = (route: route) =>
     switch (route) {
     | Home => "/"
-    | Work => "/work"
+    | Edit => "/edit"
+    | List => "/list"
     | Login => "/login"
     };
 };
@@ -41,15 +44,21 @@ let make = _children => {
                      </Router.Link>
                    </li>
                    <li>
-                     <Router.Link route=Work>
-                       (ReasonReact.string("Work"))
+                     <Router.Link route=Edit>
+                       (ReasonReact.string("Edit"))
+                     </Router.Link>
+                   </li>
+                   <li>
+                     <Router.Link route=List>
+                       (ReasonReact.string("List"))
                      </Router.Link>
                    </li>
                  </ul>
                  (
                    switch (currentRoute) {
                    | RouterConfig.Home => <Home />
-                   | RouterConfig.Work => <NewWork />
+                   | RouterConfig.Edit => <NewWork />
+                   | RouterConfig.List => <WorkList />
                    | RouterConfig.Login => <Login />
                    }
                  )
