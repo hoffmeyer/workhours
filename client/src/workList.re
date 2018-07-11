@@ -8,7 +8,8 @@ type state =
 type action =
   | WorkFetch
   | WorkFetched(array(work))
-  | WorkFetchFailed(string);
+  | WorkFetchFailed(string)
+  | WorkEdit(string);
 
 let str = ReasonReact.string;
 
@@ -24,16 +25,18 @@ module Decode = {
   let workList = json : array(work) => Json.Decode.(json |> array(work));
 };
 
-let component = ReasonReact.reducerComponent("Work");
+let component = ReasonReact.reducerComponent("WorkList");
 
 let listWork = workList =>
   <table>
     <tbody>
       <tr>
-        <th> ("Date" |> str) </th>
+        <th> ("Start" |> str) </th>
         <th> ("Hours" |> str) </th>
         <th> ("Break" |> str) </th>
         <th> ("Total" |> str) </th>
+        <th />
+        <th />
       </tr>
       (
         Belt.Array.map(workList, work =>
@@ -46,6 +49,7 @@ let listWork = workList =>
             <td>
               (work.duration -. work.lunch |> Js.Float.toString |> str)
             </td>
+            <td> <a href="/edit"> (ReasonReact.string("E")) </a> </td>
           </tr>
         )
         |> ReasonReact.array
