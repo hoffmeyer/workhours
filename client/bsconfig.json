@@ -3,6 +3,7 @@
   "sources": ["src"],
   "bs-dependencies": [
     "reason-react",
+    "re-classnames",
     "@glennsl/bs-jest",
     "bs-fetch",
     "bs-date-fns",
