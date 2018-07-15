@@ -42,7 +42,7 @@ let listWork = workList =>
         Belt.Array.map(workList, work =>
           <tr key=work.id>
             <td>
-              (work.start |> DateFns.format("dddd DD/MM/YY, HH:mm") |> str)
+              (work.start |> Js.Date.toString |> str)
             </td>
             <td> (work.duration |> Js.Float.toString |> str) </td>
             <td> (work.lunch |> Js.Float.toString |> str) </td>
@@ -56,16 +56,18 @@ let listWork = workList =>
       )
     </tbody>
   </table>;
-
+ 
 let workListToCurrentWeek = (workList: array(work)) =>
   switch (workList) {
   | [||] => workList
   | xs =>
     let today = Js.Date.make();
-    let startOfWeek = today |> DateFns.startOfWeek;
-    let endOfWeek = today |> DateFns.endOfWeek;
-    let isBeforeThisWeek = date => date |> DateFns.isBefore(startOfWeek);
-    let isAfterThisWeek = date => date |> DateFns.isAfter(endOfWeek);
+    let startOfWeek = today |> DateUtil.startOfWeek;
+    Js.log(startOfWeek);
+    let endOfWeek = today |> DateUtil.endOfWeek;
+    Js.log(endOfWeek);
+    let isBeforeThisWeek = date => date |> DateUtil.isBefore(startOfWeek);
+    let isAfterThisWeek = date => date |> DateUtil.isAfter(endOfWeek);
     let inThisWeek = date =>
       ! isBeforeThisWeek(date) && ! isAfterThisWeek(date);
     xs |> Js.Array.filter(work => inThisWeek(work.start));
