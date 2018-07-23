@@ -41,9 +41,7 @@ let listWork = workList =>
       (
         Belt.Array.map(workList, work =>
           <tr key=work.id>
-            <td>
-              (work.start |> Js.Date.toString |> str)
-            </td>
+            <td> (work.start |> Js.Date.toString |> str) </td>
             <td> (work.duration |> Js.Float.toString |> str) </td>
             <td> (work.lunch |> Js.Float.toString |> str) </td>
             <td>
@@ -56,25 +54,19 @@ let listWork = workList =>
       )
     </tbody>
   </table>;
- 
-let workListToCurrentWeek = (workList: array(work)) =>
-  switch (workList) {
-  | [||] => workList
-  | xs =>
-    let today = Js.Date.make();
-    let startOfWeek = today |> DateUtil.startOfWeek;
-    Js.log(startOfWeek);
-    let endOfWeek = today |> DateUtil.endOfWeek;
-    Js.log(endOfWeek);
-    let isBeforeThisWeek = date => date |> DateUtil.isBefore(startOfWeek);
-    let isAfterThisWeek = date => date |> DateUtil.isAfter(endOfWeek);
-    let inThisWeek = date =>
-      ! isBeforeThisWeek(date) && ! isAfterThisWeek(date);
-    xs |> Js.Array.filter(work => inThisWeek(work.start));
-  };
 
-let workArrayToHours = (workList: array(work)) =>
-  Js.Array.reduce((sum, work) => sum +. work.duration, 0., workList);
+let workListToCurrentWeek = (today, workList: list(work)) => {
+  let startOfWeek = today |> DateUtil.startOfWeek;
+  let endOfWeek = today |> DateUtil.endOfWeek;
+  let isBeforeThisWeek = date => date |> DateUtil.isBefore(startOfWeek);
+  let isAfterThisWeek = date => date |> DateUtil.isAfter(endOfWeek);
+  let inThisWeek = date =>
+    ! isBeforeThisWeek(date) && ! isAfterThisWeek(date);
+  workList |> List.filter(work => inThisWeek(work.start));
+};
+
+let workArrayToHours = (workList: list(work)) =>
+  List.fold_left((sum, work) => sum +. work.duration, 0., workList);
 
 let make = _children => {
   ...component,
@@ -128,7 +120,8 @@ let make = _children => {
         <p>
           (
             workList
-            |> workListToCurrentWeek
+            |> Array.to_list
+            |> workListToCurrentWeek(Js.Date.make())
             |> workArrayToHours
             |> Js.Float.toString
             |> str
