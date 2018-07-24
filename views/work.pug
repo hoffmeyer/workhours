@@ -17,9 +17,9 @@ block content
       input(name='startTime', id='startTime', type='time', value=startTime)
     div
       label(for='duration') Hours
-      input(name='duration', id='duration', type='number', step='0.25', value=duration)
+      input(name='duration', id='duration', type='number', min="0", step="0.05", value=duration)
       label(for='lunch') Lunch
-      input(name='lunch', id='lunch', type='number', step='0.25', value=lunch)
+      input(name='lunch', id='lunch', type='number', min="0", step="0.05", value=lunch)
     div
       if(startDate != null)
         button Update

@@ -1,3 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS work (id uuid PRIMARY KEY NOT NULL, start timestamp NOT NULL, duration real, break real );
 CREATE TABLE IF NOT EXISTS dbVersion (version integer PRIMARY KEY NOT NULL);
 
