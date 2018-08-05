@@ -18,7 +18,10 @@ const currentWeekAndThreeWeeksBack: string = moment()
   .toString();
 
 router.get('/', isLoggedInApi, (req, res) => {
+  const from: Date = new Date(req.query.from);
+  const to: Date = new Date(req.query.to);
   const id: string = req.user.id;
+  work.get(id, from, to);
   work.all(id).then(data => res.json(data));
 });
 
