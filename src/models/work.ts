@@ -23,6 +23,26 @@ export default {
         log('error', error.message);
       });
   },
+  get: (userId: string, from: Date, to: Date): Promise < ? Work > => {
+    return db
+      .oneOrNone(
+        "SELECT * FROM work where start::date >= '" +
+        from.toISOString() +
+        "' AND start::date <=  '" +
+        to.toISOString() +
+        "' AND userid = '" +
+        userId +
+        "' ORDER BY start",
+      )
+      .then(one => {
+        winston.log('info', 'getWorkFromDate returned: ' + util.inspect(one));
+        return one;
+      })
+      .catch(error => {
+        winston.log('error', 'getWorkFromDate from db failed: ' + error);
+        winston.log('error', error.message);
+      });
+  },
 
   fromId: (id: string): Promise<void | Work> => {
     return db

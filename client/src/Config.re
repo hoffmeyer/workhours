@@ -1,3 +1,5 @@
+open Types;
+
 type routes =
   | Home
   | Edit
@@ -20,10 +22,10 @@ let routeToString = (route: routes) =>
   | Login => "/login"
   };
 
-let routeToComponent = (route: routes) =>
+let routeToComponent = (route: routes, ~workList: array(work)) =>
   switch (route) {
-  | Home => <Home />
+  | Home => <Home workList />
   | Edit => <NewWork />
-  | List => <WorkList />
+  | List => <WorkList workList />
   | Login => <Login />
   };

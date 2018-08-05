@@ -1,16 +1,5 @@
 open Types;
 
-type state =
-  | Loading
-  | Error(string)
-  | Loaded(array(work));
-
-type action =
-  | WorkFetch
-  | WorkFetched(array(work))
-  | WorkFetchFailed(string)
-  | WorkEdit(string);
-
 let str = ReasonReact.string;
 
 module Decode = {
@@ -25,7 +14,7 @@ module Decode = {
   let workList = json : array(work) => Json.Decode.(json |> array(work));
 };
 
-let component = ReasonReact.reducerComponent("WorkList");
+let component = ReasonReact.statelessComponent("WorkList");
 
 let listWork = workList =>
   <table>
@@ -68,65 +57,22 @@ let workListToCurrentWeek = (today, workList: list(work)) => {
 let workArrayToHours = (workList: list(work)) =>
   List.fold_left((sum, work) => sum +. work.duration, 0., workList);
 
-let make = _children => {
+let make = (~workList, _children) => {
   ...component,
-  initialState: _state => Loading,
-  reducer: (action, _state) =>
-    switch (action) {
-    | WorkFetch =>
-      ReasonReact.UpdateWithSideEffects(
-        Loading,
+  render: _self =>
+    <div>
+      <h1> ("Work" |> str) </h1>
+      (listWork(workList))
+      <h2> ("Hours this week" |> str) </h2>
+      <p>
         (
-          self =>
-            Js.Promise.(
-              Fetch.fetch("api/work/latest")
-              |> then_(res => {
-                   let status = Fetch.Response.status(res);
-                   switch (status) {
-                   | 200 => Fetch.Response.json(res)
-                   | 401 =>
-                     ReasonReact.Router.push("/login");
-                     Js.Exn.raiseError(Fetch.Response.statusText(res));
-                   | _ => Js.Exn.raiseError(Fetch.Response.statusText(res))
-                   };
-                 })
-              |> then_(json =>
-                   json
-                   |> Decode.workList
-                   |> (work => self.send(WorkFetched(work)))
-                   |> resolve
-                 )
-              |> catch(err => {
-                   Js.log2("Error loading latest work: ", err);
-                   resolve(self.send(WorkFetchFailed("Hi")));
-                 })
-              |> ignore
-            )
-        ),
-      )
-    | WorkFetched(work) => ReasonReact.Update(Loaded(work))
-    | WorkFetchFailed(msg) => ReasonReact.Update(Error(msg))
-    },
-  didMount: self => self.send(WorkFetch),
-  render: self =>
-    switch (self.state) {
-    | Error(msg) => <div> ("An error occurred: " ++ msg |> str) </div>
-    | Loading => <div> ("Loading..." |> str) </div>
-    | Loaded(workList) =>
-      <div>
-        <h1> ("Work" |> str) </h1>
-        (listWork(workList))
-        <h2> ("Hours this week" |> str) </h2>
-        <p>
-          (
-            workList
-            |> Array.to_list
-            |> workListToCurrentWeek(Js.Date.make())
-            |> workArrayToHours
-            |> Js.Float.toString
-            |> str
-          )
-        </p>
-      </div>
-    },
+          workList
+          |> Array.to_list
+          |> workListToCurrentWeek(Js.Date.make())
+          |> workArrayToHours
+          |> Js.Float.toString
+          |> str
+        )
+      </p>
+    </div>,
 };
