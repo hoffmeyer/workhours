@@ -9,6 +9,8 @@ type state =
 
 type action =
   | WorkFetch
+  | WorkAdd(work)
+  | WorkUpdate(work)
   | WorkFetched(array(work))
   | WorkFetchFailed(string);
 
@@ -99,6 +101,7 @@ let make = (~currentRoute, _children) => {
             | Loading => <p> (str("Loading")) </p>
             | Loaded(workList) =>
               <div> (Config.routeToComponent(currentRoute, workList)) </div>
+            | Error(msg) => <div> (str(msg)) </div>
             }
           )
         </main>
