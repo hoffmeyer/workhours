@@ -61,13 +61,14 @@ export default {
       });
   },
 
-  insert: (work: Work): Promise < void > => {
+  insert: (work: Work): Promise < string > => {
     return db
-      .none(
-        'INSERT INTO work(id, start, duration, lunch, userid) VALUES($1, $2, $3, $4, $5);', [uuidV4(), work.start, work.duration, work.lunch, work.userid],
+      .one(
+        'INSERT INTO work(id, start, duration, lunch, userid) VALUES($1, $2, $3, $4, $5) RETURNING id;', [uuidV4(), work.start, work.duration, work.lunch, work.userid],
       )
-      .then(() => {
+      .then(id => {
         log('info', 'Insert successfull');
+        return id;
       })
       .catch(error => {
         log('error', 'insertWork db failed: ' + error);

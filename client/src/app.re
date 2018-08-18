@@ -7,33 +7,14 @@ type state =
   | Error(string)
   | Loaded(array(work));
 
-type action =
-  | WorkFetch
-  | WorkAdd(work)
-  | WorkUpdate(work)
-  | WorkFetched(array(work))
-  | WorkFetchFailed(string);
-
 let str = ReasonReact.string;
-
-module Decode = {
-  let work = json : work =>
-    Json.Decode.{
-      id: json |> field("id", string),
-      start: json |> field("start", date),
-      duration: json |> field("duration", Json.Decode.float),
-      lunch: json |> field("lunch", Json.Decode.float),
-      userid: json |> field("userid", string),
-    };
-  let workList = json : array(work) => Json.Decode.(json |> array(work));
-};
 
 let component = ReasonReact.reducerComponent("App");
 
 let make = (~currentRoute, _children) => {
   ...component,
   initialState: _state => Loading,
-  reducer: (action, _state) =>
+  reducer: (action, state) =>
     switch (action) {
     | WorkFetch =>
       ReasonReact.UpdateWithSideEffects(
@@ -60,7 +41,11 @@ let make = (~currentRoute, _children) => {
                  )
               |> catch(err => {
                    Js.log2("Error loading latest work: ", err);
-                   resolve(self.send(WorkFetchFailed("Hi")));
+                   resolve(
+                     self.send(
+                       WorkFetchFailed("Error loading leatest work"),
+                     ),
+                   );
                  })
               |> ignore
             )
@@ -68,8 +53,18 @@ let make = (~currentRoute, _children) => {
       )
     | WorkFetched(work) => ReasonReact.Update(Loaded(work))
     | WorkFetchFailed(msg) => ReasonReact.Update(Error(msg))
+    | WorkAdd(work) =>
+      switch (state) {
+      | Loaded(workList) =>
+        Js.Array.push(work, workList);
+        ReasonReact.Update(Loaded(workList));
+      | _ => ReasonReact.Update(Error("Failed to add new work"))
+      }
     },
-  didMount: self => self.send(WorkFetch),
+  didMount: self => {
+    let handleAction = action => self.send(action);
+    self.send(WorkFetch);
+  },
   render: self =>
     <div className="App">
       <div className="App-header">
@@ -100,7 +95,13 @@ let make = (~currentRoute, _children) => {
             switch (self.state) {
             | Loading => <p> (str("Loading")) </p>
             | Loaded(workList) =>
-              <div> (Config.routeToComponent(currentRoute, workList)) </div>
+              <div>
+                (
+                  Config.routeToComponent(currentRoute, workList, action =>
+                    self.send(action)
+                  )
+                )
+              </div>
             | Error(msg) => <div> (str(msg)) </div>
             }
           )

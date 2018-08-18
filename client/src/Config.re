@@ -22,9 +22,10 @@ let routeToString = (route: routes) =>
   | Login => "/login"
   };
 
-let routeToComponent = (route: routes, ~workList: array(work)) =>
+let routeToComponent =
+    (route: routes, ~workList: array(work), ~handleAction: action => unit) =>
   switch (route) {
-  | Home => <Home workList />
+  | Home => <Home workList handleAction />
   | Edit => <NewWork />
   | List => <WorkList workList />
   | Login => <Login />

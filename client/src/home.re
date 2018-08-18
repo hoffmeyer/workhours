@@ -3,18 +3,16 @@ open Types;
 type state =
   | Initial
   | Starting
-  | Started(work)
   | Stopping
-  | Stopped(work)
   | Error(string);
 
 type action =
   | StopWork
   | WorkStopped(work)
-  | WorkStopFailed
+  | Failed(string)
   | StartWork
   | WorkStarted(work)
-  | WorkStartFailed;
+  | Reset;
 
 let str = ReasonReact.string;
 
@@ -42,19 +40,67 @@ let inProgressWorkToday = l =>
 
 let component = ReasonReact.reducerComponent("Home");
 
-let make = (~workList: array(work), _children) => {
+let make =
+    (~workList: array(work), ~handleAction: Types.action => unit, _children) => {
   ...component,
   initialState: _state => Initial,
   reducer: (action, _state) =>
     switch (action) {
-    | StopWork => ReasonReact.Update(Initial)
-    | WorkStopped(_work) => ReasonReact.Update(Initial)
-    | WorkStopFailed => ReasonReact.Update(Initial)
-    | StartWork => ReasonReact.Update(Initial)
-    | WorkStarted(_work) => ReasonReact.Update(Initial)
-    | WorkStartFailed => ReasonReact.Update(Initial)
+    | StopWork => ReasonReact.Update(Stopping)
+    | WorkStopped(work) =>
+      handleAction(Types.WorkUpdate(work));
+      ReasonReact.Update(Initial);
+    | Failed(msg) => ReasonReact.Update(Error(msg))
+    | StartWork =>
+      ReasonReact.UpdateWithSideEffects(
+        Starting,
+        (
+          self => {
+            let newWork = {
+              id: None,
+              start: Js.Date.make(),
+              duration: 0.,
+              lunch: 0.,
+              userid: None,
+            };
+            Js.Promise.(
+              Fetch.fetchWithInit(
+                "/api/work",
+                Fetch.RequestInit.make(
+                  ~method_=Post,
+                  ~body=
+                    Fetch.BodyInit.make(
+                      newWork |> Encode.work |> Js.Json.stringify,
+                    ),
+                  ~headers=
+                    Fetch.HeadersInit.make({
+                      "Content-Type": "application/json",
+                    }),
+                  (),
+                ),
+              )
+              |> then_(res => Fetch.Response.json(res))
+              |> then_(json =>
+                   json
+                   |> Decode.work
+                   |> (work => self.send(WorkStarted(work)))
+                   |> resolve
+                 )
+              |> catch(err => {
+                   Js.log2("Error starting work: ", err);
+                   resolve(self.send(Failed("Error starting work")));
+                 })
+              |> ignore
+            );
+          }
+        ),
+      )
+    | WorkStarted(work) =>
+      handleAction(Types.WorkAdd(work));
+      ReasonReact.Update(Initial);
+    | Reset => ReasonReact.Update(Initial)
     },
-  render: _self =>
+  render: self =>
     <div>
       <h1> (str("Home page")) </h1>
       (
@@ -62,14 +108,28 @@ let make = (~workList: array(work), _children) => {
         | None =>
           <div>
             <p> (str("You are not working")) </p>
-            <button onClick=(_evt => Js.log("Starting work..."))>
+            <button onClick=(_evt => self.send(StartWork))>
               (str("Start work"))
             </button>
           </div>
         | Some(w) =>
           <div>
             <p> (str((w.start |> dateToDiff) ++ " hours and counting")) </p>
-            <button> (str("Stop work")) </button>
+            <button onClick=(_evt => self.send(StopWork))>
+              (str("Stop work"))
+            </button>
+          </div>
+        }
+      )
+      (
+        switch (self.state) {
+        | Initial => <div />
+        | Starting => <div> (str("Starting work...")) </div>
+        | Stopping => <div> (str("Stopping work...")) </div>
+        | Error(msg) =>
+          <div>
+            <p className="error"> (str("Error: " ++ msg)) </p>
+            <button onClick=(_evt => self.send(Reset))> (str("Ok")) </button>
           </div>
         }
       )
