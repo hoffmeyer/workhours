@@ -2,18 +2,6 @@ open Types;
 
 let str = ReasonReact.string;
 
-module Decode = {
-  let work = json : work =>
-    Json.Decode.{
-      id: json |> field("id", string),
-      start: json |> field("start", date),
-      duration: json |> field("duration", Json.Decode.float),
-      lunch: json |> field("lunch", Json.Decode.float),
-      userid: json |> field("userid", string),
-    };
-  let workList = json : array(work) => Json.Decode.(json |> array(work));
-};
-
 let component = ReasonReact.statelessComponent("WorkList");
 
 let listWork = workList =>
@@ -29,7 +17,13 @@ let listWork = workList =>
       </tr>
       (
         Belt.Array.map(workList, work =>
-          <tr key=work.id>
+          <tr
+            key=(
+              switch (work.id) {
+              | Some(v) => v
+              | None => "0"
+              }
+            )>
             <td> (work.start |> Js.Date.toString |> str) </td>
             <td> (work.duration |> Js.Float.toString |> str) </td>
             <td> (work.lunch |> Js.Float.toString |> str) </td>

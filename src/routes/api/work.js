@@ -18,10 +18,31 @@ const currentWeekAndThreeWeeksBack: string = moment()
   .toString();
 
 router.get('/', isLoggedInApi, (req, res) => {
+  if (!req.query.from || !req.query.to) {
+    return res.status(400).send({
+      message: "From and to date not set"
+    });
+  }
   const from: Date = new Date(req.query.from);
   const to: Date = new Date(req.query.to);
   const id: string = req.user.id;
   work.get(id, from, to);
+  work.all(id).then(data => res.json(data));
+});
+
+router.post('/', isLoggedInApi, (req, res) => {
+  const id: string = req.user.id;
+  const newWork: work = req.body;
+  if (!newWork.start) {
+    return res.status(400).send({
+      message: "New work must have a start time"
+    });
+  }
+  newWork.userid = id;
+  work.insert(newWork).then(id => {
+    newWork.id = id;
+    res.json(newWork);
+  });
   work.all(id).then(data => res.json(data));
 });
 
