@@ -4,10 +4,14 @@ import {
   Router
 } from 'express';
 import work from '../../models/work';
+import type {
+  Work
+} from '../../types';
 import moment from 'moment';
 import {
   isLoggedInApi
 } from '../../util/auth';
+import winston from 'winston';
 
 let router = Router();
 
@@ -32,18 +36,25 @@ router.get('/', isLoggedInApi, (req, res) => {
 
 router.post('/', isLoggedInApi, (req, res) => {
   const id: string = req.user.id;
-  const newWork: work = req.body;
+  const newWork: Work = req.body;
   if (!newWork.start) {
     return res.status(400).send({
       message: "New work must have a start time"
     });
   }
+
+  // needed because otherwiser it fucks up the timezone in the db
+  newWork.start = new Date(newWork.start);
+
   newWork.userid = id;
   work.insert(newWork).then(id => {
     newWork.id = id;
     res.json(newWork);
   });
-  work.all(id).then(data => res.json(data));
+  work.all(id).then(data => res.json(data))
+    .catch(error => {
+      winston.log('Error when calling work.all from api', error.message);
+    });
 });
 
 // get the work registered in the current week plus the last 3 full weeks
