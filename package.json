@@ -34,6 +34,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-latest-minimal": "^1.1.2",
     "concurrently": "^3.5.0",
+    "html-webpack-plugin": "^3.2.0",
     "nodemon": "^1.18.6",
     "prettier": "^1.11.1",
     "source-map-support": "^0.5.9",
