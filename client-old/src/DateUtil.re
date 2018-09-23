@@ -16,7 +16,7 @@ let startOfWeek = date => {
     ~seconds=0.,
     ~milliseconds=0.,
     (),
-  );
+  ) |> ignore;
   day;
 };
 
@@ -30,7 +30,7 @@ let endOfWeek = date => {
     ~seconds=59.,
     ~milliseconds=999.,
     (),
-  );
+  ) |> ignore;
   day;
 };
 
