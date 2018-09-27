@@ -22,7 +22,7 @@ let make = (~currentRoute, _children) => {
         (
           self =>
             Js.Promise.(
-              Fetch.fetch("api/work/latest")
+              Fetch.fetch("/api/work/latest")
               |> then_(res => {
                    let status = Fetch.Response.status(res);
                    switch (status) {
