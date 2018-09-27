@@ -5,12 +5,20 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  entry: './src/Index.bs.js',
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [ 'style-loader', 'css-loader' ]
+      }
+    ]
+  },
+  entry: './src/index.bs.js',
   mode: isProd ? 'production' : 'development',
   output: {
     path: outputDir,
     publicPath: outputDir,
-    filename: 'Index.js',
+    filename: 'index.js',
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -20,6 +28,9 @@ module.exports = {
   ],
   devServer: {
     compress: true,
-    port: 3000
+    port: 3000,
+    proxy: {
+      '/api': 'http://localhost:5000'
+    }
   },
 };

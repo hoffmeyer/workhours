@@ -8,7 +8,7 @@ type action =
   | PasswordKeyDown(string)
   | LoginClicked;
 
-let str = ReasonReact.stringToElement;
+let str = ReasonReact.string;
 
 module Encode = {
   let cred = (m: cred) =>
@@ -61,9 +61,8 @@ let make = _children => {
     },
   render: ({state, send}) =>
     <div>
-      <h1> (ReasonReact.stringToElement("Login page")) </h1>
+      <h1> (str("Login page")) </h1>
       <input
-        _type="text"
         value=state.username
         onChange=(
           event =>
@@ -75,7 +74,6 @@ let make = _children => {
         )
       />
       <input
-        _type="password"
         value=state.password
         onChange=(
           event =>
