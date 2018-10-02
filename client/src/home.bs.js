@@ -38,7 +38,7 @@ function roundToQuarters(v) {
 }
 
 function dateToDiff(d) {
-  return Pervasives.string_of_float(roundToQuarters(diffInHours(d, new Date())));
+  return roundToQuarters(diffInHours(d, new Date()));
 }
 
 function inProgressWorkToday(l) {
@@ -46,6 +46,17 @@ function inProgressWorkToday(l) {
 }
 
 var component = ReasonReact.reducerComponent("Home");
+
+function workInProgressToUpdatedWork(inProgress, hours) {
+  var match = hours > 4;
+  return /* record */[
+          /* id */inProgress[/* id */0],
+          /* start */inProgress[/* start */1],
+          /* duration */hours,
+          /* lunch */match ? 0.5 : 0,
+          /* userid */inProgress[/* userid */4]
+        ];
+}
 
 function make(workList, handleAction, _) {
   return /* record */[
@@ -84,7 +95,7 @@ function make(workList, handleAction, _) {
                             })
                         }, "Ok"));
               }
-              return React.createElement("div", undefined, React.createElement("h1", undefined, "Home page"), match !== undefined ? React.createElement("div", undefined, React.createElement("p", undefined, dateToDiff(match[/* start */1]) + " hours and counting"), React.createElement("button", {
+              return React.createElement("div", undefined, React.createElement("h1", undefined, "Home page"), match !== undefined ? React.createElement("div", undefined, React.createElement("p", undefined, Pervasives.string_of_float(dateToDiff(match[/* start */1])) + " hours and counting"), React.createElement("button", {
                                     onClick: (function () {
                                         return Curry._1(self[/* send */3], /* StopWork */0);
                                       })
@@ -102,7 +113,29 @@ function make(workList, handleAction, _) {
               if (typeof action === "number") {
                 switch (action) {
                   case 0 : 
-                      return /* Update */Block.__(0, [/* Stopping */2]);
+                      return /* UpdateWithSideEffects */Block.__(2, [
+                                /* Stopping */2,
+                                (function (self) {
+                                    var match = inProgressWorkToday(workList);
+                                    if (match !== undefined) {
+                                      var inProgress = match;
+                                      fetch("/api/work", Fetch.RequestInit[/* make */0](/* Post */2, {
+                                                        "Content-Type": "application/json"
+                                                      }, Js_primitive.some(JSON.stringify(Types$Workhours.Encode[/* work */0](workInProgressToUpdatedWork(inProgress, dateToDiff(inProgress[/* start */1]))))), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined)(/* () */0)).then((function (res) {
+                                                  return res.json();
+                                                })).then((function (json) {
+                                                var work = Types$Workhours.Decode[/* work */0](json);
+                                                return Promise.resolve(Curry._1(self[/* send */3], /* WorkStopped */Block.__(0, [work])));
+                                              })).catch((function (err) {
+                                              console.log("Error starting work: ", err);
+                                              return Promise.resolve(Curry._1(self[/* send */3], /* Failed */Block.__(1, ["Error starting work"])));
+                                            }));
+                                      return /* () */0;
+                                    } else {
+                                      return Curry._1(self[/* send */3], /* Failed */Block.__(1, ["Trying to stop work not in progress"]));
+                                    }
+                                  })
+                              ]);
                   case 1 : 
                       return /* UpdateWithSideEffects */Block.__(2, [
                                 /* Starting */1,
@@ -159,5 +192,6 @@ exports.roundToQuarters = roundToQuarters;
 exports.dateToDiff = dateToDiff;
 exports.inProgressWorkToday = inProgressWorkToday;
 exports.component = component;
+exports.workInProgressToUpdatedWork = workInProgressToUpdatedWork;
 exports.make = make;
 /* component Not a pure module */

@@ -5,11 +5,11 @@ var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var Js_exn = require("bs-platform/lib/js/js_exn.js");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Types$Workhours = require("./types.bs.js");
 var Config$Workhours = require("./Config.bs.js");
 var Router$Workhours = require("./Router.bs.js");
-var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 
 ((require('./app.css')));
 
@@ -90,14 +90,19 @@ function make(currentRoute, _) {
                         return /* Update */Block.__(0, [/* Loaded */Block.__(1, [workList])]);
                       }
                   case 1 : 
-                      throw [
-                            Caml_builtin_exceptions.match_failure,
-                            /* tuple */[
-                              "app.re",
-                              18,
-                              4
-                            ]
-                          ];
+                      var work = action[0];
+                      if (typeof state === "number" || !state.tag) {
+                        return /* Update */Block.__(0, [/* Error */Block.__(0, ["Failed to update work"])]);
+                      } else {
+                        var newList = state[0].map((function (w) {
+                                if (Caml_obj.caml_equal(w[/* id */0], work[/* id */0])) {
+                                  return work;
+                                } else {
+                                  return w;
+                                }
+                              }));
+                        return /* Update */Block.__(0, [/* Loaded */Block.__(1, [newList])]);
+                      }
                   case 2 : 
                       return /* Update */Block.__(0, [/* Loaded */Block.__(1, [action[0]])]);
                   case 3 : 

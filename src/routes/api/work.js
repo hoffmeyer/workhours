@@ -36,25 +36,28 @@ router.get('/', isLoggedInApi, (req, res) => {
 
 router.post('/', isLoggedInApi, (req, res) => {
   const id: string = req.user.id;
-  const newWork: Work = req.body;
-  if (!newWork.start) {
+  const newwork: work = req.body;
+  if (!newwork.start) {
     return res.status(400).send({
-      message: "New work must have a start time"
+      message: "work must have a start time"
     });
   }
 
   // needed because otherwiser it fucks up the timezone in the db
-  newWork.start = new Date(newWork.start);
+  newwork.start = new Date(newwork.start);
 
-  newWork.userid = id;
-  work.insert(newWork).then(id => {
-    newWork.id = id;
-    res.json(newWork);
-  });
-  work.all(id).then(data => res.json(data))
-    .catch(error => {
-      winston.log('Error when calling work.all from api', error.message);
+  if(newwork.id) {
+    work.update(newwork).then(()=>{
+      res.json(newwork);
     });
+  } else {
+  newwork.userid = id;
+  work.insert(newwork).then(id => {
+    newwork.id = id;
+    res.json(newwork);
+  });
+
+  }
 });
 
 // get the work registered in the current week plus the last 3 full weeks
