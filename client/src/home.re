@@ -33,12 +33,22 @@ let diffInHours = (d1, d2) =>
 let roundToQuarters = v => Js.Math.round(v *. 4.) /. 4.;
 
 let dateToDiff = d =>
-  diffInHours(d, Js.Date.make()) |> roundToQuarters |> string_of_float;
+  diffInHours(d, Js.Date.make()) |> roundToQuarters;
 
 let inProgressWorkToday = l =>
   l |> unfinishedWork |> latestOnDate(Js.Date.make());
 
 let component = ReasonReact.reducerComponent("Home");
+
+let workInProgressToUpdatedWork = (inProgress, hours) =>
+            {
+              id: inProgress.id,
+              start: inProgress.start,
+              duration: hours,
+              lunch: hours > 4. ? 0.5 : 0.,
+              userid: inProgress.userid,
+            };
+
 
 let make =
     (~workList: array(work), ~handleAction: Types.action => unit, _children) => {
@@ -46,7 +56,45 @@ let make =
   initialState: _state => Initial,
   reducer: (action, _state) =>
     switch (action) {
-    | StopWork => ReasonReact.Update(Stopping)
+    | StopWork => ReasonReact.UpdateWithSideEffects(
+      Stopping,
+      (
+        self => {
+          switch(workList |> inProgressWorkToday) {
+          | None => self.send(Failed("Trying to stop work not in progress"))
+          | Some(inProgress) =>
+
+          Js.Promise.(
+            Fetch.fetchWithInit(
+              "/api/work",
+              Fetch.RequestInit.make(
+                ~method_=Post,
+                ~body=Fetch.BodyInit.make(
+                  workInProgressToUpdatedWork(inProgress, inProgress.start |> dateToDiff) |> Encode.work |> Js.Json.stringify
+                ),
+                ~headers=Fetch.HeadersInit.make({
+                      "Content-Type": "application/json",
+                }),
+                ()
+              )
+            )
+            |> then_(res => Fetch.Response.json(res))
+              |> then_(json =>
+                   json
+                   |> Decode.work
+                   |> (work => self.send(WorkStopped(work)))
+                   |> resolve
+                 )
+              |> catch(err => {
+                   Js.log2("Error starting work: ", err);
+                   resolve(self.send(Failed("Error starting work")));
+                 })
+              |> ignore
+          );
+          }
+        }
+      )
+    )
     | WorkStopped(work) =>
       handleAction(Types.WorkUpdate(work));
       ReasonReact.Update(Initial);
@@ -114,7 +162,7 @@ let make =
           </div>
         | Some(w) =>
           <div>
-            <p> (str((w.start |> dateToDiff) ++ " hours and counting")) </p>
+            <p> (str((w.start |> dateToDiff |> string_of_float) ++ " hours and counting")) </p>
             <button onClick=(_evt => self.send(StopWork))>
               (str("Stop work"))
             </button>

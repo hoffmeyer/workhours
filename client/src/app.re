@@ -60,6 +60,15 @@ let make = (~currentRoute, _children) => {
         ReasonReact.Update(Loaded(workList));
       | _ => ReasonReact.Update(Error("Failed to add new work"))
       }
+    | WorkUpdate(work) =>
+      switch (state) {
+      | Loaded(workList) =>
+        let newList = Js.Array.map(w => if(w.id == work.id){
+          work
+        } else w, workList);
+        ReasonReact.Update(Loaded(newList));
+      | _ => ReasonReact.Update(Error("Failed to update work"))
+      }
     },
   didMount: self => {
     let handleAction = action => self.send(action);
