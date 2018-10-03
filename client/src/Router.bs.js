@@ -4,6 +4,7 @@
 var Cn = require("re-classnames/src/Cn.bs.js");
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
+var ReactDOMRe = require("reason-react/src/ReactDOMRe.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Config$Workhours = require("./Config.bs.js");
 
@@ -62,13 +63,16 @@ function make$1(route, $staropt$star, children) {
           /* shouldUpdate */component$1[/* shouldUpdate */8],
           /* render */(function (self) {
               var href = Config$Workhours.routeToString(route);
-              return ReasonReact.createDomElement("a", {
+              var onClick = function (handle) {
+                return Curry._1(handle, (function ($$event, _) {
+                              $$event.preventDefault();
+                              return ReasonReact.Router[/* push */0](href);
+                            }));
+              };
+              return ReactDOMRe.createElementVariadic("a", {
                           className: className,
                           href: href,
-                          onClick: Curry._1(self[/* handle */0], (function ($$event, _) {
-                                  $$event.preventDefault();
-                                  return ReasonReact.Router[/* push */0](href);
-                                }))
+                          onClick: onClick(self[/* handle */0])
                         }, children);
             }),
           /* initialState */component$1[/* initialState */10],

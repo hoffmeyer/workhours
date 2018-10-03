@@ -68,7 +68,7 @@ let make = _children => {
           event =>
             send(
               UsernameKeyDown(
-                ReactDOMRe.domElementToObj(ReactEventRe.Form.target(event))##value,
+                ReactEvent.Form.target(event)##value,
               ),
             )
         )
@@ -79,7 +79,7 @@ let make = _children => {
           event =>
             send(
               PasswordKeyDown(
-                ReactDOMRe.domElementToObj(ReactEventRe.Form.target(event))##value,
+                ReactEvent.Form.target(event)##value,
               ),
             )
         )
