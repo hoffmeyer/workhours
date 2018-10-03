@@ -13,11 +13,12 @@ module WithRouter = {
       switch (action) {
       | ChangeUrl(route) => ReasonReact.Update({currentRoute: route})
       },
-    didMount: (self) => {
-          let watchId = ReasonReact.Router.watchUrl(url =>
-            self.send(ChangeUrl(url |> Config.urlToRoute))
-          );
-        self.onUnmount(() => ReasonReact.Router.unwatchUrl(watchId) );
+    didMount: self => {
+      let watchId =
+        ReasonReact.Router.watchUrl(url =>
+          self.send(ChangeUrl(url |> Config.urlToRoute))
+        );
+      self.onUnmount(() => ReasonReact.Router.unwatchUrl(watchId));
     },
     render: ({state}) => children(~currentRoute=state.currentRoute),
   };
@@ -29,19 +30,12 @@ module Link = {
     ...component,
     render: self => {
       let href = Config.routeToString(route);
-      ReasonReact.createDomElement(
-        "a",
-        ~props={
-          "className": className,
-          "href": href,
-          "onClick":
-            self.handle((event, _self) => {
-              event -> ReactEvent.Mouse.preventDefault;
-              ReasonReact.Router.push(href);
-            }),
-        },
-        children,
-      );
+      let onClick = handle =>
+        handle((event, _self) => {
+          event->ReactEvent.Mouse.preventDefault;
+          ReasonReact.Router.push(href);
+        });
+      <a className onClick={onClick(self.handle)} href> ...children </a>;
     },
   };
 };
@@ -52,7 +46,7 @@ module NavLink = {
     ...component,
     render: _self =>
       <WithRouter>
-        ...(
+        ...{
              (~currentRoute) => {
                let activeRoute =
                  switch (activeRoute) {
@@ -66,7 +60,7 @@ module NavLink = {
                  ]);
                <Link route className> ...children </Link>;
              }
-           )
+           }
       </WithRouter>,
   };
 };

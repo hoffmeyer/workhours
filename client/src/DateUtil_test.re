@@ -77,7 +77,7 @@ test("End of week", (_) => {
       ~seconds=59.,
       (),
     );
-  setMilliseconds(endDate, 999.);
+  setMilliseconds(endDate, 999.) |> ignore;
   Expect.(
     expect(DateUtil.endOfWeek(startDate) |> Js.Date.toDateString)
     |> toBe(endDate |> toDateString)
@@ -96,7 +96,7 @@ test("End of week on end of week", (_) => {
       ~seconds=59.,
       (),
     );
-  setMilliseconds(endDate, 999.);
+  setMilliseconds(endDate, 999.) |> ignore;
   Expect.(
     expect(DateUtil.endOfWeek(startDate) |> Js.Date.toDateString)
     |> toBe(endDate |> toDateString)
@@ -115,7 +115,7 @@ test("End of week on start of week", (_) => {
       ~seconds=59.,
       (),
     );
-  setMilliseconds(endDate, 999.);
+  setMilliseconds(endDate, 999.) |> ignore;
   Expect.(
     expect(DateUtil.endOfWeek(startDate) |> Js.Date.toDateString)
     |> toBe(endDate |> toDateString)
