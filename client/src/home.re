@@ -47,85 +47,47 @@ let workInProgressToUpdatedWork = (inProgress, hours) => {
   userid: inProgress.userid,
 };
 
-let fetch = (method, body) =>
-  Fetch.RequestInit.make(
-    ~method_=method,
-    ~body=Fetch.BodyInit.make(body),
-    ~headers=Fetch.HeadersInit.make({"Content-Type": "application/json"}),
-    (),
+let stopWork = workList =>
+  ReasonReact.UpdateWithSideEffects(
+    Stopping,
+    self =>
+      switch (workList |> inProgressWorkToday) {
+      | None => self.send(Failed("Trying to stop work not in progress"))
+      | Some(inProgress) =>
+        Js.Promise.(
+          Work.save(inProgress)
+          |> then_(work => self.send(WorkStopped(work)) |> resolve)
+          |> catch(err => {
+               Js.log2("Error starting work: ", err);
+               resolve(self.send(Failed("Error starting work")));
+             })
+          |> ignore
+        )
+      },
   );
 
-let post = fetch(Post);
-
-let stopWork = workList => ReasonReact.UpdateWithSideEffects(
-        Stopping,
-        (
-          self =>
-            switch (workList |> inProgressWorkToday) {
-            | None =>
-              self.send(Failed("Trying to stop work not in progress"))
-            | Some(inProgress) =>
-              Js.Promise.(
-                Fetch.fetchWithInit(
-                  "/api/work",
-                  post(
-                    workInProgressToUpdatedWork(
-                      inProgress,
-                      inProgress.start |> dateToDiff,
-                    )
-                    |> Encode.work
-                    |> Js.Json.stringify,
-                  ),
-                )
-                |> then_(res => Fetch.Response.json(res))
-                |> then_(json =>
-                     json
-                     |> Decode.work
-                     |> (work => self.send(WorkStopped(work)))
-                     |> resolve
-                   )
-                |> catch(err => {
-                     Js.log2("Error starting work: ", err);
-                     resolve(self.send(Failed("Error starting work")));
-                   })
-                |> ignore
-              )
-            }
-        ),
+let startWork =
+  ReasonReact.UpdateWithSideEffects(
+    Starting,
+    self => {
+      let newWork = {
+        id: None,
+        start: Js.Date.make(),
+        duration: 0.,
+        lunch: 0.,
+        userid: None,
+      };
+      Js.Promise.(
+        Work.save(newWork)
+        |> then_(work => self.send(WorkStarted(work)) |> resolve)
+        |> catch(err => {
+             Js.log2("Error starting work: ", err);
+             resolve(self.send(Failed("Error starting work")));
+           })
+        |> ignore
       );
-
-let startWork = ReasonReact.UpdateWithSideEffects(
-        Starting,
-        (
-          self => {
-            let newWork = {
-              id: None,
-              start: Js.Date.make(),
-              duration: 0.,
-              lunch: 0.,
-              userid: None,
-            };
-            Js.Promise.(
-              Fetch.fetchWithInit(
-                "/api/work",
-                post(newWork |> Encode.work |> Js.Json.stringify),
-              )
-              |> then_(res => Fetch.Response.json(res))
-              |> then_(json =>
-                   json
-                   |> Decode.work
-                   |> (work => self.send(WorkStarted(work)))
-                   |> resolve
-                 )
-              |> catch(err => {
-                   Js.log2("Error starting work: ", err);
-                   resolve(self.send(Failed("Error starting work")));
-                 })
-              |> ignore
-            );
-          }
-        ),
-      );
+    },
+  );
 
 let make =
     (~workList: array(work), ~handleAction: Types.action => unit, _children) => {

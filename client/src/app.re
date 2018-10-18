@@ -56,7 +56,7 @@ let make = (~currentRoute, _children) => {
     | WorkAdd(work) =>
       switch (state) {
       | Loaded(workList) =>
-        Js.Array.push(work, workList);
+        Js.Array.push(work, workList) |> ignore;
         ReasonReact.Update(Loaded(workList));
       | _ => ReasonReact.Update(Error("Failed to add new work"))
       }
@@ -71,7 +71,6 @@ let make = (~currentRoute, _children) => {
       }
     },
   didMount: self => {
-    let handleAction = action => self.send(action);
     self.send(WorkFetch);
   },
   render: self =>
@@ -106,7 +105,7 @@ let make = (~currentRoute, _children) => {
             | Loaded(workList) =>
               <div>
                 (
-                  Config.routeToComponent(currentRoute, workList, action =>
+                  Config.routeToComponent(currentRoute, ~workList= workList, ~handleAction=action =>
                     self.send(action)
                   )
                 )
