@@ -3,9 +3,12 @@
 
 var List = require("bs-platform/lib/js/list.js");
 var $$Array = require("bs-platform/lib/js/array.js");
+var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
-var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
+var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
+var Js_primitive = require("bs-platform/lib/js/js_primitive.js");
 var DateUtil$Workhours = require("./DateUtil.bs.js");
 
 function str(prim) {
@@ -15,14 +18,15 @@ function str(prim) {
 var component = ReasonReact.statelessComponent("WorkList");
 
 function listWork(workList) {
-  return React.createElement("table", undefined, React.createElement("tbody", undefined, React.createElement("tr", undefined, React.createElement("th", undefined, "Start"), React.createElement("th", undefined, "Hours"), React.createElement("th", undefined, "Break"), React.createElement("th", undefined, "Total"), React.createElement("th", undefined), React.createElement("th", undefined)), Belt_Array.map(workList, (function (work) {
-                        var match = work[/* id */0];
-                        return React.createElement("tr", {
-                                    key: match !== undefined ? match : "0"
-                                  }, React.createElement("td", undefined, work[/* start */1].toString()), React.createElement("td", undefined, work[/* duration */2].toString()), React.createElement("td", undefined, work[/* lunch */3].toString()), React.createElement("td", undefined, (work[/* duration */2] - work[/* lunch */3]).toString()), React.createElement("td", undefined, React.createElement("a", {
-                                            href: "/edit"
-                                          }, "E")));
-                      }))));
+  var match = Belt_List.head(workList);
+  return React.createElement("div", undefined, match !== undefined ? React.createElement("h3", undefined, DateUtil$Workhours.dateToWeekNo(match[/* start */1]).toString()) : React.createElement("p", undefined, "Error"), React.createElement("table", undefined, React.createElement("tbody", undefined, React.createElement("tr", undefined, React.createElement("th", undefined, "Start"), React.createElement("th", undefined, "Hours"), React.createElement("th", undefined, "Break"), React.createElement("th", undefined, "Total"), React.createElement("th", undefined), React.createElement("th", undefined)), Belt_List.toArray(Belt_List.map(workList, (function (work) {
+                                var match = work[/* id */0];
+                                return React.createElement("tr", {
+                                            key: match !== undefined ? match : "0"
+                                          }, React.createElement("td", undefined, work[/* start */1].toString()), React.createElement("td", undefined, work[/* duration */2].toString()), React.createElement("td", undefined, work[/* lunch */3].toString()), React.createElement("td", undefined, (work[/* duration */2] - work[/* lunch */3]).toString()), React.createElement("td", undefined, React.createElement("a", {
+                                                    href: "/edit"
+                                                  }, "E")));
+                              }))))));
 }
 
 function workListToCurrentWeek(today, workList) {
@@ -38,10 +42,48 @@ function workListToCurrentWeek(today, workList) {
                 }))(workList);
 }
 
+function group(list, p) {
+  var match = Belt_List.head(list);
+  if (match !== undefined) {
+    var b = Js_primitive.valFromOption(match);
+    var comp = function (x) {
+      return Caml_obj.caml_equal(Curry._1(p, b), Curry._1(p, x));
+    };
+    var match$1 = Belt_List.partition(list, comp);
+    return Belt_List.concat(/* :: */[
+                match$1[0],
+                /* [] */0
+              ], group(match$1[1], p));
+  } else {
+    return /* [] */0;
+  }
+}
+
+function x(workList) {
+  return workList.map((function (x) {
+                return /* tuple */[
+                        DateUtil$Workhours.dateToWeekNo(x[/* start */1]),
+                        x
+                      ];
+              }));
+}
+
 function workArrayToHours(workList) {
   return List.fold_left((function (sum, work) {
                 return sum + work[/* duration */2];
               }), 0, workList);
+}
+
+function groupWorkByWeek(workList) {
+  return group(workList, (function (x) {
+                return DateUtil$Workhours.dateToWeekNo(x[/* start */1]);
+              }));
+}
+
+var test = groupWorkByWeek;
+
+function test2(workList, p) {
+  return Belt_List.map(groupWorkByWeek(workList), p);
 }
 
 function make(workList, _) {
@@ -56,7 +98,8 @@ function make(workList, _) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function () {
-              return React.createElement("div", undefined, React.createElement("h1", undefined, "Work"), listWork(workList), React.createElement("h2", undefined, "Hours this week"), React.createElement("p", undefined, workArrayToHours(workListToCurrentWeek(new Date(), $$Array.to_list(workList))).toString()));
+              var workList$1 = Belt_List.fromArray(workList);
+              return React.createElement("div", undefined, React.createElement("h1", undefined, "Work"), React.createElement("h2", undefined, "Hours this week"), React.createElement("p", undefined, workArrayToHours(workListToCurrentWeek(new Date(), $$Array.to_list(workList))).toString()), Belt_List.toArray(Belt_List.map(groupWorkByWeek(workList$1), listWork)));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],
@@ -69,6 +112,11 @@ exports.str = str;
 exports.component = component;
 exports.listWork = listWork;
 exports.workListToCurrentWeek = workListToCurrentWeek;
+exports.group = group;
+exports.x = x;
 exports.workArrayToHours = workArrayToHours;
+exports.groupWorkByWeek = groupWorkByWeek;
+exports.test = test;
+exports.test2 = test2;
 exports.make = make;
 /* component Not a pure module */
