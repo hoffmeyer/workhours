@@ -3,12 +3,11 @@
 
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
-var Fetch = require("bs-fetch/src/Fetch.js");
 var React = require("react");
 var Pervasives = require("bs-platform/lib/js/pervasives.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Js_primitive = require("bs-platform/lib/js/js_primitive.js");
-var Types$Workhours = require("./types.bs.js");
+var Work$Workhours = require("./Work.bs.js");
 var DateUtil$Workhours = require("./DateUtil.bs.js");
 
 function str(prim) {
@@ -57,6 +56,49 @@ function workInProgressToUpdatedWork(inProgress, hours) {
           /* userid */inProgress[/* userid */4]
         ];
 }
+
+function stopWork(workList) {
+  return /* UpdateWithSideEffects */Block.__(2, [
+            /* Stopping */2,
+            (function (self) {
+                var match = inProgressWorkToday(workList);
+                if (match !== undefined) {
+                  Work$Workhours.save(match).then((function (work) {
+                            return Promise.resolve(Curry._1(self[/* send */3], /* WorkStopped */Block.__(0, [work])));
+                          })).catch((function (err) {
+                          console.log("Error starting work: ", err);
+                          return Promise.resolve(Curry._1(self[/* send */3], /* Failed */Block.__(1, ["Error starting work"])));
+                        }));
+                  return /* () */0;
+                } else {
+                  return Curry._1(self[/* send */3], /* Failed */Block.__(1, ["Trying to stop work not in progress"]));
+                }
+              })
+          ]);
+}
+
+function startWork_001(self) {
+  var newWork_001 = /* start */new Date();
+  var newWork = /* record */[
+    /* id */undefined,
+    newWork_001,
+    /* duration */0,
+    /* lunch */0,
+    /* userid */undefined
+  ];
+  Work$Workhours.save(newWork).then((function (work) {
+            return Promise.resolve(Curry._1(self[/* send */3], /* WorkStarted */Block.__(2, [work])));
+          })).catch((function (err) {
+          console.log("Error starting work: ", err);
+          return Promise.resolve(Curry._1(self[/* send */3], /* Failed */Block.__(1, ["Error starting work"])));
+        }));
+  return /* () */0;
+}
+
+var startWork = /* UpdateWithSideEffects */Block.__(2, [
+    /* Starting */1,
+    startWork_001
+  ]);
 
 function make(workList, handleAction, _) {
   return /* record */[
@@ -113,55 +155,9 @@ function make(workList, handleAction, _) {
               if (typeof action === "number") {
                 switch (action) {
                   case 0 : 
-                      return /* UpdateWithSideEffects */Block.__(2, [
-                                /* Stopping */2,
-                                (function (self) {
-                                    var match = inProgressWorkToday(workList);
-                                    if (match !== undefined) {
-                                      var inProgress = match;
-                                      fetch("/api/work", Fetch.RequestInit[/* make */0](/* Post */2, {
-                                                        "Content-Type": "application/json"
-                                                      }, Js_primitive.some(JSON.stringify(Types$Workhours.Encode[/* work */0](workInProgressToUpdatedWork(inProgress, dateToDiff(inProgress[/* start */1]))))), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined)(/* () */0)).then((function (res) {
-                                                  return res.json();
-                                                })).then((function (json) {
-                                                var work = Types$Workhours.Decode[/* work */0](json);
-                                                return Promise.resolve(Curry._1(self[/* send */3], /* WorkStopped */Block.__(0, [work])));
-                                              })).catch((function (err) {
-                                              console.log("Error starting work: ", err);
-                                              return Promise.resolve(Curry._1(self[/* send */3], /* Failed */Block.__(1, ["Error starting work"])));
-                                            }));
-                                      return /* () */0;
-                                    } else {
-                                      return Curry._1(self[/* send */3], /* Failed */Block.__(1, ["Trying to stop work not in progress"]));
-                                    }
-                                  })
-                              ]);
+                      return stopWork(workList);
                   case 1 : 
-                      return /* UpdateWithSideEffects */Block.__(2, [
-                                /* Starting */1,
-                                (function (self) {
-                                    var newWork_001 = /* start */new Date();
-                                    var newWork = /* record */[
-                                      /* id */undefined,
-                                      newWork_001,
-                                      /* duration */0,
-                                      /* lunch */0,
-                                      /* userid */undefined
-                                    ];
-                                    fetch("/api/work", Fetch.RequestInit[/* make */0](/* Post */2, {
-                                                      "Content-Type": "application/json"
-                                                    }, Js_primitive.some(JSON.stringify(Types$Workhours.Encode[/* work */0](newWork))), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined)(/* () */0)).then((function (res) {
-                                                return res.json();
-                                              })).then((function (json) {
-                                              var work = Types$Workhours.Decode[/* work */0](json);
-                                              return Promise.resolve(Curry._1(self[/* send */3], /* WorkStarted */Block.__(2, [work])));
-                                            })).catch((function (err) {
-                                            console.log("Error starting work: ", err);
-                                            return Promise.resolve(Curry._1(self[/* send */3], /* Failed */Block.__(1, ["Error starting work"])));
-                                          }));
-                                    return /* () */0;
-                                  })
-                              ]);
+                      return startWork;
                   case 2 : 
                       return /* Update */Block.__(0, [/* Initial */0]);
                   
@@ -193,5 +189,7 @@ exports.dateToDiff = dateToDiff;
 exports.inProgressWorkToday = inProgressWorkToday;
 exports.component = component;
 exports.workInProgressToUpdatedWork = workInProgressToUpdatedWork;
+exports.stopWork = stopWork;
+exports.startWork = startWork;
 exports.make = make;
 /* component Not a pure module */

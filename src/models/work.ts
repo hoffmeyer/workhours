@@ -35,12 +35,12 @@ export default {
         "' ORDER BY start",
       )
       .then(one => {
-        winston.log('info', 'getWorkFromDate returned: ' + util.inspect(one));
+        log('info', 'getWorkFromDate returned: ' + inspect(one));
         return one;
       })
       .catch(error => {
-        winston.log('error', 'getWorkFromDate from db failed: ' + error);
-        winston.log('error', error.message);
+        log('error', 'getWorkFromDate from db failed: ' + error);
+        log('error', error.message);
       });
   },
 
