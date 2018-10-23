@@ -1,6 +1,7 @@
 import {Router} from 'express';
 
 import work from '../models/work';
+import {Work} from '../types';
 import {isLoggedIn} from '../util/auth';
 import {workToUiWork} from '../types';
 
@@ -13,7 +14,7 @@ router.get('/', isLoggedIn, (req, res, next) => {
 router.get('/:id', isLoggedIn, (req, res, next) => {
   const id: string = req.params.id;
   work.fromId(id).then(work => {
-    if (work != null) {
+    if (work) {
       res.render('work', workToUiWork(work));
     } else {
       res.render('nowork');

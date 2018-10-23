@@ -116,7 +116,7 @@ export default {
           date +
           "' AND userid='" +
           userid +
-          "' ORDER BY start",
+          "' ORDER BY start DESC",
       )
       .then(any => {
         log(

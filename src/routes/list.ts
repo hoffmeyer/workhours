@@ -65,17 +65,16 @@ router.get('/', isLoggedIn, (req, res) => {
     .fromDateToNow(startOfWeek, req.user.id)
     .then(
       R.pipe(
+        work => work ? work : [],
         R.map(workToUiWork),
         R.groupBy(workToWeek),
-        R.toPairs,
-        R.reverse,
-        R.fromPairs,
       ),
     )
     .then(uiWorksByWeek => {
       mWork
         .all(req.user.id)
         .then(work => {
+          work = work ? work : [];
           const workToNormalHours = R.pipe(
             trimEnd,
             toStartAndEndDate,
