@@ -108,26 +108,25 @@ let make =
     },
   render: self =>
     <div>
-      <h1> {str("Home page")} </h1>
       {
         switch (workList |> inProgressWorkToday) {
         | None =>
           <div>
-            <p> {str("You are not working")} </p>
+            <h1> {str("You are not working")} </h1>
             <button onClick=(_evt => self.send(StartWork))>
               {str("Start work")}
             </button>
           </div>
         | Some(w) =>
           <div>
-            <p>
+            <h1>
               {
                 str(
                   (w.start |> dateToDiff |> string_of_float)
                   ++ " hours and counting",
                 )
               }
-            </p>
+            </h1>
             <button onClick=(_evt => self.send(StopWork))>
               {str("Stop work")}
             </button>

@@ -62,7 +62,7 @@ let dateToWeekNo = date => {
   /* Make Sunday's day number 7 */
   let dayOfWeek = getUTCDay(d);
   Js.log("dayOfWeek: " ++ Js.Float.toString(dayOfWeek));
-  setUTCDate(d, getUTCDate(d) +. 4. -. (dayOfWeek != 0. ? dayOfWeek : 7.))
+  setUTCDate(d, getUTCDate(d) +. 4. -. dayOfWeek )
   |> ignore;
   /* Get first day of year */
   let yearStart =
