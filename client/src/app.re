@@ -75,9 +75,9 @@ let make = (~currentRoute, _children) => {
   },
   render: self =>
     <div className="App">
-      <div className="App-header">
-        <h2> (ReasonReact.string("Workhours")) </h2>
-      </div>
+      <header>
+        <h1> (ReasonReact.string("Workhours")) </h1>
+      </header>
       <div>
         <nav>
           <ul className="navigation">
@@ -98,7 +98,7 @@ let make = (~currentRoute, _children) => {
             </li>
           </ul>
         </nav>
-        <main>
+        <section>
           (
             switch (self.state) {
             | Loading => <p> (str("Loading")) </p>
@@ -113,7 +113,7 @@ let make = (~currentRoute, _children) => {
             | Error(msg) => <div> (str(msg)) </div>
             }
           )
-        </main>
+        </section>
       </div>
     </div>,
 };

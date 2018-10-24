@@ -1,32 +1,133 @@
-.App {
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+input,
+button {
+  font-size: 3vmin;
+  font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
+}
+
+input {
+  width: 100%;
+  margin: 0 0 1em 0;
+}
+
+a {
+  color: #00b7ff;
+}
+
+h1,
+h2,
+h3 {
   text-align: center;
 }
 
-.App-header {
-  background-color: #222;
-  padding: 20px;
-  color: white;
-  font-size: 3em;
+table {
+  border-collapse: collapse;
 }
 
-.App-intro {
-  font-size: large;
+th,
+td {
+  padding: 0.2em 0.4em;
 }
 
-.navigation {
-  margin: 0;
-  padding: 1em 0;
-  background-color: grey;
-}
-
-.navigation li {
-  display: inline;
-}
- 
-.navigation li a {
-  color: #fff;
-  padding: 0.2em 0.5em;
-  text-decoration: none;
-  font-size: 1.2em;
+.bold {
   font-weight: bold;
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
+
+.borderTop {
+  border-top: 1px solid black;
+}
+
+.borderBottom {
+  border-bottom: 1px solid black;
+}
+
+header {
+  text-align: center;
+  border-bottom: 1px solid black;
+  text-transform: uppercase;
+}
+
+section {
+  padding: 1em;
+  margin-bottom: 4em;
+}
+
+nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid black;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  justify-content: space-around;
+  height: 100%;
+  text-transform: uppercase;
+}
+
+nav ul li {
+  flex: 1 1 100%;
+  text-align: center;
+}
+
+nav a {
+  display: block;
+  background-color: lightgray;
+  color: black;
+  text-decoration: none;
+  font-size: 1.6em;
+  border: 1px solid black;
+  height: 100%;
+  line-height: 2.5em;
+}
+
+nav a:hover {
+  background-color: darkgray;
+  color: white;
+}
+
+#startStop {
+  display: block;
+  font-size: 2em;
+  padding: 0.5em 1em;
+  margin: 0 auto;
+  box-shadow: 2px 2px 5px black;
+  background-color: lightgray;
+}
+
+#startStop:hover {
+  background-color: darkgray;
+  box-shadow: 2px 2px 3px black;
+}
+
+#workList {
+  margin: 0 auto;
+}
+
+/* Register update work */
+#registerHours {
+  max-width: 500px;
+  margin: 0 auto;
+}
+#registerHours button {
+  width: 100%;
 }

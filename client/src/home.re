@@ -113,8 +113,8 @@ let make =
         | None =>
           <div>
             <h1> {str("You are not working")} </h1>
-            <button onClick=(_evt => self.send(StartWork))>
-              {str("Start work")}
+            <button id="startStop" onClick=(_evt => self.send(StartWork))>
+              {str("Start working")}
             </button>
           </div>
         | Some(w) =>
@@ -127,8 +127,8 @@ let make =
                 )
               }
             </h1>
-            <button onClick=(_evt => self.send(StopWork))>
-              {str("Stop work")}
+            <button id="startStop" onClick=(_evt => self.send(StopWork))>
+              {str("Stop working")}
             </button>
           </div>
         }
