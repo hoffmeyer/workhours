@@ -28,6 +28,7 @@ let make = (~currentRoute, _children) => {
                    switch (status) {
                    | 200 => Fetch.Response.json(res)
                    | 401 =>
+                     self.send(WorkFetched([||]))
                      ReasonReact.Router.push("/login");
                      Js.Exn.raiseError(Fetch.Response.statusText(res));
                    | _ => Js.Exn.raiseError(Fetch.Response.statusText(res))
@@ -39,14 +40,6 @@ let make = (~currentRoute, _children) => {
                    |> (work => self.send(WorkFetched(work)))
                    |> resolve
                  )
-              |> catch(err => {
-                   Js.log2("Error loading latest work: ", err);
-                   resolve(
-                     self.send(
-                       WorkFetchFailed("Error loading leatest work"),
-                     ),
-                   );
-                 })
               |> ignore
             )
         ),
