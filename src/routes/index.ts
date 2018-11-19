@@ -1,16 +1,16 @@
-// @flow
-
 import {Router} from 'express';
-import R from 'ramda';
-import moment from 'moment';
+import {pipe} from 'ramda';
+import * as moment from 'moment';
+import {log} from 'winston';
 
-import {type Work, workToUiWork} from '../types';
+import {Work, workToUiWork} from '../types';
 import mWork from '../models/work';
 import {isLoggedIn} from '../util/auth';
 
 let router = Router();
 
-const inProgressOrNew: (?Work) => Work = work => {
+const inProgressOrNew: (Work) => Work = work => {
+  log('info', 'inProgressOrNew');
   if (work == null || work.duration != 0) {
     const defaultWork: Work = {
       id: null,
@@ -31,7 +31,8 @@ const setUser = (work: Work, userid: string) => {
   };
 };
 
-const updateDurationAndLunch: Work => Work = work => {
+const updateDurationAndLunch = work => {
+  log('info', 'updateDurationAndLunch');
   if (work.id == null) {
     return work;
   } else {
@@ -46,9 +47,10 @@ const updateDurationAndLunch: Work => Work = work => {
 
 router.get('/', isLoggedIn, (req, res, next) => {
   const date: string = moment(new Date()).format('YYYY-MM-DD');
+  log('info', 'This is from the index route');
   mWork
     .fromDate(date, req.user.id)
-    .then(R.pipe(inProgressOrNew, updateDurationAndLunch, workToUiWork))
+    .then(pipe(inProgressOrNew, updateDurationAndLunch, workToUiWork))
     .then(data => res.render('index', setUser(data, req.user.id)))
     .catch(e => 'Failed to fetch new Hour: ' + e);
 });

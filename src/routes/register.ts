@@ -1,7 +1,6 @@
-// @flow
 import {Router} from 'express';
 
-import {type UiWork, type Work, uiWorkToWork} from '../types';
+import {UiWork, Work, uiWorkToWork} from '../types';
 import work from '../models/work';
 import {isLoggedIn} from '../util/auth';
 

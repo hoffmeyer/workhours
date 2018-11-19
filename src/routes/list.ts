@@ -1,12 +1,7 @@
-// @flow
-
-import util from 'util';
-
 import {Router} from 'express';
-import R from 'ramda';
-import moment from 'moment';
-
-import {type UiWork, type Work, workToUiWork} from '../types';
+import * as R from 'ramda';
+import * as moment from 'moment';
+import {UiWork, Work, workToUiWork} from '../types';
 import mWork from '../models/work';
 import {isLoggedIn} from '../util/auth';
 
@@ -16,7 +11,7 @@ let router = Router();
 // impossible to reorder the array
 const workToWeek = (work: UiWork): string => moment(work.start).isoWeek() + ' ';
 const startOfWeek: string = moment()
-  .startOf('isoweek')
+  .startOf('isoWeek')
   .subtract(21, 'days')
   .utcOffset('+01:00')
   .toString();

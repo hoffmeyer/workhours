@@ -1,5 +1,3 @@
-// @flow
-
 import {Router} from 'express';
 
 import work from '../models/work';

@@ -1,7 +1,5 @@
-// @flow
-
 import {Router} from 'express';
-import passport from 'passport';
+import {authenticate} from 'passport';
 
 const router = Router();
 
@@ -12,7 +10,7 @@ router.get('/', (req, res) => {
 
 router.post(
   '/',
-  passport.authenticate('local', {
+  authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true,

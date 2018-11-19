@@ -1,14 +1,11 @@
-// @flow
-import util from 'util';
-
-import winston from 'winston';
-import uuidV4 from 'uuid/v4';
-
-import type {Work} from '../types';
+import {inspect} from 'util';
+import {log} from 'winston';
+import * as uuidV4 from 'uuid/v4';
+import {Work} from '../types';
 import db from '../db.js';
 
 export default {
-  fromDate: (date: string, userId: string): Promise<?Work> => {
+  fromDate: (date: string, userId: string): Promise<void | Work> => {
     return db
       .oneOrNone(
         "SELECT * FROM work where start::date = '" +
@@ -18,16 +15,16 @@ export default {
           "' ORDER BY start DESC LIMIT 1",
       )
       .then(one => {
-        winston.log('info', 'getWorkFromDate returned: ' + util.inspect(one));
+        log('info', 'getWorkFromDate returned: ' + inspect(one));
         return one;
       })
       .catch(error => {
-        winston.log('error', 'getWorkFromDate from db failed: ' + error);
-        winston.log('error', error.message);
+        log('error', 'getWorkFromDate from db failed: ' + error);
+        log('error', error.message);
       });
   },
 
-  fromId: (id: string): Promise<?Work> => {
+  fromId: (id: string): Promise<void | Work> => {
     return db
       .oneOrNone(
         "SELECT * FROM work where id = '" +
@@ -35,12 +32,12 @@ export default {
           "' ORDER BY start DESC LIMIT 1",
       )
       .then(one => {
-        winston.log('info', 'getWorkFromId returned: ' + util.inspect(one));
+        log('info', 'getWorkFromId returned: ' + inspect(one));
         return one;
       })
       .catch(error => {
-        winston.log('error', 'getWorkFromId from db failed: ' + error);
-        winston.log('error', error.message);
+        log('error', 'getWorkFromId from db failed: ' + error);
+        log('error', error.message);
       });
   },
 
@@ -51,11 +48,11 @@ export default {
         [uuidV4(), work.start, work.duration, work.lunch, work.userid],
       )
       .then(() => {
-        winston.log('info', 'Insert successfull');
+        log('info', 'Insert successfull');
       })
       .catch(error => {
-        winston.log('error', 'insertWork db failed: ' + error);
-        winston.log('error', error.message);
+        log('error', 'insertWork db failed: ' + error);
+        log('error', error.message);
       });
   },
 
@@ -63,14 +60,14 @@ export default {
     return db
       .none('DELETE from work where id = $1;', [id])
       .then(() => {
-        winston.log('info', 'deleted work with id: ' + id);
+        log('info', 'deleted work with id: ' + id);
       })
       .catch(error => {
-        winston.log(
+        log(
           'error',
           'Deleting work with id ' + id + ' failed: ' + error,
         );
-        winston.log('error', error.message);
+        log('error', error.message);
       });
   },
 
@@ -81,38 +78,38 @@ export default {
         [work.id, work.start, work.duration, work.lunch, work.userid],
       )
       .then(() => {
-        winston.log('info', 'updateWork successfull');
+        log('info', 'updateWork successfull');
       })
       .catch(error => {
-        winston.log(
+        log(
           'error',
           'Updating work with id ' +
             (work.id != null ? work.id : 'null') +
             ' failed: ' +
             error,
         );
-        winston.log('error', error.message);
+        log('error', error.message);
       });
   },
 
-  all: (userid: string): Promise<Array<Work>> => {
+  all: (userid: string): Promise<void | Work[]> => {
     return db
       .any(
         "SELECT * FROM work WHERE userid='" + userid + "' ORDER BY start DESC",
       )
       .then(any => {
-        winston.log(
+        log(
           'info',
           'query all work successfull, ' + any.length + ' items',
         );
         return any;
       })
       .catch(error => {
-        winston.log('error', error.message);
+        log('error', error.message);
       });
   },
 
-  fromDateToNow: (date: string, userid: string): Promise<Array<Work>> => {
+  fromDateToNow: (date: string, userid: string): Promise<void | Work[]> => {
     return db
       .any(
         "SELECT * FROM work WHERE start::date >= '" +
@@ -122,14 +119,14 @@ export default {
           "' ORDER BY start",
       )
       .then(any => {
-        winston.log(
+        log(
           'info',
           'query getWorkFromDateToNow successfull, ' + any.length + ' items',
         );
         return any;
       })
       .catch(error => {
-        winston.log('error', error.message);
+        log('error', error.message);
       });
   },
 };

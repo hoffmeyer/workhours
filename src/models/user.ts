@@ -1,8 +1,5 @@
-// @flow
-
-import winston from "winston";
-
-import type { User } from "../types";
+import * as winston from "winston";
+import { User } from "../types";
 import db from "../db.js";
 
 const byId = (id: string): Promise<User> => {

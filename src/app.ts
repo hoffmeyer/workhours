@@ -1,15 +1,15 @@
-// @flow
-import fs from "fs";
-import path from "path";
+import 'source-map-support/register';
+import {readFileSync} from "fs";
+import {join} from "path";
 
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
-import express from "express";
-import logger from "morgan";
-import passport from "passport";
-import passportLocal from "passport-local";
-import session from "express-session";
-import winston from "winston";
+import * as bodyParser from "body-parser";
+import * as cookieParser from "cookie-parser";
+import * as express from "express";
+import * as logger from "morgan";
+import * as passport from "passport";
+import {Strategy as LocalStrategy} from "passport-local";
+import * as session from "express-session";
+import {log, add, remove, transports} from "winston";
 
 import db from "./db.js";
 import deleteWork from "./routes/delete";
@@ -20,15 +20,14 @@ import mUser from "./models/user";
 import register from "./routes/register";
 import work from "./routes/work";
 
-winston.remove(winston.transports.Console);
-winston.add(winston.transports.Console, { timestamp: true });
-winston.level = process.env.LOG_LEVEL || "info";
+remove(transports.Console);
+add(transports.Console, { timestamp: true });
+//level = process.env.LOG_LEVEL || "info";
 
 const app = express();
-const LocalStrategy = passportLocal.Strategy;
 
 // view engine setup
-app.set("views", path.join(__dirname, "../views"));
+app.set("views", join(__dirname, "../views"));
 app.set("view engine", "pug");
 
 // uncomment after placing your favicon in /public
@@ -47,7 +46,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(join(__dirname, "public")));
 
 passport.serializeUser(function(user, done) {
   console.log("serializing auth");
@@ -110,9 +109,9 @@ app.use(function(err: Error, req, res, next) {
   res.render("error");
 });
 
-const sql = fs.readFileSync(path.join(__dirname, "..", "database.sql"), "utf8");
+const sql = readFileSync(join(__dirname, "..", "database.sql"), "utf8");
 db.none(sql).catch(e => {
-  winston.log("error", "" + e);
+  log("error", "" + e);
 });
 
 export default app;

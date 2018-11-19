@@ -1,8 +1,4 @@
-// @flow
-
-import util from 'util';
-
-import moment from 'moment';
+import * as moment from 'moment';
 
 export type User = {
   id: string,
@@ -13,7 +9,7 @@ export type User = {
 };
 
 export type Work = {
-  id: ?string,
+  id?: string,
   start: Date,
   duration: number,
   lunch: number,
@@ -21,7 +17,7 @@ export type Work = {
 };
 
 export type UiWork = {
-  id: ?string,
+  id?: string,
   start: Date,
   startDate: string,
   startTime: string,
