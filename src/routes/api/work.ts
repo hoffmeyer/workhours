@@ -1,22 +1,13 @@
-// @flow
-
-import {
-  Router
-} from 'express';
+import { Router } from 'express';
 import work from '../../models/work';
-import type {
-  Work
-} from '../../types';
-import moment from 'moment';
-import {
-  isLoggedInApi
-} from '../../util/auth';
-import winston from 'winston';
+import { Work } from '../../types';
+import * as moment from 'moment';
+import { isLoggedInApi } from '../../util/auth';
 
 let router = Router();
 
 const currentWeekAndThreeWeeksBack: string = moment()
-  .startOf('isoweek')
+  .startOf('isoWeek')
   .subtract(21, 'days')
   .utcOffset('+01:00')
   .toString();
@@ -36,7 +27,7 @@ router.get('/', isLoggedInApi, (req, res) => {
 
 router.post('/', isLoggedInApi, (req, res) => {
   const id: string = req.user.id;
-  const newwork: work = req.body;
+  const newwork: Work = req.body;
   if (!newwork.start) {
     return res.status(400).send({
       message: "work must have a start time"
