@@ -8,7 +8,7 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as passport from "passport";
 import {Strategy as LocalStrategy} from "passport-local";
-import {Strategy as BasicStrategy} from "passport-http";
+import {BasicStrategy} from "passport-http";
 import * as session from "express-session";
 import {log, add, remove, transports} from "winston";
 

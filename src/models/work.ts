@@ -23,7 +23,7 @@ export default {
         log('error', error.message);
       });
   },
-  get: (userId: string, from: Date, to: Date): Promise < ? Work > => {
+  get: (userId: string, from: Date, to: Date): Promise < void | Work > => {
     return db
       .oneOrNone(
         "SELECT * FROM work where start::date >= '" +
