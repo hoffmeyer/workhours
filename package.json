@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "build": "tsc",
-    "dev": "concurrently \"npm run tsc -- -w\" \"nodemon --ignore /src/** dist/server.js\""
+    "build": "cp -r ./src/public ./dist/ && tsc",
+    "dev": "concurrently \"npm run build -- -w\" \"nodemon --ignore /src/** dist/server.js\""
   },
   "dependencies": {
     "babel-preset-env": "^1.7.0",
@@ -19,22 +19,22 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "pg-promise": "^6.10.3",
-    "pug": "^2.0.0-rc.4",
+    "pug": "^2.0.3",
     "ramda": "^0.24.1",
-    "serve-favicon": "^2.4.5",
-    "uuid": "^3.1.0",
+    "serve-favicon": "^2.5.0",
+    "uuid": "^3.3.2",
     "winston": "^2.4.0"
   },
   "devDependencies": {
     "@types/moment": "^2.13.0",
-    "@types/node": "^10.12.9",
+    "@types/node": "^10.12.10",
     "@types/ramda": "^0.25.42",
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-latest-minimal": "^1.1.2",
-    "concurrently": "^3.5.0",
-    "nodemon": "^1.18.6",
-    "prettier": "^1.7.4",
+    "concurrently": "^3.6.1",
+    "nodemon": "^1.18.7",
+    "prettier": "^1.15.2",
     "source-map-support": "^0.5.9",
     "typescript": "^3.1.6",
     "typescript-eslint-parser": "^21.0.1"
