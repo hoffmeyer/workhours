@@ -37,7 +37,6 @@ let dateToDiff = d => diffInHours(d, Js.Date.make()) |> roundToQuarters;
 let inProgressWorkToday = l =>
   l |> unfinishedWork |> latestOnDate(Js.Date.make());
 
-let component = ReasonReact.reducerComponent("Home");
 
 let workInProgressToUpdatedWork = (inProgress, hours) => {
   id: inProgress.id,
@@ -88,6 +87,8 @@ let startWork =
       );
     },
   );
+
+let component = ReasonReact.reducerComponent("Home");
 
 let make =
     (~workList: array(work), ~handleAction: Types.action => unit, _children) => {

@@ -26,7 +26,7 @@ let routeToComponent =
     (route: routes, ~workList: array(work), ~handleAction: action => unit) =>
   switch (route) {
   | Home => <Home workList handleAction />
-  | Edit => <NewWork />
+  | Edit => <NewWork handleAction />
   | List => <WorkList workList />
   | Login => <Login />
   };
