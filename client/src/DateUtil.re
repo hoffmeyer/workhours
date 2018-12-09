@@ -61,19 +61,16 @@ let dateToWeekNo = date => {
   /* Set to nearest Thursday: current date + 4 - current day number */
   /* Make Sunday's day number 7 */
   let dayOfWeek = getUTCDay(d);
-  Js.log("dayOfWeek: " ++ Js.Float.toString(dayOfWeek));
   setUTCDate(d, getUTCDate(d) +. 4. -. dayOfWeek )
   |> ignore;
   /* Get first day of year */
   let yearStart =
     makeWithYMD(~year=getUTCFullYear(date), ~month=0., ~date=1., ());
-  Js.log("yearStart: " ++ Js.Date.toLocaleString(yearStart));
   /* Calculate full weeks to nearest Thursday */
   let weekNo =
     Js.Math.ceil(
       ((valueOf(d) -. valueOf(yearStart)) /. 86400000. +. 1.) /. 7.,
     );
   /* Return array of year and week number */
-  Js.log("Weekno: " ++ Js.Int.toString(weekNo));
   weekNo;
 };
