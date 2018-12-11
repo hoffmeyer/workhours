@@ -93,7 +93,7 @@ let component = ReasonReact.reducerComponent("Home");
 let make =
     (~workList: array(work), ~handleAction: Types.action => unit, _children) => {
   ...component,
-  initialState: _state => Initial,
+  initialState: () => Initial,
   reducer: (action, _state) =>
     switch (action) {
     | StopWork => stopWork(workList)

@@ -1,86 +1,49 @@
 open Types;
 
-type state = work;
+type state =
+  | Loading
+  | Loaded(work)
+  | Saving
+  | Failed(string);
 
 type action =
-  | ChangeStartDate(Js.Date.t)
-  | ChangeStartTime(Js.Date.t)
-  | ChangeDuration(float)
-  | ChangeLunch(float)
-  | SaveWork;
+  | SaveWork(work)
+  | LoadWork
+  | WorkLoaded(work);
 
 let component = ReasonReact.reducerComponent("NewWork");
 
 let str = ReasonReact.string;
 
-let createForm = (send, work) =>
-  <div>
-    <form id="registerHours">
-      <label htmlFor="startDate"> {"Start date" |> str} </label>
-      <DateInput
-        id="startDate"
-        value={work.start}
-        onChange={date => send(ChangeStartDate(date))}
-      />
-      <label htmlFor="startTime"> {"Start time" |> str} </label>
-      <TimeInput
-        id="startTime"
-        value={work.start}
-        onChange={date => send(ChangeStartTime(date))}
-      />
-      <label htmlFor="duration"> {"Duration" |> str} </label>
-      <input
-        id="duration"
-        value={work.duration |> Js.Float.toString}
-        onChange={
-          event =>
-            send(ChangeDuration(Js.Float.fromString(ReactEvent.Form.target(event)##value)))
-        }
-        type_="number"
-        min=0
-        step=0.05
-      />
-      <label htmlFor="lunch"> {"Lunch" |> str} </label>
-      <input
-        id="lunch"
-        value={work.lunch |> Js.Float.toString}
-        onChange={
-          event => send(ChangeLunch(Js.Float.fromString(ReactEvent.Form.target(event)##value)))
-        }
-        type_="number"
-        min=0
-        step=0.05
-      />
-      <button type_="button" onClick={_event => send(SaveWork)}> {"Add" |> str} </button>
-    </form>
-  </div>;
+let newWork = {
+  id: None,
+  start: Js.Date.make(),
+  duration: 0.,
+  lunch: 0.,
+  userid: None,
+};
 
 let make = (~handleAction: Types.action => unit, _children) => {
   ...component,
-  initialState: _state => {
-    id: None,
-    start: Js.Date.make(),
-    duration: 0.,
-    lunch: 0.,
-    userid: None,
-  },
-  reducer: (action, state) =>
+  initialState: () => Loading,
+  reducer: (action: action, _state: state) =>
     switch (action) {
-    | ChangeStartDate(date) => ReasonReact.Update({...state, start: date})
-    | ChangeStartTime(date) => ReasonReact.Update({...state, start: date})
-    | ChangeDuration(duration) => ReasonReact.Update({...state, duration})
-    | ChangeLunch(lunch) => ReasonReact.Update({...state, lunch})
-    | SaveWork =>
+    | LoadWork =>
       ReasonReact.UpdateWithSideEffects(
-        state,
+        Loading,
+        (self => self.send(WorkLoaded(newWork))),
+      )
+    | WorkLoaded(work) => ReasonReact.Update(Loaded(work))
+    | SaveWork(work) =>
+      ReasonReact.UpdateWithSideEffects(
+        Saving,
         (
           _self =>
             Js.Promise.(
-              Work.save(state)
+              Work.save(work)
               |> then_(work =>
                    handleAction(Types.WorkAdd(work))
-                   |> () => ReasonReact.Router.push("/")
-                   |> resolve
+                   |> (() => ReasonReact.Router.push("/") |> resolve)
                  )
               |> catch(err => {
                    Js.log2("Error starting work: ", err);
@@ -91,9 +54,19 @@ let make = (~handleAction: Types.action => unit, _children) => {
         ),
       )
     },
+  didMount: self => self.send(LoadWork),
   render: self =>
-    <div>
-      <h1> {ReasonReact.string("New registration")} </h1>
-      <div> {createForm(self.send, self.state)} </div>
-    </div>,
+    switch (self.state) {
+    | Loading => <h1> {str("Loading...")} </h1>
+    | Loaded(work) =>
+      <div>
+        <h1> {ReasonReact.string("New registration")} </h1>
+        <div>
+          <EditForm work submitAction=(work => self.send(SaveWork(work))) />
+        </div>
+      </div>
+    | Saving => <h1> {str("Saving...")} </h1>
+    | Failed(msg) =>
+      <div> <h1> {str("Failed")} </h1> <p> {str(msg)} </p> </div>
+    },
 };
