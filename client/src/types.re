@@ -7,7 +7,7 @@ type work = {
 };
 
 module Decode = {
-  let work = json : work =>
+  let work = json: work =>
     Json.Decode.{
       id: json |> optional(field("id", string)),
       start: json |> field("start", date),
@@ -15,7 +15,7 @@ module Decode = {
       lunch: json |> field("lunch", Json.Decode.float),
       userid: json |> optional(field("userid", string)),
     };
-  let workList = json : array(work) => Json.Decode.(json |> array(work));
+  let workList = json: array(work) => Json.Decode.(json |> array(work));
 };
 
 module Encode = {
@@ -36,4 +36,5 @@ type action =
   | WorkAdd(work)
   | WorkUpdate(work)
   | WorkFetched(array(work))
-  | WorkFetchFailed(string);
+  | WorkFetchFailed(string)
+  | WorkDelete(string);

@@ -37,18 +37,32 @@ router.post('/', isLoggedInApi, (req, res) => {
   // needed because otherwiser it fucks up the timezone in the db
   newwork.start = new Date(newwork.start);
 
-  if(newwork.id) {
-    work.update(newwork).then(()=>{
+  if (newwork.id) {
+    work.update(newwork).then(() => {
       res.json(newwork);
     });
   } else {
-  newwork.userid = id;
-  work.insert(newwork).then(id => {
-    newwork.id = id;
-    res.json(newwork);
-  });
+    newwork.userid = id;
+    work.insert(newwork).then(id => {
+      newwork.id = id;
+      res.json(newwork);
+    });
 
   }
+});
+
+router.delete('/', isLoggedInApi, (req, res) => {
+  type hasId = { id: string };
+  const workId: hasId = req.body;
+  if (!workId.id) {
+    return res.status(400).send({
+      message: "Please provide id of work to delete"
+    });
+  }
+
+  work.delete(workId.id).then(() => {
+    res.json({});
+  });
 });
 
 // get the work registered in the current week plus the last 3 full weeks

@@ -41,8 +41,8 @@ let make = (~handleAction: Types.action => unit, _children) => {
           _self =>
             Js.Promise.(
               Work.save(work)
-              |> then_(work =>
-                   handleAction(Types.WorkAdd(work))
+              |> then_(savedWork =>
+                   handleAction(Types.WorkAdd(savedWork))
                    |> (() => ReasonReact.Router.push("/") |> resolve)
                  )
               |> catch(err => {
