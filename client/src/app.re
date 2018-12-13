@@ -28,7 +28,7 @@ let make = (~currentRoute, _children) => {
                    switch (status) {
                    | 200 => Fetch.Response.json(res)
                    | 401 =>
-                     self.send(WorkFetched([||]))
+                     self.send(WorkFetched([||]));
                      ReasonReact.Router.push("/login");
                      Js.Exn.raiseError(Fetch.Response.statusText(res));
                    | _ => Js.Exn.raiseError(Fetch.Response.statusText(res))
@@ -56,56 +56,75 @@ let make = (~currentRoute, _children) => {
     | WorkUpdate(work) =>
       switch (state) {
       | Loaded(workList) =>
-        let newList = Js.Array.map(w => if(w.id == work.id){
-          work
-        } else w, workList);
+        let newList =
+          Js.Array.map(
+            w =>
+              if (w.id == work.id) {
+                work;
+              } else {
+                w;
+              },
+            workList,
+          );
         ReasonReact.Update(Loaded(newList));
       | _ => ReasonReact.Update(Error("Failed to update work"))
       }
+    | WorkDelete(id) =>
+      switch (state) {
+      | Loaded(workList) =>
+        let newList =
+          Js.Array.filter(
+            w =>
+              switch (w.id) {
+              | None => true
+              | Some(wId) => wId !== id
+              },
+            workList,
+          );
+        ReasonReact.Update(Loaded(newList));
+      | _ => ReasonReact.Update(Error("Failed to delete work"))
+      }
     },
-  didMount: self => {
-    self.send(WorkFetch);
-  },
+  didMount: self => self.send(WorkFetch),
   render: self =>
     <div className="App">
-      <header>
-        <h1> (ReasonReact.string("Workhours")) </h1>
-      </header>
+      <header> <h1> {ReasonReact.string("Workhours")} </h1> </header>
       <div>
         <nav>
           <ul className="navigation">
             <li>
               <Router.NavLink route=Config.Home>
-                (ReasonReact.string("Home"))
+                {ReasonReact.string("Home")}
               </Router.NavLink>
             </li>
             <li>
               <Router.NavLink route=Config.Edit>
-                (ReasonReact.string("Edit"))
+                {ReasonReact.string("Edit")}
               </Router.NavLink>
             </li>
             <li>
               <Router.NavLink route=Config.List>
-                (ReasonReact.string("List"))
+                {ReasonReact.string("List")}
               </Router.NavLink>
             </li>
           </ul>
         </nav>
         <section>
-          (
+          {
             switch (self.state) {
-            | Loading => <p> (str("Loading")) </p>
+            | Loading => <p> {str("Loading")} </p>
             | Loaded(workList) =>
               <div>
-                (
-                  Config.routeToComponent(currentRoute, ~workList= workList, ~handleAction=action =>
+                {
+                  Config.routeToComponent(
+                    currentRoute, ~workList, ~handleAction=action =>
                     self.send(action)
                   )
-                )
+                }
               </div>
-            | Error(msg) => <div> (str(msg)) </div>
+            | Error(msg) => <div> {str(msg)} </div>
             }
-          )
+          }
         </section>
       </div>
     </div>,
