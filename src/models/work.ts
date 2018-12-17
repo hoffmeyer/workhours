@@ -23,7 +23,7 @@ export default {
         log('error', error.message);
       });
   },
-  get: (userId: string, from: Date, to: Date): Promise < void | Work > => {
+  get: (userId: string, from: Date, to: Date): Promise<void | Work> => {
     return db
       .oneOrNone(
         "SELECT * FROM work where start::date >= '" +
@@ -61,14 +61,14 @@ export default {
       });
   },
 
-  insert: (work: Work): Promise < string > => {
+  insert: (work: Work): Promise<string> => {
     return db
       .one(
         'INSERT INTO work(id, start, duration, lunch, userid) VALUES($1, $2, $3, $4, $5) RETURNING id;', [uuidV4(), work.start, work.duration, work.lunch, work.userid],
       )
       .then(id => {
         log('info', 'Insert successfull');
-        return id;
+        return id.id;
       })
       .catch(error => {
         log('error', 'insertWork db failed: ' + error);
@@ -76,7 +76,7 @@ export default {
       });
   },
 
-  delete: (id: string): Promise < void > => {
+  delete: (id: string): Promise<void> => {
     return db
       .none('DELETE from work where id = $1;', [id])
       .then(() => {
@@ -91,7 +91,7 @@ export default {
       });
   },
 
-  update: (work: Work): Promise < void > => {
+  update: (work: Work): Promise<void> => {
     return db
       .none(
         'UPDATE work SET start=$2, duration=$3, lunch=$4, userid=$5 WHERE id=$1;', [work.id, work.start, work.duration, work.lunch, work.userid],
@@ -128,7 +128,7 @@ export default {
       });
   },
 
-  fromDateToNow: (date: string, userid: string): Promise < void | Work[] > => {
+  fromDateToNow: (date: string, userid: string): Promise<void | Work[]> => {
     return db
       .any(
         "SELECT * FROM work WHERE start::date >= '" +
