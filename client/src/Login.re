@@ -61,31 +61,24 @@ let make = _children => {
     },
   render: ({state, send}) =>
     <div>
-      <h1> (str("Login page")) </h1>
+      <h1> {str("Login page")} </h1>
       <input
-        value=state.username
-        onChange=(
+        value={state.username}
+        onChange={
           event =>
-            send(
-              UsernameKeyDown(
-                ReactEvent.Form.target(event)##value,
-              ),
-            )
-        )
+            send(UsernameKeyDown(ReactEvent.Form.target(event)##value))
+        }
       />
       <input
-        value=state.password
-        onChange=(
+        value={state.password}
+        type_="password"
+        onChange={
           event =>
-            send(
-              PasswordKeyDown(
-                ReactEvent.Form.target(event)##value,
-              ),
-            )
-        )
+            send(PasswordKeyDown(ReactEvent.Form.target(event)##value))
+        }
       />
-      <button onClick=(_event => send(LoginClicked))>
-        ("Login" |> str)
+      <button onClick={_event => send(LoginClicked)}>
+        {"Login" |> str}
       </button>
     </div>,
 };
