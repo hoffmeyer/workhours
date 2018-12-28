@@ -93,17 +93,17 @@ let make = (~currentRoute, _children) => {
         <nav>
           <ul className="navigation">
             <li>
-              <Router.NavLink route=Config.Home>
+              <Router.NavLink route=Router.Home>
                 {ReasonReact.string("Home")}
               </Router.NavLink>
             </li>
             <li>
-              <Router.NavLink route=Config.Edit>
+              <Router.NavLink route={Router.Edit(None)}>
                 {ReasonReact.string("Edit")}
               </Router.NavLink>
             </li>
             <li>
-              <Router.NavLink route=Config.List>
+              <Router.NavLink route=Router.List>
                 {ReasonReact.string("List")}
               </Router.NavLink>
             </li>
