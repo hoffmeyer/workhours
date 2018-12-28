@@ -49,8 +49,7 @@ let make = _children => {
                 ),
               )
               |> then_(Fetch.Response.text)
-              |> then_(text => {
-                   print_endline(text);
+              |> then_(_user => {
                    ReasonReact.Router.push("/");
                    resolve();
                  })
