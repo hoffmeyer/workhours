@@ -9,7 +9,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: [ 'style-loader', 'css-loader' ]
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
@@ -31,6 +31,7 @@ module.exports = {
     port: 3000,
     proxy: {
       '/api': 'http://localhost:5000'
-    }
+    },
+    historyApiFallback: true
   },
 };
