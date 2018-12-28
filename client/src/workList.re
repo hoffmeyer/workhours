@@ -9,6 +9,7 @@ type state =
 
 type action =
   | Delete(work)
+  | Edit(work)
   | Deleted
   | Failed(string);
 
@@ -52,7 +53,11 @@ let listWork = (send: action => unit, workList) =>
               <td className="right">
                 {work.duration -. work.lunch |> Js.Float.toString |> str}
               </td>
-              <td> <a href="/edit"> {ReasonReact.string("E")} </a> </td>
+              <td>
+                <a onClick={_event => send(Edit(work))}>
+                  {ReasonReact.string("E")}
+                </a>
+              </td>
               <td>
                 <a onClick={_event => send(Delete(work))}>
                   {ReasonReact.string("X")}
@@ -142,6 +147,15 @@ let make = (~handleAction, ~workList, _children) => {
         )
       }
     | Deleted => ReasonReact.Update(Initial)
+    | Edit(work) =>
+      ReasonReact.SideEffects(
+        (
+          _self =>
+            Router.Edit(work.id)
+            |> Router.routeToString
+            |> ReasonReact.Router.push
+        ),
+      )
     | Failed(msg) => ReasonReact.Update(Error(msg))
     },
   render: self =>

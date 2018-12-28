@@ -20,44 +20,64 @@ let make = (~work: work, ~submitAction: Types.work => unit, _children) => {
     | ChangeDuration(duration) => ReasonReact.Update({...state, duration})
     | ChangeLunch(lunch) => ReasonReact.Update({...state, lunch})
     },
-    render: self => <div>
-    <form id="registerHours">
-      <label htmlFor="startDate"> {"Start date" |> str} </label>
-      <DateInput
-        id="startDate"
-        value={self.state.start}
-        onChange={date => self.send(ChangeStartDate(date))}
-      />
-      <label htmlFor="startTime"> {"Start time" |> str} </label>
-      <TimeInput
-        id="startTime"
-        value={self.state.start}
-        onChange={date => self.send(ChangeStartTime(date))}
-      />
-      <label htmlFor="duration"> {"Duration" |> str} </label>
-      <input
-        id="duration"
-        value={self.state.duration |> Js.Float.toString}
-        onChange={
-          event =>
-            self.send(ChangeDuration(Js.Float.fromString(ReactEvent.Form.target(event)##value)))
-        }
-        type_="number"
-        min=0
-        step=0.05
-      />
-      <label htmlFor="lunch"> {"Lunch" |> str} </label>
-      <input
-        id="lunch"
-        value={self.state.lunch |> Js.Float.toString}
-        onChange={
-          event => self.send(ChangeLunch(Js.Float.fromString(ReactEvent.Form.target(event)##value)))
-        }
-        type_="number"
-        min=0
-        step=0.05
-      />
-      <button type_="button" onClick={_event => submitAction(self.state)}> {"Add" |> str} </button>
-    </form>
-  </div>
+  render: self =>
+    <div>
+      <form id="registerHours">
+        <label htmlFor="startDate"> {"Start date" |> str} </label>
+        <DateInput
+          id="startDate"
+          value={self.state.start}
+          onChange={date => self.send(ChangeStartDate(date))}
+        />
+        <label htmlFor="startTime"> {"Start time" |> str} </label>
+        <TimeInput
+          id="startTime"
+          value={self.state.start}
+          onChange={date => self.send(ChangeStartTime(date))}
+        />
+        <label htmlFor="duration"> {"Duration" |> str} </label>
+        <input
+          id="duration"
+          value={self.state.duration |> Js.Float.toString}
+          onChange={
+            event =>
+              self.send(
+                ChangeDuration(
+                  Js.Float.fromString(ReactEvent.Form.target(event)##value),
+                ),
+              )
+          }
+          type_="number"
+          min=0
+          step=0.05
+        />
+        <label htmlFor="lunch"> {"Lunch" |> str} </label>
+        <input
+          id="lunch"
+          value={self.state.lunch |> Js.Float.toString}
+          onChange={
+            event =>
+              self.send(
+                ChangeLunch(
+                  Js.Float.fromString(ReactEvent.Form.target(event)##value),
+                ),
+              )
+          }
+          type_="number"
+          min=0
+          step=0.05
+        />
+        <button type_="button" onClick={_event => submitAction(self.state)}>
+          {
+            (
+              switch (work.id) {
+              | None => "Add"
+              | Some(_) => "Save"
+              }
+            )
+            |> str
+          }
+        </button>
+      </form>
+    </div>,
 };

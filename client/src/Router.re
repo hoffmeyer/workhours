@@ -1,13 +1,37 @@
+type routes =
+  | Home
+  | Edit(option(string))
+  | List
+  | Login;
+
+let urlToRoute = (url: ReasonReact.Router.url) =>
+  switch (url.path) {
+  | ["edit"] => Edit(None)
+  | ["edit", id] => Edit(Some(id))
+  | ["list"] => List
+  | ["login"] => Login
+  | _ => Home
+  };
+
+let routeToString = (route: routes) =>
+  switch (route) {
+  | Home => "/"
+  | Edit(None) => "/edit"
+  | Edit(Some(id)) => "/edit/" ++ id
+  | List => "/list"
+  | Login => "/login"
+  };
+
 module WithRouter = {
-  type state = {currentRoute: Config.routes};
+  type state = {currentRoute: routes};
   type action =
-    | ChangeUrl(Config.routes);
+    | ChangeUrl(routes);
   let component = ReasonReact.reducerComponent("WithRouter");
   let make = children => {
     ...component,
     initialState: () => {
       currentRoute:
-        ReasonReact.Router.dangerouslyGetInitialUrl() |> Config.urlToRoute,
+        ReasonReact.Router.dangerouslyGetInitialUrl() |> urlToRoute,
     },
     reducer: (action, _state) =>
       switch (action) {
@@ -16,7 +40,7 @@ module WithRouter = {
     didMount: self => {
       let watchId =
         ReasonReact.Router.watchUrl(url =>
-          self.send(ChangeUrl(url |> Config.urlToRoute))
+          self.send(ChangeUrl(url |> urlToRoute))
         );
       self.onUnmount(() => ReasonReact.Router.unwatchUrl(watchId));
     },
@@ -29,7 +53,7 @@ module Link = {
   let make = (~route, ~className="", children) => {
     ...component,
     render: self => {
-      let href = Config.routeToString(route);
+      let href = routeToString(route);
       let onClick = handle =>
         handle((event, _self) => {
           event->ReactEvent.Mouse.preventDefault;
