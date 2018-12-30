@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import * as R from 'ramda';
 import work from '../../models/work';
 import { Work } from '../../types';
 import * as moment from 'moment';
@@ -69,6 +70,79 @@ router.delete('/', isLoggedInApi, (req, res) => {
 router.get('/latest', isLoggedInApi, (req, res) => {
   const id: string = req.user.id;
   work.fromDateToNow(currentWeekAndThreeWeeksBack, id).then(data => res.json(data));
+});
+
+// Balance
+const trimEnd = (works: Array<Work>): Array<Work> => {
+  if (works.length == 0) {
+    return works;
+  } else if (works[0].duration == 0) {
+    return trimEnd(R.tail(works));
+  } else {
+    return works;
+  }
+};
+
+const toStartAndEndDate = (works: Array<Work>): Array<Date> => {
+  const first = R.head(works);
+  const last = R.last(works);
+  if (first != null && last != null) {
+    return [first.start, last.start];
+  }
+  return [];
+};
+
+const getDateList = (start: Date, end: Date, accu: number): number => {
+  if (end < start) {
+    return accu;
+  }
+  const day = start.getDay();
+  const newStart = new Date(start);
+  newStart.setDate(newStart.getDate() + 1);
+  if (day != 0 && day != 6) {
+    return getDateList(newStart, end, accu + 1);
+  } else {
+    return getDateList(newStart, end, accu);
+  }
+};
+
+const startAndEndToWorkDays = (startEnd: Array<Date>): number => {
+  if (startEnd.length == 0) {
+    return 0;
+  }
+  const start = startEnd[1];
+  start.setHours(0, 0, 0, 0);
+  const end = startEnd[0];
+  end.setHours(0, 0, 0, 0);
+  return getDateList(start, end, 0);
+};
+
+const workToNormalHours = R.pipe(
+  trimEnd,
+  toStartAndEndDate,
+  startAndEndToWorkDays,
+);
+
+const allWorkToBalance = (work: Work[], hoursPerWeek) => {
+  const iterator = (accu: number, work: Work) =>
+    work.duration - work.lunch + accu;
+
+  const actualHours = R.reduce(iterator, 0, work);
+
+  const normalHours =
+    workToNormalHours(work) * (hoursPerWeek / 5);
+
+  return Math.round((actualHours - normalHours) * 4) / 4;
+
+};
+
+router.get('/balance', isLoggedInApi, (req, res) => {
+  const id: string = req.user.id;
+  work.all(id)
+    .then(work => {
+      work = work ? work : [];
+      res.json({ balance: allWorkToBalance(work, req.user.workhoursperweek) });
+    });
 });
 
 export default router;

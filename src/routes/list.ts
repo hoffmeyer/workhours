@@ -1,9 +1,9 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import * as R from 'ramda';
 import * as moment from 'moment';
-import {UiWork, Work, workToUiWork} from '../types';
+import { UiWork, Work, workToUiWork } from '../types';
 import mWork from '../models/work';
-import {isLoggedIn} from '../util/auth';
+import { isLoggedIn } from '../util/auth';
 
 let router = Router();
 
@@ -60,6 +60,25 @@ const startAndEndToWorkDays = (startEnd: Array<Date>): number => {
   return getDateList(start, end, 0);
 };
 
+const workToNormalHours = R.pipe(
+  trimEnd,
+  toStartAndEndDate,
+  startAndEndToWorkDays,
+);
+
+const allWorkToBalance = (work: Work[], hoursPerWeek) => {
+  const iterator = (accu: number, work: Work) =>
+    work.duration - work.lunch + accu;
+
+  const actualHours = R.reduce(iterator, 0, work);
+
+  const normalHours =
+    workToNormalHours(work) * (hoursPerWeek / 5);
+
+  return Math.round((actualHours - normalHours) * 4) / 4;
+
+};
+
 router.get('/', isLoggedIn, (req, res) => {
   mWork
     .fromDateToNow(startOfWeek, req.user.id)
@@ -75,24 +94,10 @@ router.get('/', isLoggedIn, (req, res) => {
         .all(req.user.id)
         .then(work => {
           work = work ? work : [];
-          const workToNormalHours = R.pipe(
-            trimEnd,
-            toStartAndEndDate,
-            startAndEndToWorkDays,
-          );
 
-          const iterator = (accu: number, work: Work) =>
-            work.duration - work.lunch + accu;
-
-          const actualHours = R.reduce(iterator, 0, work);
-
-          const normalHours =
-            workToNormalHours(work) * (req.user.workhoursperweek / 5);
-
-          const balance = Math.round((actualHours - normalHours) * 4) / 4;
 
           res.render('list', {
-            balance: balance,
+            balance: allWorkToBalance(work, req.user.workhoursperweek),
             weeks: uiWorksByWeek,
           });
         })

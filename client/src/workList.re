@@ -54,12 +54,12 @@ let listWork = (send: action => unit, workList) =>
                 {work.duration -. work.lunch |> Js.Float.toString |> str}
               </td>
               <td>
-                <a onClick={_event => send(Edit(work))}>
+                <a href="# " onClick={_event => send(Edit(work))}>
                   {ReasonReact.string("E")}
                 </a>
               </td>
               <td>
-                <a onClick={_event => send(Delete(work))}>
+                <a href="# " onClick={_event => send(Delete(work))}>
                   {ReasonReact.string("X")}
                 </a>
               </td>
@@ -68,7 +68,7 @@ let listWork = (send: action => unit, workList) =>
           |> Belt.List.toArray
           |> ReasonReact.array
         }
-        <tr className="borderBottom">
+        <tr className="borderTop">
           <td className="bold"> {"Sum" |> str} </td>
           <td className="bold right">
             {
@@ -88,15 +88,6 @@ let listWork = (send: action => unit, workList) =>
     </table>
   </div>;
 
-let workListToCurrentWeek = (today, workList: list(work)) => {
-  let startOfWeek = today |> DateUtil.startOfWeek;
-  let endOfWeek = today |> DateUtil.endOfWeek;
-  let isBeforeThisWeek = date => date |> DateUtil.isBefore(startOfWeek);
-  let isAfterThisWeek = date => date |> DateUtil.isAfter(endOfWeek);
-  let inThisWeek = date => !isBeforeThisWeek(date) && !isAfterThisWeek(date);
-  workList |> List.filter(work => inThisWeek(work.start));
-};
-
 let rec group = (list: list('a), p): list(list('a)) =>
   switch (Belt.List.head(list)) {
   | None => []
@@ -108,9 +99,6 @@ let rec group = (list: list('a), p): list(list('a)) =>
 
 let x = (workList: array(work)) =>
   Js.Array.map(x => (DateUtil.dateToWeekNo(x.start), x), workList);
-
-let workArrayToHours = (workList: list(work)) =>
-  List.fold_left((sum, work) => sum +. work.duration, 0., workList);
 
 let groupWorkByWeek = workList =>
   group(workList, x => DateUtil.dateToWeekNo(x.start));
@@ -167,18 +155,7 @@ let make = (~handleAction, ~workList, _children) => {
         | Error(msg) => <p> {"Error: " ++ msg |> str} </p>
         }
       }
-      <p>
-        {
-          let hours =
-            workList
-            |> Array.to_list
-            |> workListToCurrentWeek(Js.Date.make())
-            |> workArrayToHours
-            |> Js.Float.toString;
-
-          "Hours this week: " ++ hours |> str;
-        }
-      </p>
+      <Balance />
       {
         test2(Belt.List.fromArray(workList), listWork(self.send))
         |> Belt.List.toArray

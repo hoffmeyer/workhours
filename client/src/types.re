@@ -16,6 +16,8 @@ module Decode = {
       userid: json |> optional(field("userid", string)),
     };
   let workList = json: array(work) => Json.Decode.(json |> array(work));
+  let balance = json: float =>
+    json |> Json.Decode.field("balance", Json.Decode.float);
 };
 
 module Encode = {
