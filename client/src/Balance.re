@@ -25,7 +25,7 @@ let make = _children => {
         (
           self =>
             Js.Promise.(
-              Work.balance()
+              Work.balance
               |> then_(balance => self.send(Loaded(balance)) |> resolve)
               |> ignore
             )

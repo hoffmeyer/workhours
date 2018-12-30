@@ -39,14 +39,14 @@ let delete = (id: string) =>
     |> then_(_t => resolve())
   );
 
-let getLatest = () =>
+let getLatest =
   Js.Promise.(
     Fetch.fetch("/api/work/latest")
     |> then_(authenticate)
     |> then_(json => json |> Decode.workList |> resolve)
   );
 
-let balance = () =>
+let balance =
   Js.Promise.(
     Fetch.fetch("/api/work/balance")
     |> then_(authenticate)
