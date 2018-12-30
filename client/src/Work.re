@@ -45,3 +45,10 @@ let getLatest = () =>
     |> then_(authenticate)
     |> then_(json => json |> Decode.workList |> resolve)
   );
+
+let balance = () =>
+  Js.Promise.(
+    Fetch.fetch("/api/work/balance")
+    |> then_(authenticate)
+    |> then_(json => json |> Decode.balance |> resolve)
+  );
