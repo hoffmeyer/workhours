@@ -1,7 +1,7 @@
-import {inspect} from 'util';
-import {log} from 'winston';
+import { inspect } from 'util';
+import { log } from 'winston';
 import * as uuidV4 from 'uuid/v4';
-import {Work} from '../types';
+import { Work } from '../types';
 import db from '../db.js';
 
 export default {
@@ -9,10 +9,10 @@ export default {
     return db
       .oneOrNone(
         "SELECT * FROM work where start::date = '" +
-          date +
-          "' AND userid = '" +
-          userId +
-          "' ORDER BY start DESC LIMIT 1",
+        date +
+        "' AND userid = '" +
+        userId +
+        "' ORDER BY start DESC LIMIT 1",
       )
       .then(one => {
         log('info', 'getWorkFromDate returned: ' + inspect(one));
@@ -28,8 +28,8 @@ export default {
     return db
       .oneOrNone(
         "SELECT * FROM work where id = '" +
-          id +
-          "' ORDER BY start DESC LIMIT 1",
+        id +
+        "' ORDER BY start DESC LIMIT 1",
       )
       .then(one => {
         log('info', 'getWorkFromId returned: ' + inspect(one));
@@ -84,9 +84,9 @@ export default {
         log(
           'error',
           'Updating work with id ' +
-            (work.id != null ? work.id : 'null') +
-            ' failed: ' +
-            error,
+          (work.id != null ? work.id : 'null') +
+          ' failed: ' +
+          error,
         );
         log('error', error.message);
       });
@@ -95,7 +95,7 @@ export default {
   all: (userid: string): Promise<void | Work[]> => {
     return db
       .any(
-        "SELECT * FROM work WHERE userid='" + userid + "' ORDER BY start DESC",
+        "SELECT * FROM work WHERE userid='" + userid + "' AND start::date >= '2019-01-01' ORDER BY start DESC",
       )
       .then(any => {
         log(
@@ -113,10 +113,10 @@ export default {
     return db
       .any(
         "SELECT * FROM work WHERE start::date >= '" +
-          date +
-          "' AND userid='" +
-          userid +
-          "' ORDER BY start DESC",
+        date +
+        "' AND userid='" +
+        userid +
+        "' ORDER BY start DESC",
       )
       .then(any => {
         log(
