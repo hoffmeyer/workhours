@@ -15,7 +15,7 @@ type action =
 
 let component = ReasonReact.reducerComponent("WorkList");
 
-let formatDate = date => Js.Date.toUTCString(date);
+let formatDate = date => Js.Date.toLocaleDateString(date);
 
 let listWork = (send: action => unit, workList) =>
   <div>

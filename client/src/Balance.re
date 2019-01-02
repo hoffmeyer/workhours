@@ -9,6 +9,8 @@ type action =
   | Loaded(float)
   | Error(string);
 
+let getDate = DateTime.fromJSDate(Js.Date.make()) |> DateTime.toISO();
+
 let str = ReasonReact.string;
 
 let component = ReasonReact.reducerComponent("Balance");
@@ -39,7 +41,7 @@ let make = _children => {
     | Initial => <p> {"Initial" |> str} </p>
     | Loading => <p> {"Loading" |> str} </p>
     | Loaded(balance) =>
-      <p> {"Balance: " ++ Js.Float.toString(balance) |> str} </p>
+      <p> {"Balance: " ++ Js.Float.toString(balance) ++ getDate |> str} </p>
     | Failed(msg) => <p> {"Fetching balance failed: " ++ msg |> str} </p>
     },
 };
