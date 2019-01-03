@@ -1,8 +1,13 @@
 const path = require('path');
-const outputDir = path.join(__dirname, "build/");
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-
 const isProd = process.env.NODE_ENV === 'production';
+let outputDir = "";
+
+if (isProd) {
+  outputDir = path.join(__dirname, "../dist/public/");
+} else {
+  outputDir = path.join(__dirname, "build/");
+}
 
 module.exports = {
   module: {

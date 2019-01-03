@@ -1,25 +1,19 @@
 import 'source-map-support/register';
-import {readFileSync} from "fs";
-import {join} from "path";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as logger from "morgan";
 import * as passport from "passport";
-import {Strategy as LocalStrategy} from "passport-local";
-import {BasicStrategy} from "passport-http";
+import { Strategy as LocalStrategy } from "passport-local";
+import { BasicStrategy } from "passport-http";
 import * as session from "express-session";
-import {log, add, remove, transports} from "winston";
+import { log, add, remove, transports } from "winston";
 
 import db from "./db.js";
-import deleteWork from "./routes/delete";
-import index from "./routes/index";
-import list from "./routes/list";
-import login from "./routes/login";
 import mUser from "./models/user";
-import register from "./routes/register";
-import work from "./routes/work";
 
 import apiWork from "./routes/api/work";
 import apiLogin from "./routes/api/login";
@@ -29,10 +23,6 @@ add(transports.Console, { timestamp: true });
 //level = process.env.LOG_LEVEL || "info";
 
 const app = express();
-
-// view engine setup
-app.set("views", join(__dirname, "../views"));
-app.set("view engine", "pug");
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -76,21 +66,21 @@ passport.use(
     password,
     done
   ) {
-    mUser
-      .byUsername(username)
-      .then(function (user) {
-        if (!user) {
+      mUser
+        .byUsername(username)
+        .then(function (user) {
+          if (!user) {
+            return done(null, false);
+          }
+          if (user.password === password) {
+            return done(null, user);
+          }
           return done(null, false);
-        }
-        if (user.password === password) {
-          return done(null, user);
-        }
-        return done(null, false);
-      })
-      .catch(err => {
-        return done(err);
-      });
-  })
+        })
+        .catch(err => {
+          return done(err);
+        });
+    })
 );
 
 passport.use(new BasicStrategy(
@@ -111,13 +101,6 @@ passport.use(new BasicStrategy(
       });
   }
 ));
-
-app.use("/", index);
-app.use("/register", register);
-app.use("/work", work);
-app.use("/list", list);
-app.use("/delete", deleteWork);
-app.use("/login", login);
 
 app.use("/api/work", apiWork);
 app.use("/api/login", apiLogin);
