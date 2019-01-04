@@ -11,4 +11,5 @@ let routeToComponent =
   | Edit(id) => <NewWork workList id handleAction />
   | List => <WorkList workList handleAction />
   | Login => <Login />
+  | NotFound => <NotFound />
   };

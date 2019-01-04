@@ -2,15 +2,17 @@ type routes =
   | Home
   | Edit(option(string))
   | List
-  | Login;
+  | Login
+  | NotFound;
 
 let urlToRoute = (url: ReasonReact.Router.url) =>
   switch (url.path) {
+  | [] => Home
   | ["edit"] => Edit(None)
   | ["edit", id] => Edit(Some(id))
   | ["list"] => List
   | ["login"] => Login
-  | _ => Home
+  | _ => NotFound
   };
 
 let routeToString = (route: routes) =>
@@ -20,6 +22,7 @@ let routeToString = (route: routes) =>
   | Edit(Some(id)) => "/edit/" ++ id
   | List => "/list"
   | Login => "/login"
+  | NotFound => "/404"
   };
 
 module WithRouter = {
@@ -70,21 +73,19 @@ module NavLink = {
     ...component,
     render: _self =>
       <WithRouter>
-        ...{
-             (~currentRoute) => {
-               let activeRoute =
-                 switch (activeRoute) {
-                 | None => route
-                 | Some(route) => route
-                 };
-               let className =
-                 Cn.make([
-                   Cn.unpack(className),
-                   Cn.ifTrue("active", activeRoute == currentRoute),
-                 ]);
-               <Link route className> ...children </Link>;
-             }
-           }
+        ...{(~currentRoute) => {
+          let activeRoute =
+            switch (activeRoute) {
+            | None => route
+            | Some(route) => route
+            };
+          let className =
+            Cn.make([
+              Cn.unpack(className),
+              Cn.ifTrue("active", activeRoute == currentRoute),
+            ]);
+          <Link route className> ...children </Link>;
+        }}
       </WithRouter>,
   };
 };

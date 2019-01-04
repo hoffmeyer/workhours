@@ -11,6 +11,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { BasicStrategy } from "passport-http";
 import * as session from "express-session";
 import { log, add, remove, transports } from "winston";
+import * as path from "path";
 
 import db from "./db.js";
 import mUser from "./models/user";
@@ -104,23 +105,26 @@ passport.use(new BasicStrategy(
 
 app.use("/api/work", apiWork);
 app.use("/api/login", apiLogin);
+app.use("*", function (req, resp) {
+  resp.sendFile(path.resolve(__dirname, 'public/index.html'));
+});
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  const err = new Error("Not Found");
-  next(err);
-});
+//app.use(function (req, res, next) {
+//  const err = new Error("Not Found");
+//  next(err);
+//});
 
 // error handler
-app.use(function (err: Error, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+//app.use(function (err: Error, req, res, next) {
+//  // set locals, only providing error in development
+//  res.locals.message = err.message;
+// res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(404);
-  res.render("error");
-});
+// render the error page
+// res.status(404);
+// res.render("error");
+//});
 
 const sql = readFileSync(join(__dirname, "..", "database.sql"), "utf8");
 db.none(sql).catch(e => {
