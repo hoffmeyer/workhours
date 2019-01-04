@@ -34,28 +34,28 @@ let make = _children => {
     | LoginClicked =>
       ReasonReact.UpdateWithSideEffects(
         state,
-        (
-          _self =>
-            Js.Promise.(
-              Fetch.fetchWithInit(
-                "/api/login",
-                Fetch.RequestInit.make(
-                  ~method_=Post,
-                  ~body=
-                    Fetch.BodyInit.make(
-                      Js.Json.stringify(Encode.cred(state)),
-                    ),
-                  (),
-                ),
-              )
-              |> then_(Fetch.Response.text)
-              |> then_(_user => {
-                   ReasonReact.Router.push("/");
-                   resolve();
-                 })
-              |> ignore
+        _self =>
+          Js.Promise.(
+            Fetch.fetchWithInit(
+              "/api/login",
+              Fetch.RequestInit.make(
+                ~method_=Post,
+                ~body=
+                  Fetch.BodyInit.make(
+                    Js.Json.stringify(Encode.cred(state)),
+                  ),
+                (),
+              ),
             )
-        ),
+            |> then_(Fetch.Response.text)
+            |> then_(_user => {
+                 ReasonReact.Router.push("/");
+                 %bs.raw
+                 {| window.window.location.reload() |};
+                 resolve();
+               })
+            |> ignore
+          ),
       )
     },
   render: ({state, send}) =>
@@ -63,17 +63,15 @@ let make = _children => {
       <h1> {str("Login page")} </h1>
       <input
         value={state.username}
-        onChange={
-          event =>
-            send(UsernameKeyDown(ReactEvent.Form.target(event)##value))
+        onChange={event =>
+          send(UsernameKeyDown(ReactEvent.Form.target(event)##value))
         }
       />
       <input
         value={state.password}
         type_="password"
-        onChange={
-          event =>
-            send(PasswordKeyDown(ReactEvent.Form.target(event)##value))
+        onChange={event =>
+          send(PasswordKeyDown(ReactEvent.Form.target(event)##value))
         }
       />
       <button onClick={_event => send(LoginClicked)}>
