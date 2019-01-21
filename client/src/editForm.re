@@ -30,12 +30,14 @@ let workToFormData = (work: work): formData => {
   };
 };
 
+let formatFloatString = str => Js.String.replace(",", ".", str);
+
 let formDataToWork = (formData: formData): work => {
   {
     id: formData.id,
     start: formData.start,
-    duration: formData.duration |> float_of_string,
-    lunch: formData.lunch |> float_of_string,
+    duration: formData.duration |> formatFloatString |> float_of_string,
+    lunch: formData.lunch |> formatFloatString |> float_of_string,
     userid: formData.userid,
   };
 };
@@ -47,7 +49,7 @@ let isPositive = (fieldName, num) =>
   num < 0. ? [fieldName ++ " must not be negative"] : [];
 
 let validateFloat = (fieldName, value) => {
-  let num = Js.Float.fromString(value);
+  let num = Js.Float.fromString(value |> formatFloatString);
   Belt.List.concat(isNan(fieldName, num), isPositive(fieldName, num));
 };
 
