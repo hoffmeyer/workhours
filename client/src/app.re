@@ -19,30 +19,28 @@ let make = (~currentRoute, _children) => {
     | WorkFetch =>
       ReasonReact.UpdateWithSideEffects(
         Loading,
-        (
-          self =>
-            Js.Promise.(
-              Fetch.fetch("/api/work/latest")
-              |> then_(res => {
-                   let status = Fetch.Response.status(res);
-                   switch (status) {
-                   | 200 => Fetch.Response.json(res)
-                   | 401 =>
-                     self.send(WorkFetched([||]));
-                     ReasonReact.Router.push("/login");
-                     Js.Exn.raiseError(Fetch.Response.statusText(res));
-                   | _ => Js.Exn.raiseError(Fetch.Response.statusText(res))
-                   };
-                 })
-              |> then_(json =>
-                   json
-                   |> Decode.workList
-                   |> (work => self.send(WorkFetched(work)))
-                   |> resolve
-                 )
-              |> ignore
-            )
-        ),
+        self =>
+          Js.Promise.(
+            Fetch.fetch("/api/work/latest")
+            |> then_(res => {
+                 let status = Fetch.Response.status(res);
+                 switch (status) {
+                 | 200 => Fetch.Response.json(res)
+                 | 401 =>
+                   self.send(WorkFetched([||]));
+                   ReasonReact.Router.push("/login");
+                   Js.Exn.raiseError(Fetch.Response.statusText(res));
+                 | _ => Js.Exn.raiseError(Fetch.Response.statusText(res))
+                 };
+               })
+            |> then_(json =>
+                 json
+                 |> Decode.workList
+                 |> (work => self.send(WorkFetched(work)))
+                 |> resolve
+               )
+            |> ignore
+          ),
       )
     | WorkFetched(work) => ReasonReact.Update(Loaded(work))
     | WorkFetchFailed(msg) => ReasonReact.Update(Error(msg))
@@ -89,43 +87,37 @@ let make = (~currentRoute, _children) => {
   render: self =>
     <div className="App">
       <header> <h1> {ReasonReact.string("Workhours")} </h1> </header>
-      <div>
-        <nav>
-          <ul className="navigation">
-            <li>
-              <Router.NavLink route=Router.Home>
-                {ReasonReact.string("Home")}
-              </Router.NavLink>
-            </li>
-            <li>
-              <Router.NavLink route={Router.Edit(None)}>
-                {ReasonReact.string("Edit")}
-              </Router.NavLink>
-            </li>
-            <li>
-              <Router.NavLink route=Router.List>
-                {ReasonReact.string("List")}
-              </Router.NavLink>
-            </li>
-          </ul>
-        </nav>
-        <section>
-          {
-            switch (self.state) {
-            | Loading => <p> {str("Loading")} </p>
-            | Loaded(workList) =>
-              <div>
-                {
-                  Config.routeToComponent(
-                    currentRoute, ~workList, ~handleAction=action =>
-                    self.send(action)
-                  )
-                }
-              </div>
-            | Error(msg) => <div> {str(msg)} </div>
-            }
-          }
-        </section>
-      </div>
+      <nav>
+        <ul className="navigation">
+          <li>
+            <Router.NavLink route=Router.Home>
+              {ReasonReact.string("Home")}
+            </Router.NavLink>
+          </li>
+          <li>
+            <Router.NavLink route={Router.Edit(None)}>
+              {ReasonReact.string("Edit")}
+            </Router.NavLink>
+          </li>
+          <li>
+            <Router.NavLink route=Router.List>
+              {ReasonReact.string("List")}
+            </Router.NavLink>
+          </li>
+        </ul>
+      </nav>
+      <section>
+        {switch (self.state) {
+         | Loading => <p> {str("Loading")} </p>
+         | Loaded(workList) =>
+           <div>
+             {Config.routeToComponent(
+                currentRoute, ~workList, ~handleAction=action =>
+                self.send(action)
+              )}
+           </div>
+         | Error(msg) => <div> {str(msg)} </div>
+         }}
+      </section>
     </div>,
 };

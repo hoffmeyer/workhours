@@ -5,10 +5,11 @@ body {
   box-sizing: border-box;
 }
 
+html,
 body,
 input,
 button {
-  font-size: 3vmin;
+  font-size: calc(0.6em + 1vw);
   font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
 }
 
@@ -56,20 +57,35 @@ td {
   border-bottom: 1px solid black;
 }
 
+html, body, #root, .App {
+  height: 100%;
+}
+
+.App {
+  display: grid;
+  grid-template-rows: 5em auto 5em;
+  grid-template-areas: 
+  "header"
+  "content"
+  "nav";
+};
+
 header {
+  grid-area: header;
   text-align: center;
   border-bottom: 1px solid black;
   text-transform: uppercase;
 }
 
 section {
+  grid-area: content;
   padding: 1em;
   margin-bottom: 4em;
 }
 
+
 nav {
-  position: fixed;
-  bottom: 0;
+  grid-area: nav;
   width: 100%;
   border-top: 1px solid black;
 }
@@ -87,17 +103,20 @@ nav ul {
 nav ul li {
   flex: 1 1 100%;
   text-align: center;
+  display: flex;
 }
 
 nav a {
+  flex: 1;
   display: block;
   background-color: lightgray;
   color: black;
   text-decoration: none;
   font-size: 1.6em;
   border: 1px solid black;
-  height: 100%;
-  line-height: 2.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 nav a:hover {
