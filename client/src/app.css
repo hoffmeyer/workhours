@@ -68,9 +68,9 @@ html, body, #root, .App {
   "header"
   "content"
   "nav";
-};
+}
 
-header {
+.header {
   grid-area: header;
   text-align: center;
   border-bottom: 1px solid black;
@@ -80,7 +80,7 @@ header {
 section {
   grid-area: content;
   padding: 1em;
-  margin-bottom: 4em;
+  overflow: auto;
 }
 
 
