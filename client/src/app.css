@@ -9,7 +9,7 @@ html,
 body,
 input,
 button {
-  font-size: calc(0.6em + 1vw);
+  font-size: calc(0.8em + 1vw);
   font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
 }
 
@@ -57,22 +57,29 @@ td {
   border-bottom: 1px solid black;
 }
 
-html, body, #root, .App {
-  height: 100%;
-}
-
 .App {
   display: grid;
-  grid-template-rows: 5em auto 5em;
+  grid-template-rows: min-content auto 5em;
   grid-template-areas: 
-  "header"
-  "content"
-  "nav";
+  "header header header"
+  "content content content"
+  "nav nav nav";
+  height: 100vh;
+}
+
+@media  screen and (min-width: 800px) {
+.App {
+  grid-template-rows: min-content auto;
+  grid-template-areas: 
+  "header nav nav"
+  "content content content";
+}
+
 }
 
 .header {
   grid-area: header;
-  text-align: center;
+  font-size: 0.8rem;
   border-bottom: 1px solid black;
   text-transform: uppercase;
 }
