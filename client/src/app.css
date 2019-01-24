@@ -59,7 +59,7 @@ td {
 
 .App {
   display: grid;
-  grid-template-rows: min-content auto 5em;
+  grid-template-rows: min-content auto 3em;
   grid-template-areas: 
   "header header header"
   "content content content"
@@ -68,20 +68,26 @@ td {
 }
 
 @media  screen and (min-width: 800px) {
-.App {
-  grid-template-rows: min-content auto;
-  grid-template-areas: 
-  "header nav nav"
-  "content content content";
-}
+  .App {
+    grid-template-rows: min-content auto;
+    grid-template-areas: 
+    "header nav nav"
+    "content content content";
+  }
 
 }
 
-.header {
+header {
   grid-area: header;
   font-size: 0.8rem;
   border-bottom: 1px solid black;
   text-transform: uppercase;
+}
+
+.logo {
+  font-size: 3em;
+  font-weight: bold;
+  padding: 0.2em;
 }
 
 section {
@@ -96,6 +102,14 @@ nav {
   width: 100%;
   border-top: 1px solid black;
 }
+
+@media  screen and (min-width: 800px) {
+  nav {
+    border-top: none;
+    border-bottom: 1px solid black;
+  }
+}
+
 
 nav ul {
   margin: 0;
@@ -116,33 +130,19 @@ nav ul li {
 nav a {
   flex: 1;
   display: block;
-  background-color: lightgray;
   color: black;
   text-decoration: none;
-  font-size: 1.6em;
-  border: 1px solid black;
+  font-size: 1em;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-nav a:hover {
-  background-color: darkgray;
-  color: white;
-}
-
 #startStop {
   display: block;
-  font-size: 2em;
+  font-size: 1em;
   padding: 0.5em 1em;
   margin: 0 auto;
-  box-shadow: 2px 2px 5px black;
-  background-color: lightgray;
-}
-
-#startStop:hover {
-  background-color: darkgray;
-  box-shadow: 2px 2px 3px black;
 }
 
 #workList {
@@ -151,7 +151,7 @@ nav a:hover {
 
 /* Register update work */
 #registerHours {
-  max-width: 500px;
+  max-width: 22rem;
   margin: 0 auto;
 }
 #registerHours button {

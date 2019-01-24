@@ -86,8 +86,8 @@ let make = (~currentRoute, _children) => {
   didMount: self => self.send(WorkFetch),
   render: self =>
     <div className="App">
-      <header className="header">
-        <h1> {ReasonReact.string("Workhours")} </h1>
+      <header>
+        <div className="logo"> {ReasonReact.string("W")} </div>
       </header>
       <nav>
         <ul className="navigation">
