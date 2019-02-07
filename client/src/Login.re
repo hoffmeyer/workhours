@@ -40,6 +40,10 @@ let make = _children => {
               "/api/login",
               Fetch.RequestInit.make(
                 ~method_=Post,
+                ~headers=
+                  Fetch.HeadersInit.make({
+                    "Content-Type": "application/json",
+                  }),
                 ~body=
                   Fetch.BodyInit.make(
                     Js.Json.stringify(Encode.cred(state)),
