@@ -9,7 +9,7 @@ html,
 body,
 input,
 button {
-  font-size: calc(0.8em + 1vw);
+  font-size: calc(14px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
   font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
 }
 
