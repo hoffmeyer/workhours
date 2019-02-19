@@ -86,28 +86,12 @@ let make = (~currentRoute, _children) => {
   didMount: self => self.send(WorkFetch),
   render: self =>
     <div className="App">
-      <header>
-        <div className="logo"> {ReasonReact.string("W")} </div>
+      <header
+        onClick={_event =>
+          ReasonReact.Router.push(Router.routeToString(Router.Home))
+        }>
+        <div className="logo"> {ReasonReact.string("Workhours")} </div>
       </header>
-      <nav>
-        <ul className="navigation">
-          <li>
-            <Router.NavLink route=Router.Home>
-              {ReasonReact.string("Home")}
-            </Router.NavLink>
-          </li>
-          <li>
-            <Router.NavLink route={Router.Edit(None)}>
-              {ReasonReact.string("Edit")}
-            </Router.NavLink>
-          </li>
-          <li>
-            <Router.NavLink route=Router.List>
-              {ReasonReact.string("List")}
-            </Router.NavLink>
-          </li>
-        </ul>
-      </nav>
       <section>
         {switch (self.state) {
          | Loading => <p> {str("Loading")} </p>

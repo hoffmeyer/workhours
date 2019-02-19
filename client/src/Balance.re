@@ -22,14 +22,12 @@ let make = _children => {
     | Load =>
       ReasonReact.UpdateWithSideEffects(
         Loading,
-        (
-          self =>
-            Js.Promise.(
-              Work.balance
-              |> then_(balance => self.send(Loaded(balance)) |> resolve)
-              |> ignore
-            )
-        ),
+        self =>
+          Js.Promise.(
+            Work.balance
+            |> then_(balance => self.send(Loaded(balance)) |> resolve)
+            |> ignore
+          ),
       )
     | Loaded(balance) => ReasonReact.Update(Loaded(balance))
     | Error(msg) => ReasonReact.Update(Failed(msg))
@@ -39,7 +37,9 @@ let make = _children => {
     | Initial => <p> {"Initial" |> str} </p>
     | Loading => <p> {"Loading" |> str} </p>
     | Loaded(balance) =>
-      <p> {"Balance: " ++ Js.Float.toString(balance) |> str} </p>
+      <p className="center">
+        {"Balance: " ++ Js.Float.toString(balance) |> str}
+      </p>
     | Failed(msg) => <p> {"Fetching balance failed: " ++ msg |> str} </p>
     },
 };

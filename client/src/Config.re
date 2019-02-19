@@ -9,7 +9,6 @@ let routeToComponent =
   switch (route) {
   | Home => <Home workList handleAction />
   | Edit(id) => <NewWork workList id handleAction />
-  | List => <WorkList workList handleAction />
   | Login => <Login />
   | NotFound => <NotFound />
   };

@@ -167,6 +167,10 @@ let make = (~work: work, ~submitAction: Types.work => unit, _children) => {
             self.send(ChangeLunch(ReactEvent.Form.target(event)##value))
           }
         />
+        <button
+          type_="button" onClick={_event => ReasonReact.Router.push("/")}>
+          {"Cancel" |> str}
+        </button>
         <button type_="button" onClick={_event => self.send(Validate)}>
           {(
              switch (work.id) {

@@ -4,11 +4,13 @@ type state =
   | Loading
   | Loaded(work)
   | Saving
+  | Deleting
   | Failed(string);
 
 type action =
   | SaveWork(work)
   | LoadWork
+  | Delete(work)
   | WorkLoaded(work)
   | LoadFailed(string);
 
@@ -53,44 +55,62 @@ let make =
     | LoadWork =>
       ReasonReact.UpdateWithSideEffects(
         Loading,
-        (
-          self =>
-            switch (id) {
-            | None => self.send(WorkLoaded(newWork))
-            | Some(id) =>
-              switch (findWork(id, workList)) {
-              | None =>
-                self.send(LoadFailed("No work with id " ++ id ++ " found"))
-              | Some(work) => self.send(WorkLoaded(work))
-              }
+        self =>
+          switch (id) {
+          | None => self.send(WorkLoaded(newWork))
+          | Some(id) =>
+            switch (findWork(id, workList)) {
+            | None =>
+              self.send(LoadFailed("No work with id " ++ id ++ " found"))
+            | Some(work) => self.send(WorkLoaded(work))
             }
-        ),
+          },
       )
     | WorkLoaded(work) => ReasonReact.Update(Loaded(work))
     | SaveWork(work) =>
       ReasonReact.UpdateWithSideEffects(
         Saving,
-        (
-          _self =>
-            Js.Promise.(
-              Work.save(work)
-              |> then_(savedWork =>
-                   (
-                     switch (work.id) {
-                     | None => handleAction(Types.WorkAdd(savedWork))
-                     | Some(_) => handleAction(Types.WorkUpdate(savedWork))
-                     }
-                   )
-                   |> (() => ReasonReact.Router.push("/") |> resolve)
+        _self =>
+          Js.Promise.(
+            Work.save(work)
+            |> then_(savedWork =>
+                 (
+                   switch (work.id) {
+                   | None => handleAction(Types.WorkAdd(savedWork))
+                   | Some(_) => handleAction(Types.WorkUpdate(savedWork))
+                   }
                  )
+                 |> (() => ReasonReact.Router.push("/") |> resolve)
+               )
+            |> catch(err => {
+                 Js.log2("Error starting work: ", err);
+                 resolve();
+               })
+            |> ignore
+          ),
+      )
+    | Delete(work) =>
+      switch (work.id) {
+      | None => ReasonReact.Update(Failed("Cannot delete work with no Id"))
+      | Some(id) =>
+        ReasonReact.UpdateWithSideEffects(
+          Deleting,
+          self =>
+            Js.Promise.(
+              Work.delete(id)
+              |> then_(() => {
+                   handleAction(Types.WorkDelete(id));
+                   ReasonReact.Router.push(Router.routeToString(Router.Home))
+                   |> resolve;
+                 })
               |> catch(err => {
-                   Js.log2("Error starting work: ", err);
-                   resolve();
+                   Js.log2("Error deleting work: ", err);
+                   resolve(self.send(LoadFailed("Error deleting work")));
                  })
               |> ignore
-            )
-        ),
-      )
+            ),
+        )
+      }
     | LoadFailed(msg) => ReasonReact.Update(Failed(msg))
     },
   didMount: self => self.send(LoadWork),
@@ -100,20 +120,26 @@ let make =
     | Loaded(work) =>
       <div>
         <h1>
-          {
-            ReasonReact.string(
-              switch (work.id) {
-              | None => "New work"
-              | Some(_) => "Edit work"
-              },
-            )
-          }
+          {ReasonReact.string(
+             switch (work.id) {
+             | None => "New work"
+             | Some(_) => "Edit work"
+             },
+           )}
         </h1>
+        {switch (work.id) {
+         | None => <div />
+         | Some(_) =>
+           <button onClick={_event => self.send(Delete(work))}>
+             {"Delete" |> str}
+           </button>
+         }}
         <div>
-          <EditForm work submitAction=(work => self.send(SaveWork(work))) />
+          <EditForm work submitAction={work => self.send(SaveWork(work))} />
         </div>
       </div>
     | Saving => <h1> {str("Saving...")} </h1>
+    | Deleting => <h1> {str("Deleting...")} </h1>
     | Failed(msg) =>
       <div> <h1> {str("Failed")} </h1> <p> {str(msg)} </p> </div>
     },
