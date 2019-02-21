@@ -2,7 +2,8 @@ open Types;
 
 type formData = {
   id: option(string),
-  start: Js.Date.t,
+  startDate: Js.Date.t,
+  endDate: Js.Date.t,
   duration: string,
   lunch: string,
   userid: option(string),
@@ -16,6 +17,7 @@ type state = {
 type action =
   | ChangeStartDate(Js.Date.t)
   | ChangeStartTime(Js.Date.t)
+  | ChangeEndTime(Js.Date.t)
   | ChangeDuration(string)
   | ChangeLunch(string)
   | Validate;
@@ -23,11 +25,29 @@ type action =
 let workToFormData = (work: work): formData => {
   {
     id: work.id,
-    start: work.start,
-    duration: work.duration |> string_of_float,
-    lunch: work.lunch |> string_of_float,
+    startDate: work.start,
+    endDate: Js.Date.fromFloat(Js.Date.getTime(work.start)),
+    duration: work.duration |> Printf.sprintf("%.12g"),
+    lunch: work.lunch |> Printf.sprintf("%.12g"),
     userid: work.userid,
   };
+};
+
+let calcEndDate = (startDate: Js.Date.t, duration: float): Js.Date.t => {
+  let endDate = Js.Date.fromFloat(Js.Date.getTime(startDate));
+  Js.Date.setHours(endDate, Js.Date.getHours(startDate) +. ceil(duration))
+  |> ignore;
+  Js.Date.setMinutes(
+    endDate,
+    Js.Date.getMinutes(startDate) +. mod_float(duration, 1.),
+  )
+  |> ignore;
+  endDate;
+};
+
+let calcDuration = (startDate: Js.Date.t, endDate: Js.Date.t): float => {
+  let diffMs = (endDate |> Js.Date.getTime) -. (startDate |> Js.Date.getTime);
+  diffMs /. 1000. /. 60. /. 60.;
 };
 
 let formatFloatString = str => Js.String.replace(",", ".", str);
@@ -35,7 +55,7 @@ let formatFloatString = str => Js.String.replace(",", ".", str);
 let formDataToWork = (formData: formData): work => {
   {
     id: formData.id,
-    start: formData.start,
+    start: formData.startDate,
     duration: formData.duration |> formatFloatString |> float_of_string,
     lunch: formData.lunch |> formatFloatString |> float_of_string,
     userid: formData.userid,
@@ -72,22 +92,22 @@ let make = (~work: work, ~submitAction: Types.work => unit, _children) => {
   reducer: (action: action, state: state) =>
     switch (action) {
     | ChangeStartDate(date) =>
-      Js.Date.setHours(date, Js.Date.getHours(state.formData.start))
+      Js.Date.setHours(date, Js.Date.getHours(state.formData.startDate))
       |> ignore;
-      Js.Date.setMinutes(date, Js.Date.getMinutes(state.formData.start))
+      Js.Date.setMinutes(date, Js.Date.getMinutes(state.formData.startDate))
       |> ignore;
-      Js.Date.setSeconds(date, Js.Date.getSeconds(state.formData.start))
+      Js.Date.setSeconds(date, Js.Date.getSeconds(state.formData.startDate))
       |> ignore;
       Js.Date.setMilliseconds(
         date,
-        Js.Date.getMilliseconds(state.formData.start),
+        Js.Date.getMilliseconds(state.formData.startDate),
       )
       |> ignore;
       ReasonReact.Update({
         ...state,
         formData: {
           ...state.formData,
-          start: date,
+          startDate: date,
         },
       });
     | ChangeStartTime(date) =>
@@ -95,7 +115,19 @@ let make = (~work: work, ~submitAction: Types.work => unit, _children) => {
         ...state,
         formData: {
           ...state.formData,
-          start: date,
+          startDate: date,
+          duration:
+            calcDuration(state.formData.startDate, date) |> string_of_float,
+        },
+      })
+    | ChangeEndTime(date) =>
+      ReasonReact.Update({
+        ...state,
+        formData: {
+          ...state.formData,
+          endDate: date,
+          duration:
+            calcDuration(state.formData.startDate, date) |> string_of_float,
         },
       })
     | ChangeDuration(duration) =>
@@ -103,6 +135,11 @@ let make = (~work: work, ~submitAction: Types.work => unit, _children) => {
         ...state,
         formData: {
           ...state.formData,
+          endDate:
+            calcEndDate(
+              state.formData.startDate,
+              duration |> float_of_string,
+            ),
           duration,
         },
       })
@@ -142,14 +179,20 @@ let make = (~work: work, ~submitAction: Types.work => unit, _children) => {
         <label htmlFor="startDate"> {"Start date" |> str} </label>
         <DateInput
           id="startDate"
-          value={self.state.formData.start}
+          value={self.state.formData.startDate}
           onChange={date => self.send(ChangeStartDate(date))}
         />
         <label htmlFor="startTime"> {"Start time" |> str} </label>
         <TimeInput
           id="startTime"
-          value={self.state.formData.start}
+          value={self.state.formData.startDate}
           onChange={date => self.send(ChangeStartTime(date))}
+        />
+        <label htmlFor="endTime"> {"End time" |> str} </label>
+        <TimeInput
+          id="endTime"
+          value={self.state.formData.endDate}
+          onChange={date => self.send(ChangeEndTime(date))}
         />
         <label htmlFor="duration"> {"Duration" |> str} </label>
         <input
