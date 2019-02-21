@@ -7,9 +7,9 @@ import { isLoggedInApi } from '../../util/auth';
 
 let router = Router();
 
-const currentWeekAndThreeWeeksBack: string = moment()
+const currentWeekAndTenWeeksBack: string = moment()
   .startOf('isoWeek')
-  .subtract(21, 'days')
+  .subtract(70, 'days')
   .utcOffset('+01:00')
   .toString();
 
@@ -69,7 +69,7 @@ router.delete('/', isLoggedInApi, (req, res) => {
 // get the work registered in the current week plus the last 3 full weeks
 router.get('/latest', isLoggedInApi, (req, res) => {
   const id: string = req.user.id;
-  work.fromDateToNow(currentWeekAndThreeWeeksBack, id).then(data => res.json(data));
+  work.fromDateToNow(currentWeekAndTenWeeksBack, id).then(data => res.json(data));
 });
 
 // Balance
