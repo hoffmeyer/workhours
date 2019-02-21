@@ -22,17 +22,6 @@ type action =
   | ChangeLunch(string)
   | Validate;
 
-let workToFormData = (work: work): formData => {
-  {
-    id: work.id,
-    startDate: work.start,
-    endDate: Js.Date.fromFloat(Js.Date.getTime(work.start)),
-    duration: work.duration |> Printf.sprintf("%.12g"),
-    lunch: work.lunch |> Printf.sprintf("%.12g"),
-    userid: work.userid,
-  };
-};
-
 let calcEndDate = (startDate: Js.Date.t, duration: float): Js.Date.t => {
   let endDate = Js.Date.fromFloat(Js.Date.getTime(startDate));
   Js.Date.setHours(endDate, Js.Date.getHours(startDate) +. ceil(duration))
@@ -48,6 +37,17 @@ let calcEndDate = (startDate: Js.Date.t, duration: float): Js.Date.t => {
 let calcDuration = (startDate: Js.Date.t, endDate: Js.Date.t): float => {
   let diffMs = (endDate |> Js.Date.getTime) -. (startDate |> Js.Date.getTime);
   diffMs /. 1000. /. 60. /. 60.;
+};
+
+let workToFormData = (work: work): formData => {
+  {
+    id: work.id,
+    startDate: work.start,
+    endDate: calcEndDate(work.start, work.duration),
+    duration: work.duration |> Printf.sprintf("%.12g"),
+    lunch: work.lunch |> Printf.sprintf("%.12g"),
+    userid: work.userid,
+  };
 };
 
 let formatFloatString = str => Js.String.replace(",", ".", str);
