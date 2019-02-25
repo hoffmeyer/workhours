@@ -25,5 +25,15 @@ IF EXISTS (SELECT 1 FROM dbVersion WHERE version=1) THEN
   INSERT INTO dbVersion(version) VALUES(2);
 
 END IF;
+
+IF EXISTS (SELECT 1 FROM dbVersion WHERE version=2) THEN
+  ALTER TABLE users ADD balanceFrom timestamp;
+  UPDATE users set balanceFrom='2019-01-01 00:00:00';
+  ALTER TABLE users ALTER COLUMN balanceFrom SET DEFAULT '2019-01-01 00:00:00';
+  ALTER TABLE users ALTER COLUMN balanceFrom SET NOT NULL;
+  DELETE FROM dbVersion;
+  INSERT INTO dbVersion(version) VALUES(3);
+END IF;
+
 END
 $do$

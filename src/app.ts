@@ -80,7 +80,10 @@ app.use("*", function (req, resp) {
 });
 
 const sql = readFileSync(join(__dirname, "..", "database.sql"), "utf8");
-db.none(sql).catch(e => {
+log("info", "Migration script start")
+db.none(sql).then(r => {
+  log("info", "Migration script end")
+}).catch(e => {
   log("error", "" + e);
 });
 

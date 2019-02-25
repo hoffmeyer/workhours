@@ -6,6 +6,7 @@ export type User = {
   name: string,
   password: string,
   workHoursPerWeek: number,
+  balanceFrom: Date
 };
 
 export type Work = {
@@ -51,4 +52,4 @@ const uiWorkToWork = (uiWork: UiWork): Work => {
   };
 };
 
-export {workToUiWork, uiWorkToWork};
+export { workToUiWork, uiWorkToWork };
