@@ -10,7 +10,7 @@ type state =
 type action =
   | SaveWork(work)
   | LoadWork
-  | Delete(work)
+  | Delete(string)
   | WorkLoaded(work)
   | LoadFailed(string);
 
@@ -89,28 +89,24 @@ let make =
             |> ignore
           ),
       )
-    | Delete(work) =>
-      switch (work.id) {
-      | None => ReasonReact.Update(Failed("Cannot delete work with no Id"))
-      | Some(id) =>
-        ReasonReact.UpdateWithSideEffects(
-          Deleting,
-          self =>
-            Js.Promise.(
-              Work.delete(id)
-              |> then_(() => {
-                   handleAction(Types.WorkDelete(id));
-                   ReasonReact.Router.push(Router.routeToString(Router.Home))
-                   |> resolve;
-                 })
-              |> catch(err => {
-                   Js.log2("Error deleting work: ", err);
-                   resolve(self.send(LoadFailed("Error deleting work")));
-                 })
-              |> ignore
-            ),
-        )
-      }
+    | Delete(id) =>
+      ReasonReact.UpdateWithSideEffects(
+        Deleting,
+        self =>
+          Js.Promise.(
+            Work.delete(id)
+            |> then_(() => {
+                 handleAction(Types.WorkDelete(id));
+                 ReasonReact.Router.push(Router.routeToString(Router.Home))
+                 |> resolve;
+               })
+            |> catch(err => {
+                 Js.log2("Error deleting work: ", err);
+                 resolve(self.send(LoadFailed("Error deleting work")));
+               })
+            |> ignore
+          ),
+      )
     | LoadFailed(msg) => ReasonReact.Update(Failed(msg))
     },
   didMount: self => self.send(LoadWork),
@@ -127,15 +123,12 @@ let make =
              },
            )}
         </h1>
-        {switch (work.id) {
-         | None => <div />
-         | Some(_) =>
-           <button onClick={_event => self.send(Delete(work))}>
-             {"Delete" |> str}
-           </button>
-         }}
         <div>
-          <EditForm work submitAction={work => self.send(SaveWork(work))} />
+          <EditForm
+            work
+            saveAction={work => self.send(SaveWork(work))}
+            deleteAction={id => self.send(Delete(id))}
+          />
         </div>
       </div>
     | Saving => <h1> {str("Saving...")} </h1>

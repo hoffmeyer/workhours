@@ -20,7 +20,8 @@ type action =
   | ChangeEndTime(Js.Date.t)
   | ChangeDuration(string)
   | ChangeLunch(string)
-  | Validate;
+  | Validate
+  | Delete;
 
 let calcEndDate = (startDate: Js.Date.t, duration: float): Js.Date.t => {
   let endDate = Js.Date.fromFloat(Js.Date.getTime(startDate));
@@ -83,7 +84,13 @@ let str = ReasonReact.string;
 
 let component = ReasonReact.reducerComponent("EditForm");
 
-let make = (~work: work, ~submitAction: Types.work => unit, _children) => {
+let make =
+    (
+      ~work: work,
+      ~saveAction: Types.work => unit,
+      ~deleteAction: string => unit,
+      _children,
+    ) => {
   ...component,
   initialState: () => {
     formData: work |> workToFormData,
@@ -155,10 +162,15 @@ let make = (~work: work, ~submitAction: Types.work => unit, _children) => {
       let errors = validate(state.formData);
       switch (errors) {
       | [] =>
-        submitAction(formDataToWork(state.formData))
+        saveAction(formDataToWork(state.formData))
         |> (_ => ReasonReact.NoUpdate)
       | err => ReasonReact.Update({...state, validationErrors: err})
       };
+    | Delete =>
+      switch (state.formData.id) {
+      | None => ReasonReact.NoUpdate
+      | Some(id) => deleteAction(id) |> (_ => ReasonReact.NoUpdate)
+      }
     },
   render: self =>
     <div>
@@ -210,19 +222,36 @@ let make = (~work: work, ~submitAction: Types.work => unit, _children) => {
             self.send(ChangeLunch(ReactEvent.Form.target(event)##value))
           }
         />
-        <button
-          type_="button" onClick={_event => ReasonReact.Router.push("/")}>
-          {"Cancel" |> str}
-        </button>
-        <button type_="button" onClick={_event => self.send(Validate)}>
-          {(
-             switch (work.id) {
-             | None => "Add"
-             | Some(_) => "Save"
-             }
-           )
-           |> str}
-        </button>
+        <div className="actionButtons">
+          {switch (work.id) {
+           | None => <div />
+           | Some(_) =>
+             <button
+               className="actionButtons__delete"
+               type_="button"
+               onClick={_event => self.send(Delete)}>
+               {"Delete" |> str}
+             </button>
+           }}
+          <button
+            className="actionButtons__cancel"
+            type_="button"
+            onClick={_event => ReasonReact.Router.push("/")}>
+            {"Cancel" |> str}
+          </button>
+          <button
+            className="actionButtons__add"
+            type_="button"
+            onClick={_event => self.send(Validate)}>
+            {(
+               switch (work.id) {
+               | None => "Add"
+               | Some(_) => "Save"
+               }
+             )
+             |> str}
+          </button>
+        </div>
       </form>
     </div>,
 };

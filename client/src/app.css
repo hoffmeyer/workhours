@@ -122,3 +122,24 @@ section {
   background-color: #c8fbf5;
   box-shadow: 2px 2px 2px lightgrey;
 }
+
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.actionButtons > button {
+  padding: 0.2em 0.5em;
+}
+
+.actionButtons__delete {
+  background-color: #cf2b2b;
+  margin-right: auto;
+}
+.actionButtons__cancel {
+  border: none;
+  background-color: transparent;
+  text-decoration: underline;
+}
+.actionButtons__add {
+}
