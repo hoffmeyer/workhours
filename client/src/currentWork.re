@@ -37,7 +37,7 @@ let dateToDiff = d => diffInHours(d, Js.Date.make()) |> roundToQuarters;
 let inProgressWorkToday = l =>
   l |> unfinishedWork |> latestOnDate(Js.Date.make());
 
-let workInProgressToUpdatedWork = (inProgress, hours) => {
+let workInProgressToUpdatedWork = (inProgress: work, hours) => {
   id: inProgress.id,
   start: inProgress.start,
   duration: hours,

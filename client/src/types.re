@@ -6,8 +6,16 @@ type work = {
   userid: option(string),
 };
 
+type user = {
+  id: string,
+  username: string,
+  name: string,
+  workhoursPerWeek: float,
+  balanceFrom: Js.Date.t,
+};
+
 module Decode = {
-  let work = json: work =>
+  let work = (json): work =>
     Json.Decode.{
       id: json |> optional(field("id", string)),
       start: json |> field("start", date),
@@ -15,9 +23,17 @@ module Decode = {
       lunch: json |> field("lunch", Json.Decode.float),
       userid: json |> optional(field("userid", string)),
     };
-  let workList = json: array(work) => Json.Decode.(json |> array(work));
-  let balance = json: float =>
+  let workList = (json): array(work) => Json.Decode.(json |> array(work));
+  let balance = (json): float =>
     json |> Json.Decode.field("balance", Json.Decode.float);
+  let user = (json): user =>
+    Json.Decode.{
+      id: json |> field("id", string),
+      username: json |> field("username", string),
+      name: json |> field("name", string),
+      workhoursPerWeek: json |> field("workhoursperweek", Json.Decode.float),
+      balanceFrom: json |> field("balancefrom", Json.Decode.date),
+    };
 };
 
 module Encode = {

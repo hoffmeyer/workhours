@@ -14,6 +14,7 @@ import db from "./db.js";
 import mUser from "./models/user";
 import apiWork from "./routes/api/work";
 import apiLogin from "./routes/api/login";
+import apiUser from "./routes/api/user";
 
 remove(transports.Console);
 add(transports.Console, { timestamp: true });
@@ -75,6 +76,7 @@ passport.use(
 
 app.use("/api/work", apiWork);
 app.use("/api/login", apiLogin);
+app.use("/api/user", apiUser);
 app.use("*", function (req, resp) {
   resp.sendFile(path.resolve(__dirname, 'public/index.html'));
 });

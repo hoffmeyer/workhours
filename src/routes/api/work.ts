@@ -22,8 +22,7 @@ router.get('/', isLoggedInApi, (req, res) => {
   const from: Date = new Date(req.query.from);
   const to: Date = new Date(req.query.to);
   const id: string = req.user.id;
-  work.get(id, from, to);
-  work.all(id).then(data => res.json(data));
+  work.get(id, from, to).then(data => res.json(data));
 });
 
 router.post('/', isLoggedInApi, (req, res) => {

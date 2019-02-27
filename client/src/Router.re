@@ -2,6 +2,7 @@ type routes =
   | Home
   | Edit(option(string))
   | Login
+  | Settings
   | NotFound;
 
 let urlToRoute = (url: ReasonReact.Router.url) =>
@@ -10,6 +11,7 @@ let urlToRoute = (url: ReasonReact.Router.url) =>
   | ["edit"] => Edit(None)
   | ["edit", id] => Edit(Some(id))
   | ["login"] => Login
+  | ["settings"] => Settings
   | _ => NotFound
   };
 
@@ -19,6 +21,7 @@ let routeToString = (route: routes) =>
   | Edit(None) => "/edit"
   | Edit(Some(id)) => "/edit/" ++ id
   | Login => "/login"
+  | Settings => "/settings"
   | NotFound => "/404"
   };
 

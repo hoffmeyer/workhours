@@ -52,7 +52,7 @@ let make = _children => {
               ),
             )
             |> then_(Fetch.Response.text)
-            |> then_(_user => {
+            |> then_(_userid => {
                  ReasonReact.Router.push("/");
                  %bs.raw
                  {| window.window.location.reload() |};

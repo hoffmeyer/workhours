@@ -71,6 +71,12 @@ header {
   border-bottom: 1px solid black;
   text-align: center;
   background-color: lightgrey;
+  display: flex;
+  justify-content: space-between;
+}
+
+header > * {
+  flex: 1;
 }
 
 .logo {
@@ -78,6 +84,7 @@ header {
   font-weight: bold;
   padding: 0.4em 0.2em 0.2em 0.2em;
   line-height: 1.5em;
+  cursor: pointer;
 }
 
 section {
@@ -141,5 +148,14 @@ section {
   background-color: transparent;
   text-decoration: underline;
 }
-.actionButtons__add {
+
+.settings {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.settingsButton {
+  float: right;
+  margin-right: 1.5em;
 }

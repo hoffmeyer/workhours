@@ -27,7 +27,7 @@ let newWork = {
 };
 
 let findWork = (id, workList) => {
-  let matchesId = work =>
+  let matchesId = (work: work): bool =>
     switch (work.id) {
     | None => false
     | Some(workId) => workId === id

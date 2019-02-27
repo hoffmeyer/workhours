@@ -51,12 +51,12 @@ let make = (~currentRoute, _children) => {
         ReasonReact.Update(Loaded(workList));
       | _ => ReasonReact.Update(Error("Failed to add new work"))
       }
-    | WorkUpdate(work) =>
+    | WorkUpdate((work: work)) =>
       switch (state) {
       | Loaded(workList) =>
         let newList =
           Js.Array.map(
-            w =>
+            (w: work) =>
               if (w.id == work.id) {
                 work;
               } else {
@@ -72,7 +72,7 @@ let make = (~currentRoute, _children) => {
       | Loaded(workList) =>
         let newList =
           Js.Array.filter(
-            w =>
+            (w: work) =>
               switch (w.id) {
               | None => true
               | Some(wId) => wId !== id
@@ -86,11 +86,26 @@ let make = (~currentRoute, _children) => {
   didMount: self => self.send(WorkFetch),
   render: self =>
     <div className="App">
-      <header
-        onClick={_event =>
-          ReasonReact.Router.push(Router.routeToString(Router.Home))
-        }>
-        <div className="logo"> {ReasonReact.string("Workhours")} </div>
+      <header>
+        <div />
+        <div
+          className="logo"
+          onClick={_event =>
+            ReasonReact.Router.push(Router.routeToString(Router.Home))
+          }>
+          {ReasonReact.string("Workhours")}
+        </div>
+        <div className="settings">
+          <button
+            className="settingsButton"
+            onClick={_ =>
+              Router.Settings
+              |> Router.routeToString
+              |> ReasonReact.Router.push
+            }>
+            {"Settings" |> str}
+          </button>
+        </div>
       </header>
       <section>
         {switch (self.state) {

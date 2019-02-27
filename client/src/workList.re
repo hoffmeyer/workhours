@@ -17,20 +17,20 @@ let component = ReasonReact.reducerComponent("WorkList");
 
 let formatDate = date => Js.Date.toUTCString(date);
 
-let getWeekNo = ls => {
+let getWeek = (ls): string => {
   switch (Belt.List.head(ls)) {
-  | None => <p> {"Error" |> str} </p>
-  | Some(x) =>
-    "Week " ++ (DateUtil.dateToWeekNo(x.start) |> Js.Int.toString) |> str
+  | None => "Error"
+  | Some(x) => DateUtil.dateToWeekNo(x.start) |> Js.Int.toString
   };
 };
 
-let listWork = (send: action => unit, workList) =>
-  <div>
+let listWork = (send: action => unit, workList) => {
+  let weekNo = getWeek(workList);
+  <div key=weekNo>
     <table id="workList">
       <tbody>
         <tr className="borderBottom">
-          <th className="left"> {getWeekNo(workList)} </th>
+          <th className="left"> {"Week " ++ weekNo |> str} </th>
           <th />
         </tr>
         {Belt.List.map(workList, work =>
@@ -65,6 +65,7 @@ let listWork = (send: action => unit, workList) =>
       </tbody>
     </table>
   </div>;
+};
 
 let rec group = (list: list('a), p): list(list('a)) =>
   switch (Belt.List.head(list)) {
