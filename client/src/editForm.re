@@ -51,7 +51,12 @@ let workToFormData = (work: work): formData => {
   };
 };
 
-let formatFloatString = str => Js.String.replace(",", ".", str);
+let formatFloatString = str => {
+  switch (str) {
+  | "" => "0"
+  | _ => Js.String.replace(",", ".", str)
+  };
+};
 
 let formDataToWork = (formData: formData): work => {
   {
@@ -138,18 +143,20 @@ let make =
         },
       })
     | ChangeDuration(duration) =>
+      let num = Js.Float.fromString(duration |> formatFloatString);
+      let endDate =
+        Js.Float.isNaN(num) ?
+          state.formData.startDate :
+          calcEndDate(state.formData.startDate, num);
+
       ReasonReact.Update({
         ...state,
         formData: {
           ...state.formData,
-          endDate:
-            calcEndDate(
-              state.formData.startDate,
-              duration |> float_of_string,
-            ),
+          endDate,
           duration,
         },
-      })
+      });
     | ChangeLunch(lunch) =>
       ReasonReact.Update({
         ...state,
