@@ -5,8 +5,8 @@ export type User = {
   username: string,
   name: string,
   password: string,
-  workHoursPerWeek: number,
-  balanceFrom: Date
+  workhoursperweek: number,
+  balancefrom: Date
 };
 
 export type Work = {
