@@ -62,7 +62,7 @@ let stopWork = workList =>
         let duration = diffInHours(inProgress.start);
         Js.Promise.(
           {
-            Work.save({
+            Models.Work.save({
               ...inProgress,
               duration,
               lunch:
@@ -92,7 +92,7 @@ let startWork =
         userid: None,
       };
       Js.Promise.(
-        Work.save(newWork)
+        Models.Work.save(newWork)
         |> then_(work => self.send(WorkStarted(work)) |> resolve)
         |> catch(err => {
              Js.log2("Error starting work: ", err);

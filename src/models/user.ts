@@ -1,6 +1,7 @@
 import * as winston from "winston";
 import { User } from "../types";
 import db from "../db.js";
+import { log } from 'winston';
 
 const byId = (id: string): Promise<User> => {
   return db
@@ -32,7 +33,30 @@ const byUsername = (username: string): Promise<User> => {
     });
 };
 
+const update = (user: User): Promise<void> => {
+  console.log("db user");
+  console.log(user);
+  return db
+    .none(
+      'UPDATE users SET balancefrom=$2, workHoursPerWeek=$3 WHERE id=$1;', [user.id, user.balancefrom, user.workhoursperweek],
+    )
+    .then((user) => {
+      log('info', 'update User successfull');
+    })
+    .catch(error => {
+      log(
+        'error',
+        'Updating user with id ' +
+        (user.id != null ? user.id : 'null') +
+        ' failed: ' +
+        error,
+      );
+      log('error', error.message);
+    });
+};
+
 export default {
   byId,
-  byUsername
+  byUsername,
+  update
 };

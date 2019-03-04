@@ -72,7 +72,7 @@ let make =
         Saving,
         _self =>
           Js.Promise.(
-            Work.save(work)
+            Models.Work.save(work)
             |> then_(savedWork =>
                  (
                    switch (work.id) {
@@ -94,7 +94,7 @@ let make =
         Deleting,
         self =>
           Js.Promise.(
-            Work.delete(id)
+            Models.Work.delete(id)
             |> then_(() => {
                  handleAction(Types.WorkDelete(id));
                  ReasonReact.Router.push(Router.routeToString(Router.Home))

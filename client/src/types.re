@@ -47,6 +47,16 @@ module Encode = {
         ("userid", nullable(string, w.userid)),
       ])
     );
+  let user = (u: user) =>
+    Json.Encode.(
+      object_([
+        ("id", string(u.id)),
+        ("name", string(u.name)),
+        ("username", string(u.username)),
+        ("workhoursperweek", Json.Encode.float(u.workhoursPerWeek)),
+        ("balancefrom", date(u.balanceFrom)),
+      ])
+    );
 };
 
 type action =

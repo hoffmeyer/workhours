@@ -2,10 +2,12 @@ open Types;
 
 type action =
   | LoadUser
-  | UserLoaded(user);
+  | UserLoaded(user)
+  | SaveUser(user);
 
 type state =
   | Loading
+  | Saving
   | Loaded(user)
   | Error(string);
 
@@ -33,16 +35,31 @@ let make = _children => {
             |> ignore
           ),
       )
+    | SaveUser(user) =>
+      ReasonReact.UpdateWithSideEffects(
+        Saving,
+        _self =>
+          Js.Promise.(
+            Models.User.save(user)
+            |> then_(_savedUser =>
+                 ReasonReact.Router.push(Router.Home |> Router.routeToString)
+                 |> resolve
+               )
+            |> resolve
+          )
+          |> ignore,
+      )
     | UserLoaded(user) => ReasonReact.Update(Loaded(user))
     };
   },
   render: self =>
     switch (self.state) {
     | Loading => <h1> {"Loading..." |> ReasonReact.string} </h1>
+    | Saving => <h1> {"Saving..." |> ReasonReact.string} </h1>
     | Loaded(user) =>
       <div>
         <h1> {"Settings" |> ReasonReact.string} </h1>
-        <UserForm user />
+        <UserForm user saveUser={user => self.send(SaveUser(user))} />
       </div>
     | Error(err) => <h1> {err |> ReasonReact.string} </h1>
     },

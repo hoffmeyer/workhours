@@ -114,7 +114,7 @@ export default {
   all: (userid: string): Promise<void | Work[]> => {
     return db
       .any(
-        "SELECT * FROM work WHERE userid='" + userid + "' AND start::date >= '2019-01-01' ORDER BY start DESC",
+        "SELECT * FROM work WHERE userid='" + userid + "' AND start::date >= (SELECT balancefrom FROM users where id='" + userid + "') ORDER BY start DESC",
       )
       .then(any => {
         log(

@@ -98,7 +98,7 @@ let make = (~handleAction, ~workList, _children) => {
           Deleting,
           self =>
             Js.Promise.(
-              Work.delete(id)
+              Models.Work.delete(id)
               |> then_(() => {
                    handleAction(Types.WorkDelete(id));
                    self.send(Deleted) |> resolve;
