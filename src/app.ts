@@ -58,15 +58,12 @@ passport.use(
     session: false
   }, function (username, password, done) {
     mUser
-      .byUsername(username)
+      .authenticate(username, password)
       .then(function (user) {
         if (user == null) {
-          return done(null, false, { message: 'bad username' });
+          return done(null, false, { message: 'authentication failed' });
         }
-        if (user.password === password) {
-          return done(null, user);
-        }
-        return done(null, false, { message: 'password did not match' });
+        return done(null, user);
       })
       .catch(err => {
         return done(err);

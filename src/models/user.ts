@@ -18,13 +18,13 @@ const byId = (id: string): Promise<User> => {
     });
 };
 
-const byUsername = (username: string): Promise<User> => {
+const authenticate = (username: string, password: string): Promise<User> => {
   return db
-    .one("SELECT * FROM users WHERE username = '" + username + "'")
+    .one("SELECT * FROM users WHERE username = '" + username + "' AND password = crypt('" + password + "', password)")
     .then(user => {
       winston.log(
         "info",
-        "found user by usernamme: " + username + " name: " + user.id
+        "authenticated user with usernamme: " + username + " name: " + user.id
       );
       return user;
     })
@@ -57,6 +57,6 @@ const update = (user: User): Promise<void> => {
 
 export default {
   byId,
-  byUsername,
+  authenticate,
   update
 };
