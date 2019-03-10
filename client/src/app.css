@@ -104,7 +104,7 @@ section {
 }
 
 /* Register update work */
-#registerHours {
+form {
   max-width: 22rem;
   margin: 0 auto;
 }
