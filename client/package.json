@@ -19,6 +19,7 @@
     "@glennsl/bs-json": ">=3.0.0",
     "bs-fetch": "^0.3.1",
     "re-classnames": "^3.0.0",
+    "re-formality": "^1.2.0",
     "reason-react": "^0.5.3"
   },
   "devDependencies": {

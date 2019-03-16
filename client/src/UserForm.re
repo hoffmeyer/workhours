@@ -1,115 +1,144 @@
 open Types;
 
-type formData = {
-  hoursPerWeek: string,
-  balanceFrom: Js.Date.t,
-};
+module UserForm = {
+  open Formality;
 
-type action =
-  | ChangeHoursPerWeek(string)
-  | ChangeBalanceFrom(Js.Date.t)
-  | Validate;
+  type field =
+    | HoursPerWeek
+    | BalanceFrom;
 
-type state = {
-  formData,
-  validationErrors: list(string),
-};
+  type message = string;
 
-let str = ReasonReact.string;
+  type state = {
+    hoursPerWeek: string,
+    balanceFrom: Js.Date.t,
+  };
 
-let formDataToUser = (oldUser, formData): user => {
-  {
-    ...oldUser,
-    workhoursPerWeek: formData.hoursPerWeek |> float_of_string,
-    balanceFrom: formData.balanceFrom,
+  module HoursPerWeekField = {
+    let update = (state: state, value: string) => {
+      ...state,
+      hoursPerWeek: value,
+    };
+    let validator = {
+      field: HoursPerWeek,
+      strategy: Strategy.OnFirstSuccessOrFirstBlur,
+      dependents: None,
+      validate: state => {
+        let num = state.hoursPerWeek |> Js.Float.fromString;
+        switch (num) {
+        | _ as value when value == 0. => Error("Must not be empty or zero")
+        | _ as value when Js.Float.isNaN(value) => Error("Invalid number")
+        | _ as value when value < 0. => Error("Negative hours not allowed")
+        | _ => Ok(Valid)
+        };
+      },
+    };
+  };
+
+  module BalanceFromField = {
+    let update = (state: state, value: Js.Date.t) => {
+      ...state,
+      balanceFrom: value,
+    };
+    let validator = {
+      field: BalanceFrom,
+      strategy: Strategy.OnFirstSuccessOrFirstBlur,
+      dependents: None,
+      validate: state => {
+        switch (state.balanceFrom) {
+        | _ as value when DateUtil.isAfter(Js.Date.make(), value) =>
+          Error("Must not be in the future")
+        | _ => Ok(Valid)
+        };
+      },
+    };
+  };
+
+  let validators = [HoursPerWeekField.validator, BalanceFromField.validator];
+
+  let formDataToUser = (oldUser, formData): user => {
+    {
+      ...oldUser,
+      workhoursPerWeek: formData.hoursPerWeek |> float_of_string,
+      balanceFrom: formData.balanceFrom,
+    };
+  };
+
+  let userToFormData = user => {
+    {
+      hoursPerWeek: user.workhoursPerWeek |> string_of_float,
+      balanceFrom: user.balanceFrom,
+    };
   };
 };
 
-let userToFormData = user => {
-  {
-    hoursPerWeek: user.workhoursPerWeek |> string_of_float,
-    balanceFrom: user.balanceFrom,
-  };
-};
+type message = string;
 
-let validate = formData => {
-  EditForm.validateFloat("Hours per week", formData.hoursPerWeek);
-};
+module UserFormContainer = Formality.Make(UserForm);
 
-let component = ReasonReact.reducerComponent("UserForm");
+let component = ReasonReact.statelessComponent(__MODULE__);
 
 let make = (~user: user, ~saveUser: user => unit, _children) => {
   ...component,
-  initialState: () => {
-    formData: user |> userToFormData,
-    validationErrors: [],
-  },
-  reducer: (action, state: state) => {
-    switch (action) {
-    | ChangeHoursPerWeek(hours) =>
-      ReasonReact.Update({
-        ...state,
-        formData: {
-          ...state.formData,
-          hoursPerWeek: hours,
-        },
-      })
-    | ChangeBalanceFrom(date) =>
-      ReasonReact.Update({
-        ...state,
-        formData: {
-          ...state.formData,
-          balanceFrom: date,
-        },
-      })
-    | Validate =>
-      let errors = validate(state.formData);
-      switch (errors) {
-      | [] =>
-        ReasonReact.SideEffects(
-          _ => saveUser(state.formData |> formDataToUser(user)),
-        )
-      | err => ReasonReact.Update({...state, validationErrors: err})
-      };
-    };
-  },
-  render: self =>
-    <div>
-      {switch (self.state.validationErrors) {
-       | [] => <div />
-       | errors =>
-         ReasonReact.array(
-           Js.Array.mapi(
-             (error, i) =>
-               <div key={string_of_int(i)} className="error">
-                 {error |> str}
-               </div>,
-             Array.of_list(errors),
-           ),
-         )
-       }}
-      <form>
-        <label htmlFor="hoursPerWeek"> {"Hours per week" |> str} </label>
-        <input
-          id="hoursPerWeek"
-          value={self.state.formData.hoursPerWeek}
-          onChange={event =>
-            self.send(
-              ChangeHoursPerWeek(ReactEvent.Form.target(event)##value),
-            )
-          }
-        />
-        <label htmlFor="balanceFrom">
-          {"Calculate balance from" |> str}
-        </label>
-        <DateInput
-          id="balanceFrom"
-          value={self.state.formData.balanceFrom}
-          onChange={date => self.send(ChangeBalanceFrom(date))}
-        />
-        <button type_="button" onClick={_ => self.send(Validate)}>
-          {"Save" |> str}
-        </button>
-      </form>
-    </div>,
+  render: _ =>
+    <UserFormContainer
+      initialState={user |> UserForm.userToFormData}
+      onSubmit={(state, _form) =>
+        UserForm.formDataToUser(user, state) |> saveUser
+      }>
+      ...{form =>
+        <div>
+          <form onSubmit={form.submit->Formality.Dom.preventDefault}>
+            <label htmlFor="hoursPerWeek">
+              {"Hours per week" |> ReasonReact.string}
+            </label>
+            <input
+              id="hoursPerWeek"
+              value={form.state.hoursPerWeek}
+              onChange={event =>
+                form.change(
+                  HoursPerWeek,
+                  UserForm.HoursPerWeekField.update(
+                    form.state,
+                    event->ReactEvent.Form.target##value,
+                  ),
+                )
+              }
+            />
+            {switch (HoursPerWeek->(form.result)) {
+             | Some(Error(message)) =>
+               <div className={Cn.make(["form-message", "failure"])}>
+                 message->ReasonReact.string
+               </div>
+             | Some(Ok(Valid))
+             | Some(Ok(NoValue))
+             | None => ReasonReact.null
+             }}
+            <label htmlFor="balanceFrom">
+              {"Calculate balance from" |> ReasonReact.string}
+            </label>
+            <DateInput
+              id="balanceFrom"
+              value={form.state.balanceFrom}
+              onChange={date =>
+                form.change(
+                  BalanceFrom,
+                  UserForm.BalanceFromField.update(form.state, date),
+                )
+              }
+            />
+            {switch (BalanceFrom->(form.result)) {
+             | Some(Error(message)) =>
+               <div className={Cn.make(["form-message", "failure"])}>
+                 message->ReasonReact.string
+               </div>
+             | Some(Ok(Valid))
+             | Some(Ok(NoValue))
+             | None => ReasonReact.null
+             }}
+            <button> {"Save" |> ReasonReact.string} </button>
+          </form>
+        </div>
+      }
+    </UserFormContainer>,
 };
