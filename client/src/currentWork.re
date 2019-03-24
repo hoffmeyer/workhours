@@ -66,8 +66,8 @@ let stopWork = workList =>
               ...inProgress,
               duration,
               lunch:
-                inProgress.lunch == 0. && duration > 4. ?
-                  0.5 : inProgress.lunch,
+                inProgress.lunch == 0. && duration > 4.
+                  ? 0.5 : inProgress.lunch,
             })
             |> then_(work => self.send(WorkStopped(work)) |> resolve)
             |> catch(err => {
@@ -136,7 +136,7 @@ let make =
          <div>
            <h1>
              {str(
-                (w.start |> dateToDiff |> string_of_float)
+                (w.start |> dateToDiff |> Js.Float.toString)
                 ++ " hours and counting",
               )}
            </h1>

@@ -20,14 +20,14 @@ let str = ReasonReact.string;
 let formDataToUser = (oldUser, formData): user => {
   {
     ...oldUser,
-    workhoursPerWeek: formData.hoursPerWeek |> float_of_string,
+    workhoursPerWeek: formData.hoursPerWeek |> Js.Float.fromString,
     balanceFrom: formData.balanceFrom,
   };
 };
 
 let userToFormData = user => {
   {
-    hoursPerWeek: user.workhoursPerWeek |> string_of_float,
+    hoursPerWeek: user.workhoursPerWeek |> Js.Float.toString,
     balanceFrom: user.balanceFrom,
   };
 };
@@ -81,7 +81,7 @@ let make = (~user: user, ~saveUser: user => unit, _children) => {
          ReasonReact.array(
            Js.Array.mapi(
              (error, i) =>
-               <div key={string_of_int(i)} className="error">
+               <div key={Js.Int.toString(i)} className="error">
                  {error |> str}
                </div>,
              Array.of_list(errors),

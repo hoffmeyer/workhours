@@ -62,8 +62,8 @@ let formDataToWork = (formData: formData): work => {
   {
     id: formData.id,
     start: formData.startDate,
-    duration: formData.duration |> formatFloatString |> float_of_string,
-    lunch: formData.lunch |> formatFloatString |> float_of_string,
+    duration: formData.duration |> formatFloatString |> Js.Float.fromString,
+    lunch: formData.lunch |> formatFloatString |> Js.Float.fromString,
     userid: formData.userid,
   };
 };
@@ -129,7 +129,7 @@ let make =
           ...state.formData,
           startDate: date,
           duration:
-            calcDuration(state.formData.startDate, date) |> string_of_float,
+            calcDuration(state.formData.startDate, date) |> Js.Float.toString,
         },
       })
     | ChangeEndTime(date) =>
@@ -139,15 +139,15 @@ let make =
           ...state.formData,
           endDate: date,
           duration:
-            calcDuration(state.formData.startDate, date) |> string_of_float,
+            calcDuration(state.formData.startDate, date) |> Js.Float.toString,
         },
       })
     | ChangeDuration(duration) =>
       let num = Js.Float.fromString(duration |> formatFloatString);
       let endDate =
-        Js.Float.isNaN(num) ?
-          state.formData.startDate :
-          calcEndDate(state.formData.startDate, num);
+        Js.Float.isNaN(num)
+          ? state.formData.startDate
+          : calcEndDate(state.formData.startDate, num);
 
       ReasonReact.Update({
         ...state,
@@ -187,7 +187,7 @@ let make =
          ReasonReact.array(
            Js.Array.mapi(
              (error, i) =>
-               <div key={string_of_int(i)} className="error">
+               <div key={Js.Int.toString(i)} className="error">
                  {error |> str}
                </div>,
              Array.of_list(errors),
