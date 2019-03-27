@@ -48,6 +48,16 @@ let make = (~currentRoute, _children) => {
       switch (state) {
       | Loaded(workList) =>
         Js.Array.push(work, workList) |> ignore;
+        workList
+        |> Js.Array.sortInPlaceWith((x, y) => {
+             let startTime = x => x.start->Js.Date.getTime;
+             switch (x->startTime, y->startTime) {
+             | (x, y) when x < y => 1
+             | (x, y) when x > y => (-1)
+             | _ => 0
+             };
+           })
+        |> ignore;
         ReasonReact.Update(Loaded(workList));
       | _ => ReasonReact.Update(Error("Failed to add new work"))
       }
