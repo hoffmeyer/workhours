@@ -2,6 +2,7 @@ open Types;
 
 type state =
   | Initial
+  | Working((Js.Date.t, Js.Date.t))
   | Starting
   | Stopping
   | Error(string);
@@ -12,7 +13,8 @@ type action =
   | Failed(string)
   | StartWork
   | WorkStarted(work)
-  | Reset;
+  | Reset
+  | Tick;
 
 let str = ReasonReact.string;
 
@@ -108,7 +110,15 @@ let component = ReasonReact.reducerComponent("Home");
 let make =
     (~workList: array(work), ~handleAction: Types.action => unit, _children) => {
   ...component,
-  initialState: () => Initial,
+  initialState: () =>
+    switch (workList |> inProgressWorkToday) {
+    | None => Initial
+    | Some(w) => Working((w.start, Js.Date.make()))
+    },
+  didMount: self => {
+    let interval = Js.Global.setInterval(() => self.send(Tick), 1000);
+    self.onUnmount(() => Js.Global.clearInterval(interval));
+  },
   reducer: (action, _state) =>
     switch (action) {
     | StopWork => stopWork(workList)
@@ -121,22 +131,29 @@ let make =
       handleAction(Types.WorkAdd(work));
       ReasonReact.Update(Initial);
     | Reset => ReasonReact.Update(Initial)
+    | Tick =>
+      ReasonReact.Update(
+        switch (workList |> inProgressWorkToday) {
+        | None => Initial
+        | Some(w) => Working((w.start, Js.Date.make()))
+        },
+      )
     },
   render: self =>
     <div className="mb-l">
-      {switch (workList |> inProgressWorkToday) {
-       | None =>
+      {switch (self.state) {
+       | Initial =>
          <div>
            <h1> {str("You are not working")} </h1>
            <button id="startStop" onClick={_evt => self.send(StartWork)}>
              {str("Start working")}
            </button>
          </div>
-       | Some(w) =>
+       | Working((start, _)) =>
          <div>
            <h1>
              {str(
-                (w.start |> dateToDiff |> Js.Float.toString)
+                (start |> dateToDiff |> Js.Float.toString)
                 ++ " hours and counting",
               )}
            </h1>
@@ -144,9 +161,6 @@ let make =
              {str("Stop working")}
            </button>
          </div>
-       }}
-      {switch (self.state) {
-       | Initial => <div />
        | Starting => <div> {str("Starting work...")} </div>
        | Stopping => <div> {str("Stopping work...")} </div>
        | Error(msg) =>
