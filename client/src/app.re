@@ -21,21 +21,9 @@ let make = (~currentRoute, _children) => {
         Loading,
         self =>
           Js.Promise.(
-            Fetch.fetch("/api/work/latest")
-            |> then_(res => {
-                 let status = Fetch.Response.status(res);
-                 switch (status) {
-                 | 200 => Fetch.Response.json(res)
-                 | 401 =>
-                   self.send(WorkFetched([||]));
-                   ReasonReact.Router.push("/login");
-                   Js.Exn.raiseError(Fetch.Response.statusText(res));
-                 | _ => Js.Exn.raiseError(Fetch.Response.statusText(res))
-                 };
-               })
-            |> then_(json =>
-                 json
-                 |> Decode.workList
+            Models.Work.getLatest
+            |> then_(workList =>
+                 workList
                  |> (work => self.send(WorkFetched(work)))
                  |> resolve
                )
