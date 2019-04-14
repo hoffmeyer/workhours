@@ -27,6 +27,9 @@ let make = (~currentRoute, _children) => {
                  |> (work => self.send(WorkFetched(work)))
                  |> resolve
                )
+            |> catch( _err =>
+                 self.send(WorkFetched([||])) |> resolve
+             )
             |> ignore
           ),
       )
