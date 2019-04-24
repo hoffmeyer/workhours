@@ -74,6 +74,9 @@ passport.use(
 app.use("/api/work", apiWork);
 app.use("/api/login", apiLogin);
 app.use("/api/user", apiUser);
+app.get("/service-worker.js", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "public", "service-worker.js"));
+});
 app.use("*", function (req, resp) {
   resp.sendFile(path.resolve(__dirname, 'public/index.html'));
 });
