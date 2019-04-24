@@ -22,7 +22,7 @@ const PRECACHE_URLS = [
     '/index.html',
     '/index.js',
     '/images/icons-512.png',
-    '/images/icons-256.png',
+    '/images/icons-192.png',
     '/images/favicon-16x16.png',
     '/images/favicon-32x32.png'
 ];
