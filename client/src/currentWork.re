@@ -153,8 +153,8 @@ let make =
          <div>
            <h1>
              {str(
-                (start |> dateToDiff |> Js.Float.toString)
-                ++ " hours and counting",
+                (start |> dateToDiff |> Printf.sprintf("%.2f"))
+                ++ " hours and counting"
               )}
            </h1>
            <button id="startStop" onClick={_evt => self.send(StopWork)}>

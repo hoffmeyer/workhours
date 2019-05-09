@@ -44,7 +44,7 @@ let listWork = (send: action => unit, workList) => {
              }>
              <td className="left"> {work.start |> formatDate |> str} </td>
              <td className="right">
-               {work.duration -. work.lunch |> Js.Float.toString |> str}
+               {Printf.sprintf("%.2f", work.duration -. work.lunch ) |> str}
              </td>
            </tr>
          )
@@ -57,7 +57,7 @@ let listWork = (send: action => unit, workList) => {
              |> (
                x =>
                  Belt.List.reduce(x, 0., (x, y) => x +. y)
-                 |> Js.Float.toString
+                 |> Printf.sprintf("%.2f")
                  |> str
              )}
           </td>

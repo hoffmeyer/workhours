@@ -38,7 +38,7 @@ let make = _children => {
     | Loading => <p> {"Loading" |> str} </p>
     | Loaded(balance) =>
       <p className="center">
-        {"Balance: " ++ Js.Float.toString(balance) |> str}
+        {Printf.sprintf("Balance: %.2f", balance) |> str}
       </p>
     | Failed(msg) => <p> {"Fetching balance failed: " ++ msg |> str} </p>
     },
