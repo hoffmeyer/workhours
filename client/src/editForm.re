@@ -25,11 +25,11 @@ type action =
 
 let calcEndDate = (startDate: Js.Date.t, duration: float): Js.Date.t => {
   let endDate = Js.Date.fromFloat(Js.Date.getTime(startDate));
-  Js.Date.setHours(endDate, Js.Date.getHours(startDate) +. ceil(duration))
+  Js.Date.setHours(endDate, Js.Date.getHours(startDate) +. floor(duration))
   |> ignore;
   Js.Date.setMinutes(
     endDate,
-    Js.Date.getMinutes(startDate) +. mod_float(duration, 1.),
+    Js.Date.getMinutes(startDate) +. mod_float(duration, 1.) *. 60.,
   )
   |> ignore;
   endDate;
