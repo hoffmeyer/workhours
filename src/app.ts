@@ -8,16 +8,14 @@ import * as logger from "morgan";
 import * as passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import * as session from "express-session";
-import { log, add, remove, transports } from "winston";
+import log from "./util/logger";
+
 import * as path from "path";
 import db from "./db.js";
 import mUser from "./models/user";
 import apiWork from "./routes/api/work";
 import apiLogin from "./routes/api/login";
 import apiUser from "./routes/api/user";
-
-remove(transports.Console);
-add(transports.Console, { timestamp: true });
 
 const app = express();
 
@@ -82,11 +80,11 @@ app.use("*", function (req, resp) {
 });
 
 const sql = readFileSync(join(__dirname, "..", "database.sql"), "utf8");
-log("info", "Migration script start")
+log.info("Migration script start")
 db.none(sql).then(r => {
-  log("info", "Migration script end")
+  log.info("Migration script end")
 }).catch(e => {
-  log("error", "" + e);
+  log.error("" + e);
 });
 
 export default app;

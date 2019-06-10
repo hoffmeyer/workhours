@@ -16,16 +16,16 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@glennsl/bs-json": ">=3.0.0",
-    "bs-fetch": "^0.3.1",
+    "@glennsl/bs-json": "^4.0.0",
+    "bs-fetch": "^0.4.0",
     "copy-webpack-plugin": "^5.0.2",
-    "re-classnames": "^3.0.0",
+    "re-classnames": "^4.0.0",
     "reason-react": "^0.7.0"
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
     "bs-platform": "^5.0.1",
-    "css-loader": "^1.0.0",
+    "css-loader": "^2.1.1",
     "html-webpack-plugin": "^3.2.0",
     "style-loader": "^0.23.0",
     "webpack": "^4.19.1",
