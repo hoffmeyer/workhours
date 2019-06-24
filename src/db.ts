@@ -1,5 +1,5 @@
 import * as pgp from 'pg-promise';
-import {log} from 'winston';
+import log from './util/logger';
 
 const options = {};
 
@@ -11,8 +11,7 @@ const connection = {
   password: process.env.DATABASE_PASSWORD || 'postgres',
 };
 
-log(
-  'info',
+log.info(
   'Initializing database: ' +
     connection.host +
     ':' +
@@ -25,6 +24,6 @@ log(
 
 const db = pgp(options)(connection);
 
-log('info', 'Database initialized');
+log.info('Database initialized');
 
 export default db;
