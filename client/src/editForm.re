@@ -196,7 +196,7 @@ let make =
        }}
       <form id="registerHours">
         <label htmlFor="startDate"> {"Start date" |> str} </label>
-        <DateInput
+        <DateInput.Jsx2
           id="startDate"
           value={self.state.formData.startDate}
           onChange={date => self.send(ChangeStartDate(date))}

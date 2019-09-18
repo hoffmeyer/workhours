@@ -1,6 +1,5 @@
-let str = ReasonReact.string;
-
-let component = ReasonReact.statelessComponent("DateInput");
+/* In Image.re */
+[@bs.config {jsx: 3}];
 
 let addZ = num => (num < 10.) ? "0" ++ Js.Float.toString(num) : Js.Float.toString(num);
 let toString = date => 
@@ -13,9 +12,8 @@ let toString = date =>
 
 let toDate = Js.Date.fromString;
 
-let make = (~value: Js.Date.t, ~id: string, ~onChange, _children) => {
-  ...component,
-  render: _self =>
+[@react.component]
+let make = (~value: Js.Date.t, ~id: string, ~onChange ) =>
     <input
       id
       type_="date"
@@ -23,5 +21,15 @@ let make = (~value: Js.Date.t, ~id: string, ~onChange, _children) => {
       onChange={
         event => onChange(ReactEvent.Form.target(event)##value |> toDate)
       }
-    />,
+    />;
+
+module Jsx2 = {
+  let component = ReasonReact.statelessComponent("DateInput");
+  /* `children` is not labelled, as it is a regular parameter in version 2 of JSX */
+  let make = (~value, ~id, ~onChange, children) =>
+    ReasonReactCompat.wrapReactForReasonReact(
+      make,
+      makeProps(~value, ~id, ~onChange, ()),
+      children,
+    );
 };

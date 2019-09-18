@@ -17,6 +17,12 @@ export type Work = {
   userid: string,
 };
 
+export type WorkPeriod = {
+  start: Date,
+  end: Date,
+  duration: number
+}
+
 export type UiWork = {
   id?: string,
   start: Date,

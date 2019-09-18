@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as R from 'ramda';
 import work from '../../models/work';
-import { Work } from '../../types';
+import { Work, WorkPeriod } from '../../types';
 import * as moment from 'moment';
 import { isLoggedInApi } from '../../util/auth';
 
@@ -49,6 +49,44 @@ router.post('/', isLoggedInApi, (req, res) => {
     });
 
   }
+});
+
+router.post('/period', isLoggedInApi, (req, res) => {
+  const id: string = req.user.id;
+  const period: WorkPeriod = req.body;
+  if (!period.start || !period.end) {
+    return res.status(400).send({
+      message: "work must have a start and end date"
+    });
+  }
+
+  let currentDate = new Date(period.start);
+  let dates: Date[] = [];
+
+  // create array of all the dates
+  while (currentDate >= period.end) {
+    dates.push(currentDate);
+    currentDate.setDate(currentDate.getDate() + 1)
+  }
+
+  // filter out weekends
+  dates.filter(d => d.getDay() != 1 || d.getDay() != 7);
+
+  let promises = dates.map(async d => {
+    let newWork: Work = {
+      userid: id,
+      start: d,
+      duration: period.duration,
+      lunch: 0
+    };
+
+    newWork.id = await work.insert(newWork);
+    return newWork;
+  });
+
+  Promise.all(promises)
+    .then(newWork => res.json(newWork))
+    .catch(err => res.status(400).send({ message: "Creating work range failed" }));
 });
 
 router.delete('/', isLoggedInApi, (req, res) => {
