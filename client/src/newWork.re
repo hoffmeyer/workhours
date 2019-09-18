@@ -115,14 +115,6 @@ let make =
     | Loading => <h1> {str("Loading...")} </h1>
     | Loaded(work) =>
       <div>
-        <h1>
-          {ReasonReact.string(
-             switch (work.id) {
-             | None => "New work"
-             | Some(_) => "Edit work"
-             },
-           )}
-        </h1>
         <div>
           <EditForm
             work

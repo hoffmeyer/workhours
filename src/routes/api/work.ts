@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as R from 'ramda';
 import work from '../../models/work';
-import { Work } from '../../types';
+import { Work, WorkPeriod } from '../../types';
 import * as moment from 'moment';
 import { isLoggedInApi } from '../../util/auth';
 
@@ -9,7 +9,7 @@ let router = Router();
 
 const currentWeekAndTenWeeksBack: string = moment()
   .startOf('isoWeek')
-  .subtract(70, 'days')
+  .subtract(370, 'days')
   .utcOffset('+01:00')
   .toString();
 
@@ -49,6 +49,48 @@ router.post('/', isLoggedInApi, (req, res) => {
     });
 
   }
+});
+
+router.post('/range', isLoggedInApi, (req, res) => {
+  const id: string = req.user.id;
+  const period: WorkPeriod = req.body;
+  if (!period.start || !period.end) {
+    return res.status(400).send({
+      message: "work must have a start and end date"
+    });
+  }
+
+  let firstDate = new Date(period.start);
+  firstDate.setHours(8, 0);
+  let lastDate = new Date(period.end);
+  let dates: Date[] = [firstDate];
+
+  // create array of all the dates
+  while (firstDate <= lastDate) {
+    let newDate = new Date(firstDate);
+    newDate.setDate(firstDate.getDate() + 1);
+    dates.push(newDate);
+    firstDate = newDate;
+  }
+
+  // filter out weekends
+  let noWeekends = dates.filter(d => d.getDay() > 0 && d.getDay() < 6);
+
+  let promises = noWeekends.map(async d => {
+    let newWork: Work = {
+      userid: id,
+      start: d,
+      duration: period.duration,
+      lunch: 0
+    };
+
+    newWork.id = await work.insert(newWork);
+    return newWork;
+  });
+
+  Promise.all(promises)
+    .then(newWork => res.json(newWork))
+    .catch(err => res.status(400).send({ message: "Creating work range failed" }));
 });
 
 router.delete('/', isLoggedInApi, (req, res) => {

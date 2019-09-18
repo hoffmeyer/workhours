@@ -102,7 +102,7 @@ let make = (~user: user, ~saveUser: user => unit, _children) => {
         <label htmlFor="balanceFrom">
           {"Calculate balance from" |> str}
         </label>
-        <DateInput
+        <DateInput.Jsx2
           id="balanceFrom"
           value={self.state.formData.balanceFrom}
           onChange={date => self.send(ChangeBalanceFrom(date))}

@@ -33,6 +33,16 @@ module Work = {
       |> then_(json => json |> Decode.work |> resolve)
     );
 
+  let saveRange = workRange =>
+    Js.Promise.(
+      Fetch.fetchWithInit(
+        "/api/work/range",
+        post(workRange |> Encode.workRange |> Js.Json.stringify),
+      )
+      |> then_(authenticate)
+      |> then_(json => json |> Decode.workList |> resolve)
+    );
+
   let delete = (id: string) =>
     Js.Promise.(
       Fetch.fetchWithInit("/api/work", delete("{\"id\": \"" ++ id ++ "\"}"))

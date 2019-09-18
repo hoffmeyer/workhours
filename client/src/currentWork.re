@@ -18,8 +18,8 @@ type action =
 
 let str = ReasonReact.string;
 
-let unfinishedWork = (workList): array(work) =>
-  Js.Array.filter(w => w.duration == 0., workList);
+let unfinishedWork = (workList) =>
+  Js.Array.filter((w: work) => w.duration == 0., workList);
 
 let latestOnDate = (date, workList) =>
   workList
