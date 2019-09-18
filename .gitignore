@@ -1,5 +1,7 @@
 dist
 
+.vscode
+
 # Logs
 logs
 *.log
