@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "build": "cp -r ./src/public ./dist/ && tsc",
+    "build": "tsc",
     "dev": "concurrently \"npm run build -- -w\" \"nodemon --ignore /src/** dist/server.js\""
   },
   "dependencies": {
