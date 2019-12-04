@@ -9,7 +9,7 @@ let router = Router();
 
 const currentWeekAndTenWeeksBack: string = moment()
   .startOf('isoWeek')
-  .subtract(370, 'days')
+  .subtract(70, 'days')
   .utcOffset('+01:00')
   .toString();
 
