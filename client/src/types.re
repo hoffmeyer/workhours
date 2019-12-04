@@ -14,6 +14,12 @@ type user = {
   balanceFrom: Js.Date.t,
 };
 
+type workRange = {
+  startDate: Js.Date.t,
+  endDate: Js.Date.t,
+  duration: float,
+};
+
 module Decode = {
   let work = (json): work =>
     Json.Decode.{
@@ -32,7 +38,13 @@ module Decode = {
       username: json |> field("username", string),
       name: json |> field("name", string),
       workhoursPerWeek: json |> field("workhoursperweek", Json.Decode.float),
-      balanceFrom: json |> field("balancefrom", Json.Decode.date),
+      balanceFrom: json |> field("balancefrom", date),
+    };
+    let workRange = (json): workRange =>
+    Json.Decode.{
+      startDate: json |> field("startDate", date),
+      endDate: json |> field("endDate", date),
+      duration: json |> field("duration", Json.Decode.float),
     };
 };
 
@@ -55,6 +67,14 @@ module Encode = {
         ("username", string(u.username)),
         ("workhoursperweek", Json.Encode.float(u.workhoursPerWeek)),
         ("balancefrom", date(u.balanceFrom)),
+      ])
+    );
+    let workRange = (wr: workRange) =>
+    Json.Encode.(
+      object_([
+        ("start", date(wr.startDate)),
+        ("end", date(wr.endDate)),
+        ("duration", Json.Encode.float(wr.duration)),
       ])
     );
 };

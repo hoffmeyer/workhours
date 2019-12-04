@@ -9,7 +9,7 @@ let router = Router();
 
 const currentWeekAndTenWeeksBack: string = moment()
   .startOf('isoWeek')
-  .subtract(70, 'days')
+  .subtract(370, 'days')
   .utcOffset('+01:00')
   .toString();
 
@@ -51,7 +51,7 @@ router.post('/', isLoggedInApi, (req, res) => {
   }
 });
 
-router.post('/period', isLoggedInApi, (req, res) => {
+router.post('/range', isLoggedInApi, (req, res) => {
   const id: string = req.user.id;
   const period: WorkPeriod = req.body;
   if (!period.start || !period.end) {
@@ -60,19 +60,23 @@ router.post('/period', isLoggedInApi, (req, res) => {
     });
   }
 
-  let currentDate = new Date(period.start);
-  let dates: Date[] = [];
+  let firstDate = new Date(period.start);
+  firstDate.setHours(8, 0);
+  let lastDate = new Date(period.end);
+  let dates: Date[] = [firstDate];
 
   // create array of all the dates
-  while (currentDate >= period.end) {
-    dates.push(currentDate);
-    currentDate.setDate(currentDate.getDate() + 1)
+  while (firstDate <= lastDate) {
+    let newDate = new Date(firstDate);
+    newDate.setDate(firstDate.getDate() + 1);
+    dates.push(newDate);
+    firstDate = newDate;
   }
 
   // filter out weekends
-  dates.filter(d => d.getDay() != 1 || d.getDay() != 7);
+  let noWeekends = dates.filter(d => d.getDay() > 0 && d.getDay() < 6);
 
-  let promises = dates.map(async d => {
+  let promises = noWeekends.map(async d => {
     let newWork: Work = {
       userid: id,
       start: d,

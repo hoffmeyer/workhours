@@ -1,11 +1,12 @@
 /* In Image.re */
 [@bs.config {jsx: 3}];
 
+open Types;
+
 type formData = {
   startDate: Js.Date.t,
   endDate: Js.Date.t,
   duration: string,
-  userid: option(string),
 };
 
 type state = {
@@ -17,17 +18,21 @@ let initState = {
   formData: {
     startDate: Js.Date.make(),
     endDate: Js.Date.make(),
-    duration: "",
-    userid: None,
+    duration: ""
   },
   validationErrors: [],
 };
 
-let getValueFromEvent = (event): string =>
-  (event |> ReactEvent.Form.target )##value;
+let formDataToWorkRange = (fd:formData): workRange => {
+  {
+    startDate: fd.startDate,
+    endDate: fd.endDate,
+    duration: Js.Float.fromString(fd.duration)
+  }
+};
 
 [@react.component]
-let make = (~handleAction, ~workList, ~id) => {
+let make = (~handleAction, ~workList) => {
   let (state, setState) = React.useState(() => initState);
   <div>
     <form id="registerHours">
@@ -67,16 +72,18 @@ let make = (~handleAction, ~workList, ~id) => {
       <input
         id="duration"
         value={state.formData.duration}
-        onChange={event =>
+        onChange={event => {
+          let value = ReactEvent.Form.target(event)##value;
           setState(state =>
             {
               ...state,
               formData: {
                 ...state.formData,
-                duration: getValueFromEvent(event),
+                duration: value,
               },
             }
           )
+        }
         }
       />
       <div className="actionButtons">
@@ -89,7 +96,20 @@ let make = (~handleAction, ~workList, ~id) => {
         <button
           className="actionButtons__add"
           type_="button"
-          onClick={_event => Js.log("Dakedak")}>
+          onClick={_event => {
+            Js.Promise.(
+            Models.Work.saveRange(formDataToWorkRange(state.formData))
+            |> then_(workList => {
+              workList |> Array.iter( w => handleAction(WorkAdd(w)));
+              resolve();
+            })
+            |> catch(err => {
+                Js.log2("Error saving  work range: ", err);
+                resolve();
+            })
+            |> ignore
+            );
+          }}>
           {"Add" |> React.string}
         </button>
       </div>
@@ -100,10 +120,10 @@ let make = (~handleAction, ~workList, ~id) => {
 module Jsx2 = {
   let component = ReasonReact.statelessComponent("NewWorkRange");
   /* `children` is not labelled, as it is a regular parameter in version 2 of JSX */
-  let make = (~handleAction, ~workList, ~id, children) =>
+  let make = (~handleAction, ~workList, children) =>
     ReasonReactCompat.wrapReactForReasonReact(
       make,
-      makeProps(~handleAction, ~workList, ~id, ()),
+      makeProps(~handleAction, ~workList, ()),
       children,
     );
 };

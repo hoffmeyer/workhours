@@ -50,7 +50,7 @@ let make =
        }}
       {switch (self.state) {
        | Single => <NewWork handleAction workList id />
-       | Range => <NewWorkRange.Jsx2 handleAction workList id />
+       | Range => <NewWorkRange.Jsx2 handleAction workList />
        }}
     </div>,
 };
