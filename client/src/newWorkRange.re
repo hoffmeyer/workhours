@@ -32,7 +32,7 @@ let formDataToWorkRange = (fd:formData): workRange => {
 };
 
 [@react.component]
-let make = (~handleAction, ~workList) => {
+let make = (~handleAction) => {
   let (state, setState) = React.useState(() => initState);
   <div>
     <form id="registerHours">
@@ -120,10 +120,10 @@ let make = (~handleAction, ~workList) => {
 module Jsx2 = {
   let component = ReasonReact.statelessComponent("NewWorkRange");
   /* `children` is not labelled, as it is a regular parameter in version 2 of JSX */
-  let make = (~handleAction, ~workList, children) =>
+  let make = (~handleAction, children) =>
     ReasonReactCompat.wrapReactForReasonReact(
       make,
-      makeProps(~handleAction, ~workList, ()),
+      makeProps(~handleAction, ()),
       children,
     );
 };
