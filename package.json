@@ -25,14 +25,14 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@types/node": "12.12.14",
+    "@types/node": "13.1.1",
     "@types/ramda": "^0.26.36",
     "@typescript-eslint/parser": "^2.10.0",
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-latest-minimal": "^1.1.2",
     "concurrently": "^5.0.0",
-    "eslint": "^5.7.2",
+    "eslint": "^6.8.0",
     "nodemon": "^2.0.1",
     "prettier": "^1.18.1",
     "source-map-support": "^0.5.16",
