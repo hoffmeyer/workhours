@@ -101,6 +101,7 @@ let make = (~handleAction) => {
             Models.Work.saveRange(formDataToWorkRange(state.formData))
             |> then_(workList => {
               workList |> Array.iter( w => handleAction(WorkAdd(w)));
+              ReasonReact.Router.push("/");
               resolve();
             })
             |> catch(err => {
