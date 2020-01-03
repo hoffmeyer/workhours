@@ -174,7 +174,7 @@ form {
   float: right;
   margin-right: 1.5em;
   border: none;
-  background-image: url(/public/images/settings.svg);
+  background-image: url(/images/settings.svg);
   background-repeat: no-repeat;
   background-size: contain;
   background-color: transparent;
