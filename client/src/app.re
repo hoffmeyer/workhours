@@ -94,17 +94,22 @@ let make = (~currentRoute, _children) => {
           }>
           {ReasonReact.string("Workhours")}
         </div>
-        <div className="settings">
-          <button
-            className="settingsButton"
-            onClick={_ =>
-              Router.Settings
-              |> Router.routeToString
-              |> ReasonReact.Router.push
-            }>
-            {"Settings" |> str}
-          </button>
-        </div>
+        {switch (self.state) {
+         | Loaded([||]) => <div></div>
+         | Loaded(_) =>
+           <div className="settings">
+             <button
+               className="settingsButton"
+               title="Settings"
+               onClick={_ =>
+                 Router.Settings
+                 |> Router.routeToString
+                 |> ReasonReact.Router.push
+               }>
+             </button>
+           </div>
+         | _ => <div />
+         }}
       </header>
       <section>
         {switch (self.state) {

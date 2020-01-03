@@ -5,12 +5,25 @@ body {
   box-sizing: border-box;
 }
 
-html,
+html {
+  font-size: 16px;
+}
+@media screen and (min-width: 320px) {
+  html {
+    font-size: calc(16px + 6 * ((100vw - 320px) / 680));
+  }
+}
+@media screen and (min-width: 1000px) {
+  html {
+    font-size: 22px;
+  }
+}
+
 body,
 input,
 button {
-  font-size: calc(14px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
   font-family: 'Lucida Grande', Helvetica, Arial, sans-serif;
+  font-size: inherit;
 }
 
 input {
@@ -80,7 +93,7 @@ header > * {
 }
 
 .logo {
-  font-size: 3em;
+  font-size: 1.5em;
   font-weight: bold;
   padding: 0.4em 0.2em 0.2em 0.2em;
   line-height: 1.5em;
@@ -156,6 +169,14 @@ form {
 }
 
 .settingsButton {
+  height: 1.5em;
+  width: 1.5em;
   float: right;
   margin-right: 1.5em;
+  border: none;
+  background-image: url(/public/images/settings.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: transparent;
+  padding: 0.3em;
 }
