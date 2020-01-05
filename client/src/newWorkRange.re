@@ -88,13 +88,13 @@ let make = (~handleAction) => {
       />
       <div className="actionButtons">
         <button
-          className="actionButtons__cancel"
+          className="button actionButtons__cancel"
           type_="button"
           onClick={_event => ReasonReact.Router.push("/")}>
           {"Cancel" |> React.string}
         </button>
         <button
-          className="actionButtons__add"
+          className="button button--primary actionButtons__add"
           type_="button"
           onClick={_event => {
             Js.Promise.(

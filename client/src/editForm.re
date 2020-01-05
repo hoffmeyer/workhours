@@ -234,20 +234,20 @@ let make =
            | None => <div />
            | Some(_) =>
              <button
-               className="actionButtons__delete"
+               className="button button--danger actionButtons__delete"
                type_="button"
                onClick={_event => self.send(Delete)}>
                {"Delete" |> str}
              </button>
            }}
           <button
-            className="actionButtons__cancel"
+            className="button actionButtons__cancel"
             type_="button"
             onClick={_event => ReasonReact.Router.push("/")}>
             {"Cancel" |> str}
           </button>
           <button
-            className="actionButtons__add"
+            className="button button--primary actionButtons__add"
             type_="button"
             onClick={_event => self.send(Validate)}>
             {(

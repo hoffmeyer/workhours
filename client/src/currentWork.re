@@ -145,7 +145,7 @@ let make =
        | Initial =>
          <div>
            <h1> {str("You are not working")} </h1>
-           <button id="startStop" onClick={_evt => self.send(StartWork)}>
+           <button className="button" id="startStop" onClick={_evt => self.send(StartWork)}>
              {str("Start working")}
            </button>
          </div>
@@ -157,7 +157,7 @@ let make =
                 ++ " hours and counting"
               )}
            </h1>
-           <button id="startStop" onClick={_evt => self.send(StopWork)}>
+           <button className="button" id="startStop" onClick={_evt => self.send(StopWork)}>
              {str("Stop working")}
            </button>
          </div>

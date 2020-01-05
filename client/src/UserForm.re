@@ -107,9 +107,14 @@ let make = (~user: user, ~saveUser: user => unit, _children) => {
           value={self.state.formData.balanceFrom}
           onChange={date => self.send(ChangeBalanceFrom(date))}
         />
-        <button type_="button" onClick={_ => self.send(Validate)}>
-          {"Save" |> str}
-        </button>
+        <div className="actionButtons">
+          <button className="button actionButtons__cancel" type_="button" onClick={_ => ReasonReact.Router.push("/")}>
+            {"Cancel" |> str}
+          </button>
+          <button className="button button--primary" type_="button" onClick={_ => self.send(Validate)}>
+            {"Save" |> str}
+          </button>
+        </div>
       </form>
     </div>,
 };

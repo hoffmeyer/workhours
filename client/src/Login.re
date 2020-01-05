@@ -78,7 +78,7 @@ let make = _children => {
           send(PasswordKeyDown(ReactEvent.Form.target(event)##value))
         }
       />
-      <button onClick={_event => send(LoginClicked)}>
+      <button className="button button--primary" onClick={_event => send(LoginClicked)}>
         {"Login" |> str}
       </button>
     </div>,
