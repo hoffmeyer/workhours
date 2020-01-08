@@ -127,10 +127,15 @@ const getDateList = (start: Date, end: Date, accu: number): number => {
   }
 };
 
+const groupingFunc = (w1:Work, w2:Work) => {
+  return w1.start.toLocaleDateString() === w2.start.toLocaleDateString();
+};
+
 const allWorkToBalance = (work: Work[], hoursPerWeek) => {
   const iterator = (accu: number, work: Work) => work.duration - work.lunch + accu;
   const actualHours = R.reduce(iterator, 0, work);
-  const normalHours = work.length * (hoursPerWeek / 5)
+  const workedDays = R.groupWith(groupingFunc, R.filter( w => w.duration > 0, work));
+  const normalHours = workedDays.length * (hoursPerWeek / 5)
   return Math.round((actualHours - normalHours) * 4) / 4;
 };
 
