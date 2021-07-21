@@ -19,6 +19,8 @@ const byId = (id: string): Promise<User> => {
 };
 
 const authenticate = (username: string, password: string): Promise<User> => {
+  const query = "SELECT * FROM users WHERE username = '" + username + "' AND password = crypt('" + password + "', password)";
+  log('info',query);
   return db
     .one("SELECT * FROM users WHERE username = '" + username + "' AND password = crypt('" + password + "', password)")
     .then(user => {
